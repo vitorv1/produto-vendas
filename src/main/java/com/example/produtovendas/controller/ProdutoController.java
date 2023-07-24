@@ -1,22 +1,21 @@
 package com.example.produtovendas.controller;
 
-import com.example.produtovendas.domain.Produto;
-import com.example.produtovendas.repository.ProdutoRepository;
-import org.springframework.http.HttpStatus;
+import com.example.produtovendas.dto.Produto;
+import com.example.produtovendas.service.ProdutoService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 @RequestMapping("/produto")
 public class ProdutoController {
 
-    private ProdutoRepository repository;
+    private ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<Produto> criarProduto(@RequestBody Produto produto){
-        return new ResponseEntity<>(repository.save(produto), HttpStatus.CREATED);
+    public void cadastrar(@RequestBody Produto produto){
+        produtoService.cadastrar(produto);
     }
 }

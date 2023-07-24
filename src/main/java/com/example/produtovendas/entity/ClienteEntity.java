@@ -1,6 +1,6 @@
 package com.example.produtovendas.entity;
 
-import com.example.produtovendas.dto.Cliente;
+import com.example.produtovendas.domain.Clientes;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +23,7 @@ public class ClienteEntity {
     private String email;
     private String numero_telefone;
 
-    public ClienteEntity (Cliente cliente){
+    public ClienteEntity (Clientes cliente){
         this.nome = cliente.getNome();
         this.cpf = cliente.getCpf();
         this.email = cliente.getEmail();
@@ -31,7 +31,7 @@ public class ClienteEntity {
     }
 
 
-    public static ClienteEntity atualizaDados(Cliente cliente){
+    public static ClienteEntity atualizaDados(Clientes cliente){
         return new ClienteEntity(cliente);
     }
 }

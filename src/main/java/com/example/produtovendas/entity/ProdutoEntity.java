@@ -1,6 +1,6 @@
 package com.example.produtovendas.entity;
 
-import com.example.produtovendas.domain.Produtos;
+import com.example.produtovendas.domain.Produto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,13 +22,13 @@ public class ProdutoEntity {
     private String marca;
     private double valor;
 
-    public ProdutoEntity (Produtos produto){
+    public ProdutoEntity (Produto produto){
         this.nome = produto.getNome();
         this.marca = produto.getMarca();
         this.valor = produto.getValor();
     }
 
-    public static ProdutoEntity atualizaDados(Produtos produto){
+    public static ProdutoEntity atualizaDados(Produto produto){
         return new ProdutoEntity(produto);
     }
 }

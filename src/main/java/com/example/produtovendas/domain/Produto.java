@@ -10,13 +10,13 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Setter
-public class Produtos {
+public class Produto {
 
     private String nome;
     private String marca;
     private double valor;
 
-    public Produtos(ProdutoEntity produtoEntity){
+    public Produto(ProdutoEntity produtoEntity){
         this.nome = produtoEntity.getNome();
         this.marca = produtoEntity.getMarca();
         this.valor = produtoEntity.getValor();

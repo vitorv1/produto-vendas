@@ -1,11 +1,8 @@
 package com.example.produtovendas.domain;
-
-import com.example.produtovendas.entity.ClienteEntity;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
-
 
 
 @Getter
@@ -14,6 +11,7 @@ import lombok.*;
 @Setter
 public class Cliente {
 
+    private Long id;
     @NotBlank
     private String nome;
     @NotBlank
@@ -22,12 +20,13 @@ public class Cliente {
     @NotBlank
     @Email
     private String email;
-    private String numero_telefone;
+    private String numeroTelefone;
 
-    public Cliente(String nome, String cpf, String email, String numero_telefone){
+    public Cliente(Long id, String nome, String cpf, String email, String numeroTelefone) {
+        this.id = id;
         this.nome = nome;
         this.cpf = cpf;
         this.email = email;
-        this.numero_telefone = numero_telefone;
+        this.numeroTelefone = numeroTelefone;
     }
 }

@@ -5,28 +5,39 @@ import com.example.produtovendas.entity.ClienteEntity;
 import com.example.produtovendas.entity.ClienteMapper;
 import com.example.produtovendas.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.print.DocFlavor;
 import java.util.List;
 
 @Service
 public class ClienteService {
 
     @Autowired
-    private ClienteRepository repository ;
+    private ClienteRepository repository;
 
-    public void cadastrar(Cliente cliente){
-        repository.save(ClienteMapper.paraEntity(cliente));
-        System.out.println(repository);
+    public Cliente cadastroCliente(Cliente cliente) {
+        ClienteEntity clienteEntity = ClienteMapper.paraEntity(cliente);
+        repository.save(clienteEntity);
+        return ClienteMapper.paraCliente(repository.getReferenceById(clienteEntity.getId()));
     }
 
-
-    public List<Cliente> getCliente(){
-        return  ClienteMapper.paraClientes(repository.findAll());
+    public List<Cliente> consultaTodosClientes() {
+        return ClienteMapper.paraClientes(repository.findAll());
     }
 
-    public Cliente getClienteId(Long id) {
+    public Cliente consultaClientePorId(Long id) {
         return ClienteMapper.paraCliente(repository.getReferenceById(id));
+    }
+
+    public void deletarCliente(Long id){
+        repository.deleteById(id);
+    }
+
+    public Cliente alterarCliente(Long id, Cliente cliente){
+        ClienteEntity clienteEntity = repository.getReferenceById(id);
+        clienteEntity.atualizaDados(cliente.getNome(), cliente.getCpf(), cliente.getEmail(), cliente.getNumeroTelefone());
+        repository.save(clienteEntity);
+        return ClienteMapper.paraCliente(clienteEntity);
     }
 }

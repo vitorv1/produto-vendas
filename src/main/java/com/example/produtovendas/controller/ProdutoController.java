@@ -3,6 +3,8 @@ package com.example.produtovendas.controller;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.service.ProdutoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,13 +17,28 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @PostMapping
-    public void cadastrar(@RequestBody Produto produto){
-        produtoService.cadastrar(produto);
+    public ResponseEntity<Produto> cadastroProduto(@RequestBody Produto produto){
+        return new ResponseEntity<>(produtoService.cadastroProduto(produto), HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id){
+        return new ResponseEntity<>(produtoService.consultarProdutoPorId(id), HttpStatus.OK);
     }
 
     @GetMapping
-    public List<Produto> getProduto(){
-        return produtoService.getProduto();
+    public ResponseEntity<List<Produto>> consultarTodosProdutos(){
+        return new ResponseEntity<>(produtoService.consultaTodosProdutos(), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/{id}")
+    public void deletarProduto(@PathVariable("id") Long id){
+        produtoService.deletarProduto(id);
+    }
+
+    @PutMapping (value = "/{id}")
+    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto){
+        return new ResponseEntity<>(produtoService.alterarProduto(id, produto), HttpStatus.OK);
     }
 
 

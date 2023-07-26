@@ -1,10 +1,10 @@
 package com.example.produtovendas.controller;
+
 import com.example.produtovendas.domain.Cliente;
-import com.example.produtovendas.entity.ClienteEntity;
 import com.example.produtovendas.service.ClienteService;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,22 +18,27 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @PostMapping
-    public void cadastro(@RequestBody @Valid  Cliente cliente){
-        clienteService.cadastrar(cliente);
+    public ResponseEntity<Cliente> cadastroCliente(@RequestBody @Valid Cliente cliente) {
+        return new ResponseEntity<>(clienteService.cadastroCliente(cliente), HttpStatus.CREATED);
     }
 
     @GetMapping
-    public List<Cliente>getCliente(){
-        return clienteService.getCliente();
+    public ResponseEntity<List<Cliente>> concultarTodosClientes() {
+        return new ResponseEntity<>(clienteService.consultaTodosClientes(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/{id}")
-    public Cliente getClienteId(@PathVariable("id") Long id){
-        return clienteService.getClienteId(id);
+    public ResponseEntity<Cliente> concultaClientePorId(@PathVariable("id") Long id) {
+        return new ResponseEntity<>(clienteService.consultaClientePorId(id), HttpStatus.OK);
     }
 
+    @DeleteMapping(value = "/{id}")
+    public void deletarCliente(@PathVariable("id") Long id){
+        clienteService.deletarCliente(id);
+    }
 
-
-
-
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Cliente> altararCliente(@PathVariable("id")Long id, @RequestBody Cliente cliente){
+        return new ResponseEntity<>(clienteService.alterarCliente(id, cliente), HttpStatus.OK);
+    }
 }

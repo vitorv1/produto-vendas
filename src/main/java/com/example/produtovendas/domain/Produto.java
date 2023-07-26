@@ -7,7 +7,6 @@ import lombok.*;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
 @Setter
 public class Produto {
@@ -16,9 +15,9 @@ public class Produto {
     private String marca;
     private double valor;
 
-    public Produto(ProdutoEntity produtoEntity){
-        this.nome = produtoEntity.getNome();
-        this.marca = produtoEntity.getMarca();
-        this.valor = produtoEntity.getValor();
+    public Produto(String nome, String marca, double valor){
+        this.nome = nome;
+        this.marca = marca;
+        this.valor = valor;
     }
 }

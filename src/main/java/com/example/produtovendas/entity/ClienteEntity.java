@@ -23,15 +23,10 @@ public class ClienteEntity {
     private String email;
     private String numero_telefone;
 
-    public ClienteEntity (Cliente cliente){
-        this.nome = cliente.getNome();
-        this.cpf = cliente.getCpf();
-        this.email = cliente.getEmail();
-        this.numero_telefone = cliente.getNumero_telefone();
-    }
-
-
-    public static ClienteEntity atualizaDados(Cliente cliente){
-        return new ClienteEntity(cliente);
+    public ClienteEntity(String nome, String cpf, String email, String numero_telefone) {
+        this.nome = nome;
+        this.cpf = cpf;
+        this.email = email;
+        this.numero_telefone = numero_telefone;
     }
 }

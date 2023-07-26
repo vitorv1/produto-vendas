@@ -22,13 +22,9 @@ public class ProdutoEntity {
     private String marca;
     private double valor;
 
-    public ProdutoEntity (Produto produto){
-        this.nome = produto.getNome();
-        this.marca = produto.getMarca();
-        this.valor = produto.getValor();
-    }
-
-    public static ProdutoEntity atualizaDados(Produto produto){
-        return new ProdutoEntity(produto);
+    public ProdutoEntity (String nome, String marca, double valor){
+        this.nome = nome;
+        this.marca = marca;
+        this.valor = valor;
     }
 }

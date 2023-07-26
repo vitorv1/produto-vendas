@@ -23,7 +23,11 @@ public class ProdutoController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id){
-        return new ResponseEntity<>(produtoService.consultarProdutoPorId(id), HttpStatus.OK);
+        Produto produto = produtoService.consultarProdutoPorId(id);
+        if(produto == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(produto, HttpStatus.OK);
     }
 
     @GetMapping

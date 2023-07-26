@@ -29,7 +29,11 @@ public class ClienteController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Cliente> concultaClientePorId(@PathVariable("id") Long id) {
-        return new ResponseEntity<>(clienteService.consultaClientePorId(id), HttpStatus.OK);
+        Cliente cliente = clienteService.consultaClientePorId(id);
+                if(cliente == null){
+                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+                }
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")

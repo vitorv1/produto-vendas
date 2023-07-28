@@ -2,10 +2,7 @@ package com.example.produtovendas.domain;
 
 
 import com.example.produtovendas.controller.ClienteController;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,7 +10,7 @@ import java.util.List;
 
 
 @Getter
-@NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Setter
 public class Venda {
@@ -23,7 +20,6 @@ public class Venda {
     private Long idCliente;
     private double valor;
     private Integer desconto;
-    private List<Produto> listaProdutos = new ArrayList<>();
+    private List<Produto> listaProdutos;
     private LocalDate dataVenda;
-
 }

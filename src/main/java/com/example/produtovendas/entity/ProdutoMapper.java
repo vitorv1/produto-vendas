@@ -19,8 +19,16 @@ public class ProdutoMapper {
     public static List<Produto> paraProdutos(List<ProdutoEntity> produtoEntities) {
         List<Produto> produtoList = new ArrayList<>();
         for (ProdutoEntity produtoEntity : produtoEntities) {
-            produtoList.add(ProdutoMapper.paraProduto(produtoEntity));
+            produtoList.add(paraProduto(produtoEntity));
         }
         return produtoList;
+    }
+
+    public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList){
+        List<ProdutoEntity> produtoEntities = new ArrayList<>();
+        for(Produto produto : produtoList){
+            produtoEntities.add(paraEntity(produto));
+        }
+        return produtoEntities;
     }
 }

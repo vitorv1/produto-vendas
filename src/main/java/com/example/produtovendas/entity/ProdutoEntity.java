@@ -13,6 +13,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Setter
+@Builder
 public class ProdutoEntity {
 
     @Id

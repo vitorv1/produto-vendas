@@ -1,6 +1,5 @@
 package com.example.produtovendas.entity;
 
-import com.example.produtovendas.domain.Produto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,13 +22,7 @@ public class ProdutoEntity {
     private String marca;
     private double valor;
 
-    public ProdutoEntity(String nome, String marca, double valor) {
-        this.nome = nome;
-        this.marca = marca;
-        this.valor = valor;
-    }
-
-    public void atualizaDados(String nome, String marca, double valor){
+    public void atualizaDados(String nome, String marca, double valor) {
         this.nome = nome;
         this.marca = marca;
         this.valor = valor;

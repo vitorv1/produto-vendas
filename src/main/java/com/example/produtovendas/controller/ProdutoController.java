@@ -17,31 +17,31 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<Produto> cadastroProduto(@RequestBody Produto produto){
+    public ResponseEntity<Produto> cadastroProduto(@RequestBody Produto produto) {
         return new ResponseEntity<>(produtoService.cadastroProduto(produto), HttpStatus.CREATED);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id){
+    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id) {
         Produto produto = produtoService.consultarProdutoPorId(id);
-        if(produto == null) {
+        if (produto == null) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(produto, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> consultarTodosProdutos(){
+    public ResponseEntity<List<Produto>> consultarTodosProdutos() {
         return new ResponseEntity<>(produtoService.consultaTodosProdutos(), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deletarProduto(@PathVariable("id") Long id){
+    public void deletarProduto(@PathVariable("id") Long id) {
         produtoService.deletarProduto(id);
     }
 
-    @PutMapping (value = "/{id}")
-    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto){
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto) {
         return new ResponseEntity<>(produtoService.alterarProduto(id, produto), HttpStatus.OK);
     }
 

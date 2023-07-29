@@ -30,19 +30,19 @@ public class ClienteController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<Cliente> concultaClientePorId(@PathVariable("id") Long id) {
         Cliente cliente = clienteService.consultaClientePorId(id);
-                if(cliente == null){
-                    return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-                }
+        if (cliente == null) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity<>(cliente, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deletarCliente(@PathVariable("id") Long id){
+    public void deletarCliente(@PathVariable("id") Long id) {
         clienteService.deletarCliente(id);
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Cliente> altararCliente(@PathVariable("id")Long id, @RequestBody Cliente cliente){
+    public ResponseEntity<Cliente> altararCliente(@PathVariable("id") Long id, @RequestBody Cliente cliente) {
         return new ResponseEntity<>(clienteService.alterarCliente(id, cliente), HttpStatus.OK);
     }
 }

@@ -19,6 +19,8 @@ import java.util.List;
 @Getter
 @ToString
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class VendaEntity {
 
     @Id

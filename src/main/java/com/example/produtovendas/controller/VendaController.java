@@ -25,7 +25,7 @@ public class VendaController {
         return new ResponseEntity<>(vendaService.cadastroVenda(venda), HttpStatus.CREATED);
     }
 
-    @GetMapping(value = "{/id}")
+    @GetMapping(value = "/{id}")
     public ResponseEntity<Venda> buscarPorId(@PathVariable ("id") Long id){
         return new ResponseEntity<>(vendaService.buscarPorId(id), HttpStatus.OK);
     }
@@ -35,12 +35,12 @@ public class VendaController {
         return new ResponseEntity<>(vendaService.buscarTodos(), HttpStatus.OK);
     }
 
-    @DeleteMapping(value = "{/id}")
+    @DeleteMapping(value = "/{id}")
     public void deletarVenda(@PathVariable("id") Long id){
         vendaService.deletarProduto(id);
     }
 
-    @PutMapping(value = "{/id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda){
         return new ResponseEntity<>(vendaService.alterarVenda(id, venda), HttpStatus.OK);
     }

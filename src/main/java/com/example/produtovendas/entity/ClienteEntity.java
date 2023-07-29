@@ -3,7 +3,6 @@ package com.example.produtovendas.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Entity(name = "Cliente")
 @Table(name = "clientes")
 @EqualsAndHashCode(of = "id")
@@ -12,6 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Setter
+@Builder
 public class ClienteEntity {
 
     @Id
@@ -22,16 +22,9 @@ public class ClienteEntity {
     private String email;
     private String numeroTelefone;
 
-    public ClienteEntity(String nome, String cpf, String email, String numero_telefone) {
+    public void atualizaDados(String nome, String cpf, String email, String numeroTelefone) {
         this.nome = nome;
         this.cpf = cpf;
-        this.email = email;
-        this.numeroTelefone = numero_telefone;
-    }
-
-    public void atualizaDados(String nome, String cpf, String email, String numeroTelefone){
-        this.nome = nome;
-        this.cpf= cpf;
         this.email = email;
         this.numeroTelefone = numeroTelefone;
     }

@@ -7,7 +7,6 @@ import com.example.produtovendas.repository.ClienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.DocFlavor;
 import java.util.List;
 
 @Service
@@ -19,7 +18,7 @@ public class ClienteService {
     public Cliente cadastroCliente(Cliente cliente) {
         ClienteEntity clienteEntity = ClienteMapper.paraEntity(cliente);
         repository.save(clienteEntity);
-        return ClienteMapper.paraCliente(repository.getReferenceById(clienteEntity.getId()));
+        return ClienteMapper.paraCliente(repository.findById(clienteEntity.getId()).get());
     }
 
     public List<Cliente> consultaTodosClientes() {
@@ -27,15 +26,15 @@ public class ClienteService {
     }
 
     public Cliente consultaClientePorId(Long id) {
-        return ClienteMapper.paraCliente(repository.getReferenceById(id));
+        return ClienteMapper.paraCliente(repository.findById(id).get());
     }
 
-    public void deletarCliente(Long id){
+    public void deletarCliente(Long id) {
         repository.deleteById(id);
     }
 
-    public Cliente alterarCliente(Long id, Cliente cliente){
-        ClienteEntity clienteEntity = repository.getReferenceById(id);
+    public Cliente alterarCliente(Long id, Cliente cliente) {
+        ClienteEntity clienteEntity = repository.findById(id).get();
         clienteEntity.atualizaDados(cliente.getNome(), cliente.getCpf(), cliente.getEmail(), cliente.getNumeroTelefone());
         repository.save(clienteEntity);
         return ClienteMapper.paraCliente(clienteEntity);

@@ -2,10 +2,12 @@ package com.example.produtovendas.controller;
 
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.service.ProdutoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -17,32 +19,35 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<Produto> cadastroProduto(@RequestBody Produto produto){
-        return new ResponseEntity<>(produtoService.cadastroProduto(produto), HttpStatus.CREATED);
+    public ResponseEntity<Produto> cadastroProduto(@RequestBody @Valid Produto produto, UriComponentsBuilder uriBuilder) {
+        Produto produtoBody = produtoService.cadastroProduto(produto);
+        var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoBody.getId()).toUri();
+        return ResponseEntity.created(uri).body(produtoBody);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id){
+    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id) {
         Produto produto = produtoService.consultarProdutoPorId(id);
-        if(produto == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        if (produto == null) {
+            return ResponseEntity.noContent().build();
         }
-        return new ResponseEntity<>(produto, HttpStatus.OK);
+        return ResponseEntity.ok(produto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> consultarTodosProdutos(){
-        return new ResponseEntity<>(produtoService.consultaTodosProdutos(), HttpStatus.OK);
+    public ResponseEntity<List<Produto>> consultarTodosProdutos() {
+        return ResponseEntity.ok(produtoService.consultaTodosProdutos());
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deletarProduto(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deletarProduto(@PathVariable("id") Long id) {
         produtoService.deletarProduto(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @PutMapping (value = "/{id}")
-    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto){
-        return new ResponseEntity<>(produtoService.alterarProduto(id, produto), HttpStatus.OK);
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto) {
+        return ResponseEntity.ok(produtoService.alterarProduto(id, produto));
     }
 
 

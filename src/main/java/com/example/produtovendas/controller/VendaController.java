@@ -2,13 +2,13 @@ package com.example.produtovendas.controller;
 
 
 import com.example.produtovendas.domain.Venda;
-import com.example.produtovendas.entity.VendaEntity;
 import com.example.produtovendas.service.VendaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
@@ -19,30 +19,36 @@ public class VendaController {
     @Autowired
     private VendaService vendaService;
 
-
     @PostMapping
-    public ResponseEntity<Venda> cadastroVenda(@RequestBody Venda venda){
-        return new ResponseEntity<>(vendaService.cadastroVenda(venda), HttpStatus.CREATED);
+    public ResponseEntity<Venda> cadastroVenda(@RequestBody Venda venda, UriComponentsBuilder uriBuilder) {
+        Venda vendaBody = vendaService.cadastroVenda(venda);
+        var uri = uriBuilder.path("/vendas/{id}").buildAndExpand(vendaBody.getId()).toUri();
+        return ResponseEntity.created(uri).body(vendaBody);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Venda> buscarPorId(@PathVariable ("id") Long id){
-        return new ResponseEntity<>(vendaService.buscarPorId(id), HttpStatus.OK);
+    public ResponseEntity<Venda> buscarPorId(@PathVariable("id") Long id) {
+        Venda venda = vendaService.buscarPorId(id);
+        if(venda == null){
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(venda);
     }
 
     @GetMapping
-    public ResponseEntity<List<Venda>> buscarTodos(){
-        return new ResponseEntity<>(vendaService.buscarTodos(), HttpStatus.OK);
+    public ResponseEntity<List<Venda>> buscarTodos() {
+        return ResponseEntity.ok(vendaService.buscarTodos());
     }
 
     @DeleteMapping(value = "/{id}")
-    public void deletarVenda(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deletarVenda(@PathVariable("id") Long id) {
         vendaService.deletarProduto(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda){
-        return new ResponseEntity<>(vendaService.alterarVenda(id, venda), HttpStatus.OK);
+    public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda) {
+        return ResponseEntity.ok(vendaService.alterarVenda(id, venda));
     }
 
 }

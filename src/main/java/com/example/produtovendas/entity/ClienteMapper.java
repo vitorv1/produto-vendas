@@ -2,25 +2,32 @@ package com.example.produtovendas.entity;
 
 import com.example.produtovendas.domain.Cliente;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ClienteMapper {
 
-
     public static Cliente paraCliente(ClienteEntity clienteEntity) {
-        return new Cliente(clienteEntity.getId(), clienteEntity.getNome(), clienteEntity.getCpf(), clienteEntity.getEmail(), clienteEntity.getNumeroTelefone());
+        return Cliente.builder()
+                .id(clienteEntity.getId())
+                .nome(clienteEntity.getNome())
+                .cpf(clienteEntity.getCpf())
+                .email(clienteEntity.getEmail())
+                .numeroTelefone(clienteEntity.getNumeroTelefone())
+                .build();
     }
 
     public static ClienteEntity paraEntity(Cliente cliente) {
-        return new ClienteEntity(cliente.getNome(), cliente.getCpf(), cliente.getEmail(), cliente.getNumeroTelefone());
+        return ClienteEntity.builder()
+                .id(cliente.getId())
+                .nome(cliente.getNome())
+                .cpf(cliente.getCpf())
+                .email(cliente.getEmail())
+                .numeroTelefone(cliente.getNumeroTelefone())
+                .build();
     }
 
     public static List<Cliente> paraClientes(List<ClienteEntity> clienteEntities) {
-        List<Cliente> clienteList = new ArrayList<>();
-        for (ClienteEntity clienteEntity : clienteEntities) {
-            clienteList.add(ClienteMapper.paraCliente(clienteEntity));
-        }
-        return clienteList;
+        return clienteEntities.stream().map(ClienteMapper::paraCliente).collect(Collectors.toList());
     }
 }

@@ -7,13 +7,12 @@ import java.util.List;
 
 public class ProdutoMapper {
 
-
     public static Produto paraProduto(ProdutoEntity produtoEntity) {
         return new Produto(produtoEntity.getId(), produtoEntity.getNome(), produtoEntity.getMarca(), produtoEntity.getValor());
     }
 
     public static ProdutoEntity paraEntity(Produto produto) {
-        return new ProdutoEntity(produto.getNome(), produto.getMarca(), produto.getValor());
+        return new ProdutoEntity(produto.getId(), produto.getNome(), produto.getMarca(), produto.getValor());
     }
 
     public static List<Produto> paraProdutos(List<ProdutoEntity> produtoEntities) {
@@ -24,9 +23,9 @@ public class ProdutoMapper {
         return produtoList;
     }
 
-    public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList){
+    public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList) {
         List<ProdutoEntity> produtoEntities = new ArrayList<>();
-        for(Produto produto : produtoList){
+        for (Produto produto : produtoList) {
             produtoEntities.add(paraEntity(produto));
         }
         return produtoEntities;

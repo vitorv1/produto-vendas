@@ -26,6 +26,7 @@ public class VendaService {
     public Venda cadastroVenda(Venda venda) {
         Cliente cliente = clienteService.consultaClientePorId(venda.getIdCliente());
         venda.setCliente(cliente);
+        System.out.println(venda);
         List<Produto> produtoList = new ArrayList<>();
         for (Produto produto : venda.getListaProdutos()){
             produtoList.add(produtoService.consultarProdutoPorId(produto.getId()));
@@ -33,6 +34,7 @@ public class VendaService {
         venda.setListaProdutos(produtoList);
         venda.setDataVenda(LocalDate.now());
         venda.setValor(calcularValorVenda(venda.getDesconto(), venda.getListaProdutos()));
+        System.out.println(venda);
         VendaEntity vendaEntity = VendaMapper.paraEntity(venda);
         repositoryVenda.save(vendaEntity);
         return VendaMapper.paraDomain(vendaEntity);

@@ -1,4 +1,4 @@
-package com.example.produtovendas.infra.exceptions;
+package com.example.produtovendas.infra;
 
 
 import jakarta.persistence.EntityNotFoundException;
@@ -7,7 +7,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -32,5 +31,4 @@ public class TratadorDeErros {
             this(fieldError.getField(), fieldError.getDefaultMessage());
         }
     }
-
 }

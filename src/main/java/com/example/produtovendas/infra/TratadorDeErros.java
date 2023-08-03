@@ -31,4 +31,9 @@ public class TratadorDeErros {
             this(fieldError.getField(), fieldError.getDefaultMessage());
         }
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity erroExterno(){
+        return ResponseEntity.internalServerError().build();
+    }
 }

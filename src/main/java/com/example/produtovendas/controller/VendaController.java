@@ -20,7 +20,7 @@ public class VendaController {
     private VendaService vendaService;
 
     @PostMapping
-    public ResponseEntity<Venda> cadastroVenda(@RequestBody Venda venda, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<Venda> cadastroVenda(@RequestBody Venda venda, UriComponentsBuilder uriBuilder) throws Exception {
         Venda vendaBody = vendaService.cadastroVenda(venda);
         var uri = uriBuilder.path("/vendas/{id}").buildAndExpand(vendaBody.getId()).toUri();
         return ResponseEntity.created(uri).body(vendaBody);

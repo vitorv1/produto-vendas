@@ -63,28 +63,33 @@ public class VendaService {
 
 
     public Venda buscarPorId(Long id) {
-        Venda venda = null;
         try{
-            venda = VendaMapper.paraDomain(repositoryVenda.findById(id).get());
+           VendaEntity vendaEntity = repositoryVenda.findById(id).get();
+            if(vendaEntity.getInativo()){
+                return VendaMapper.paraDomain(vendaEntity);
+            }else{
+                throw new RuntimeException("Venda não encontrada");
+            }
         }catch (Exception ex){
             throw new RuntimeException("Erro no banco de dados");
         }
-        return venda;
     }
 
     public List<Venda> buscarTodos() throws RuntimeException{
-        List<Venda> vendas = new ArrayList<>();
+        List<VendaEntity> vendas;
         try {
-            vendas = VendaMapper.paraDomains(repositoryVenda.findAll());
+            vendas = repositoryVenda.findAll().stream().filter(VendaEntity -> !VendaEntity.getInativo()).toList();
         }catch (Exception ex){
             throw new RuntimeException("Erro no banco de dados");
         }
-        return vendas;
+        return VendaMapper.paraDomains(vendas);
     }
 
-    public void deletarProduto(Long id) throws RuntimeException {
+    public void deletarVenda(Long id) throws RuntimeException {
         try {
-            repositoryVenda.deleteById(id);
+            VendaEntity vendaEntity = repositoryVenda.findById(id).get();
+            vendaEntity.setInativo(true);
+            repositoryVenda.save(vendaEntity);
         }catch (Exception ex){
             throw new RuntimeException("Eerro no banco de dados");
         }

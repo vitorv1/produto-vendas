@@ -16,6 +16,7 @@ public class Cliente {
     private Long id;
     @NotBlank
     private String nome;
+    private boolean inativo;
     @NotBlank
     @Pattern(regexp = "\\d{11}")
     private String cpf;

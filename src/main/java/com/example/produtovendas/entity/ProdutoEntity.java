@@ -19,12 +19,26 @@ public class ProdutoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
+    private boolean inativo;
     private String marca;
     private double valor;
 
-    public void atualizaDados(String nome, String marca, double valor) {
+    public ProdutoEntity(Long id, String nome, String marca, double valor) {
+        this.inativo = false;
+        this.id = id;
         this.nome = nome;
         this.marca = marca;
         this.valor = valor;
+    }
+
+    public void atualizaDados(String nome, String marca, double valor) {
+        this.inativo = false;
+        this.nome = nome;
+        this.marca = marca;
+        this.valor = valor;
+    }
+
+    public boolean getInativo(){
+        return this.inativo;
     }
 }

@@ -4,6 +4,7 @@ import com.example.produtovendas.domain.Produto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ProdutoMapper {
 
@@ -16,18 +17,10 @@ public class ProdutoMapper {
     }
 
     public static List<Produto> paraProdutos(List<ProdutoEntity> produtoEntities) {
-        List<Produto> produtoList = new ArrayList<>();
-        for (ProdutoEntity produtoEntity : produtoEntities) {
-            produtoList.add(paraProduto(produtoEntity));
-        }
-        return produtoList;
+      return produtoEntities.stream().map(ProdutoMapper :: paraProduto).collect(Collectors.toList());
     }
 
     public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList) {
-        List<ProdutoEntity> produtoEntities = new ArrayList<>();
-        for (Produto produto : produtoList) {
-            produtoEntities.add(paraEntity(produto));
-        }
-        return produtoEntities;
+        return produtoList.stream().map(ProdutoMapper :: paraEntity).collect(Collectors.toList());
     }
 }

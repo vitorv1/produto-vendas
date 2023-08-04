@@ -22,15 +22,23 @@ public class ProdutoService {
     }
 
     public Produto consultarProdutoPorId(Long id) {
-        return ProdutoMapper.paraProduto(repository.findById(id).get());
+        ProdutoEntity produtoEntity = repository.findById(id).get();
+        if(produtoEntity.getInativo()){
+            throw new RuntimeException("Produto inativo");
+        }else {
+            return ProdutoMapper.paraProduto(produtoEntity);
+        }
     }
 
     public List<Produto> consultaTodosProdutos() {
-        return ProdutoMapper.paraProdutos(repository.findAll());
+        List<ProdutoEntity> produtoEntities = repository.findAll().stream().filter(ProdutoEntity -> !ProdutoEntity.getInativo()).toList();
+        return ProdutoMapper.paraProdutos(produtoEntities);
     }
 
     public void deletarProduto(Long id) {
-        repository.deleteById(id);
+        ProdutoEntity produtoEntity = repository.findById(id).get();
+        produtoEntity.setInativo(true);
+        repository.save(produtoEntity);
     }
 
     public Produto alterarProduto(Long id, Produto produto) {

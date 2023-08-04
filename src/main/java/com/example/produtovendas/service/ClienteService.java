@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClienteService {
@@ -22,15 +23,23 @@ public class ClienteService {
     }
 
     public List<Cliente> consultaTodosClientes() {
+        List<ClienteEntity> clienteEntities= repository.findAll().stream().filter(ClienteEntity -> !ClienteEntity.getInativo()).toList();
         return ClienteMapper.paraClientes(repository.findAll());
     }
 
     public Cliente consultaClientePorId(Long id) {
-        return ClienteMapper.paraCliente(repository.findById(id).get());
+        ClienteEntity clienteEntity = repository.findById(id).get();
+        if(clienteEntity.getInativo()){
+            throw new RuntimeException("Cliente inativo");
+        }else {
+            return ClienteMapper.paraCliente(clienteEntity);
+        }
     }
 
     public void deletarCliente(Long id) {
-        repository.deleteById(id);
+        ClienteEntity clienteEntity = repository.findById(id).get();
+        clienteEntity.setInativo(false);
+        repository.save(clienteEntity);
     }
 
     public Cliente alterarCliente(Long id, Cliente cliente) {

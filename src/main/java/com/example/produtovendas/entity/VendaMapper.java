@@ -4,6 +4,7 @@ import com.example.produtovendas.domain.Venda;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class VendaMapper {
 
@@ -16,10 +17,6 @@ public class VendaMapper {
     }
 
     public static List<Venda> paraDomains(List<VendaEntity> vendaEntities) {
-        List<Venda> vendaList = new ArrayList<>();
-        for (VendaEntity vendaEntity : vendaEntities) {
-            vendaList.add(paraDomain(vendaEntity));
-        }
-        return vendaList;
+        return vendaEntities.stream().map(VendaMapper :: paraDomain).collect(Collectors.toList());
     }
 }

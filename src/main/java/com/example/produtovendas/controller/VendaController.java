@@ -47,7 +47,7 @@ public class VendaController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda) {
+    public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda) throws Exception{
         return ResponseEntity.ok(vendaService.alterarVenda(id, venda));
     }
 

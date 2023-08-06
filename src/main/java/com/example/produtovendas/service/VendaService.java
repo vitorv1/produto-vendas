@@ -7,10 +7,8 @@ import com.example.produtovendas.entity.VendaEntity;
 import com.example.produtovendas.entity.VendaMapper;
 import com.example.produtovendas.repository.VendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +23,7 @@ public class VendaService {
     @Autowired
     private ProdutoService produtoService;
 
-    public Venda cadastroVenda(Venda venda)throws RuntimeException{
+    public Venda cadastroVenda(Venda venda)throws Exception{
         Cliente cliente = clienteService.consultaClientePorId(venda.getIdCliente());
         venda.setCliente(cliente);
         System.out.println(venda);
@@ -95,7 +93,7 @@ public class VendaService {
         }
     }
 
-    public Venda alterarVenda(Long id, Venda venda) throws RuntimeException {
+    public Venda alterarVenda(Long id, Venda venda) throws Exception {
         VendaEntity vendaEntity = null;
         try {
             vendaEntity = repositoryVenda.findById(id).get();
@@ -107,8 +105,13 @@ public class VendaService {
 
         Cliente cliente = clienteService.consultaClientePorId(venda.getIdCliente());
         venda.setCliente(cliente);
-
-        List<Produto> produtoList = venda.getListaProdutos().stream().map(produto -> produtoService.consultarProdutoPorId(produto.getId())).toList();
+        List<Produto> produtoList = venda.getListaProdutos().stream().map(produto -> {
+            try {
+                return produtoService.consultarProdutoPorId(produto.getId());
+            } catch (Exception e) {
+                throw new RuntimeException("Erro no banco de dados");
+            }
+        }).toList();
         venda.setListaProdutos(produtoList);
 
         venda.setValor(calcularValorVenda(venda.getDesconto(), venda.getListaProdutos()));

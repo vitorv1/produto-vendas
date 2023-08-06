@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
 import java.util.List;
 
 @RestControllerAdvice
@@ -34,6 +35,11 @@ public class TratadorDeErros {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity erroExterno(){
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity erroBancoDeDados(){
         return ResponseEntity.internalServerError().build();
     }
 }

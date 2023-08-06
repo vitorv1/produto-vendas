@@ -19,14 +19,14 @@ public class ProdutoController {
     private ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<Produto> cadastroProduto(@RequestBody @Valid Produto produto, UriComponentsBuilder uriBuilder) {
+    public ResponseEntity<Produto> cadastroProduto(@RequestBody @Valid Produto produto, UriComponentsBuilder uriBuilder) throws Exception{
         Produto produtoBody = produtoService.cadastroProduto(produto);
         var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoBody.getId()).toUri();
         return ResponseEntity.created(uri).body(produtoBody);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id) {
+    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id) throws Exception{
         Produto produto = produtoService.consultarProdutoPorId(id);
         if (produto == null) {
             return ResponseEntity.noContent().build();
@@ -35,18 +35,18 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> consultarTodosProdutos() {
+    public ResponseEntity<List<Produto>> consultarTodosProdutos() throws Exception{
         return ResponseEntity.ok(produtoService.consultaTodosProdutos());
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletarProduto(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deletarProduto(@PathVariable("id") Long id) throws Exception{
         produtoService.deletarProduto(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto) {
+    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto)throws Exception {
         return ResponseEntity.ok(produtoService.alterarProduto(id, produto));
     }
 

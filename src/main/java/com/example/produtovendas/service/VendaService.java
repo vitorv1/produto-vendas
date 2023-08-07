@@ -5,10 +5,12 @@ import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.entity.VendaEntity;
 import com.example.produtovendas.entity.VendaMapper;
+import com.example.produtovendas.infra.BancoDeDadosException;
 import com.example.produtovendas.repository.VendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,14 +25,18 @@ public class VendaService {
     @Autowired
     private ProdutoService produtoService;
 
-    public Venda cadastroVenda(Venda venda)throws Exception{
+    public Venda cadastroVenda(Venda venda) throws Exception {
         Cliente cliente = clienteService.consultaClientePorId(venda.getIdCliente());
         venda.setCliente(cliente);
         System.out.println(venda);
-        List<Produto> produtoList = new ArrayList<>();
-        for (Produto produto : venda.getListaProdutos()){
-            produtoList.add(produtoService.consultarProdutoPorId(produto.getId()));
-        }
+        List<Produto> produtoList;
+         produtoList = venda.getListaProdutos().stream().map(Produto -> {
+             try {
+                 return produtoService.consultarProdutoPorId(Produto.getId());
+             } catch (Exception e) {
+                 throw new RuntimeException("Cliente não encontrado");
+             }
+         }).toList();
         venda.setListaProdutos(produtoList);
         venda.setDataVenda(LocalDate.now());
         venda.setValor(calcularValorVenda(venda.getDesconto(), venda.getListaProdutos()));
@@ -39,7 +45,7 @@ public class VendaService {
         try {
             repositoryVenda.save(vendaEntity);
         }catch (Exception ex){
-            throw new RuntimeException("Erro no banco de dados");
+            throw new BancoDeDadosException("Erro no banco de dados");
         }
         return VendaMapper.paraDomain(vendaEntity);
     }
@@ -60,7 +66,7 @@ public class VendaService {
     }
 
 
-    public Venda buscarPorId(Long id) {
+    public Venda buscarPorId(Long id)throws SQLException {
         try{
            VendaEntity vendaEntity = repositoryVenda.findById(id).get();
             if(vendaEntity.getInativo()){
@@ -69,27 +75,27 @@ public class VendaService {
                 throw new RuntimeException("Venda não encontrada");
             }
         }catch (Exception ex){
-            throw new RuntimeException("Erro no banco de dados");
+            throw new  BancoDeDadosException("Erro no banco de dados");
         }
     }
 
-    public List<Venda> buscarTodos() throws RuntimeException{
+    public List<Venda> buscarTodos() throws SQLException{
         List<VendaEntity> vendas;
         try {
             vendas = repositoryVenda.findAll().stream().filter(VendaEntity -> !VendaEntity.getInativo()).toList();
         }catch (Exception ex){
-            throw new RuntimeException("Erro no banco de dados");
+            throw new  BancoDeDadosException("Erro no banco de dados");
         }
         return VendaMapper.paraDomains(vendas);
     }
 
-    public void deletarVenda(Long id) throws RuntimeException {
+    public void deletarVenda(Long id) throws SQLException {
         try {
             VendaEntity vendaEntity = repositoryVenda.findById(id).get();
             vendaEntity.setInativo(true);
             repositoryVenda.save(vendaEntity);
         }catch (Exception ex){
-            throw new RuntimeException("Eerro no banco de dados");
+            throw new  BancoDeDadosException("Erro no banco de dados");
         }
     }
 
@@ -98,7 +104,7 @@ public class VendaService {
         try {
             vendaEntity = repositoryVenda.findById(id).get();
         }catch (Exception ex){
-            throw new RuntimeException("Erro no banco de dados");
+            throw new  BancoDeDadosException("Erro no banco de dados");
         }
         venda.setId(vendaEntity.getId());
         venda.setDataVenda(vendaEntity.getDataVenda());
@@ -109,7 +115,7 @@ public class VendaService {
             try {
                 return produtoService.consultarProdutoPorId(produto.getId());
             } catch (Exception e) {
-                throw new RuntimeException("Erro no banco de dados");
+                throw new RuntimeException("Erro banco de dados");
             }
         }).toList();
         venda.setListaProdutos(produtoList);
@@ -118,7 +124,7 @@ public class VendaService {
         try {
             repositoryVenda.save(VendaMapper.paraEntity(venda));
         }catch (Exception ex){
-            throw new RuntimeException("Erro no banco de dados");
+            throw new BancoDeDadosException("Erro no banco de dados");
         }
         return venda;
     }

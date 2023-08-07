@@ -34,12 +34,12 @@ public class TratadorDeErros {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity erroExterno(){
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity erroExterno(RuntimeException ex){
+        return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity erroBancoDeDados(){
-        return ResponseEntity.internalServerError().build();
+    public ResponseEntity erroBancoDeDados(SQLException ex){
+        return ResponseEntity.internalServerError().body(ex.getMessage());
     }
 }

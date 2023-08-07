@@ -4,6 +4,7 @@ import ch.qos.logback.core.encoder.EchoEncoder;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.entity.ProdutoEntity;
 import com.example.produtovendas.entity.ProdutoMapper;
+import com.example.produtovendas.infra.BancoDeDadosException;
 import com.example.produtovendas.repository.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +23,11 @@ public class ProdutoService {
         try {
             repository.save(produtoEntity);
         }catch (Exception ex){
-            throw new SQLException();
+            throw new BancoDeDadosException("Erro no banco de dados");
         }try {
             return ProdutoMapper.paraProduto(repository.findById(produtoEntity.getId()).get());
         }catch (Exception ex){
-            throw new SQLException();
+            throw new  BancoDeDadosException("Erro no banco de dados");
         }
 
     }
@@ -36,7 +37,7 @@ public class ProdutoService {
         try {
              produtoEntity = repository.findById(id).get();
         }catch (Exception ex){
-            throw new SQLException();
+            throw new BancoDeDadosException("Erro no banco de dados");
         }
         if(produtoEntity.getInativo()){
             throw new RuntimeException("Produto inativo");
@@ -45,43 +46,43 @@ public class ProdutoService {
         }
     }
 
-    public List<Produto> consultaTodosProdutos() throws Exception{
+    public List<Produto> consultaTodosProdutos() throws SQLException{
         List<ProdutoEntity> produtoEntities;
         try{
             produtoEntities = repository.findAll().stream().filter(ProdutoEntity -> !ProdutoEntity.getInativo()).toList();
         }catch (Exception ex){
-            throw new SQLException();
+            throw new  BancoDeDadosException("Erro no banco de dados");
         }
         return ProdutoMapper.paraProdutos(produtoEntities);
     }
 
-    public void deletarProduto(Long id) throws Exception {
+    public void deletarProduto(Long id) throws SQLException {
         ProdutoEntity produtoEntity;
         try {
              produtoEntity = repository.findById(id).get();
         }catch (Exception ex){
-            throw new SQLException();
+            throw new BancoDeDadosException("Erro no banco de dados");
         }
         produtoEntity.setInativo(true);
         try{
             repository.save(produtoEntity);
         }catch (Exception ex){
-            throw new SQLException();
+            throw new  BancoDeDadosException("Erro no banco de dados");
         }
     }
 
-    public Produto alterarProduto(Long id, Produto produto) throws Exception {
+    public Produto alterarProduto(Long id, Produto produto) throws SQLException {
         ProdutoEntity produtoEntity;
         try{
              produtoEntity = repository.findById(id).get();
         }catch (Exception ex){
-            throw new SQLException();
+            throw new BancoDeDadosException("Erro no banco de dados");
         }
         produtoEntity.atualizaDados(produto.getNome(), produto.getMarca(), produto.getValor());
         try{
             repository.save(produtoEntity);
         }catch (Exception ex){
-            throw new SQLException();
+            throw new  BancoDeDadosException("Erro no banco de dados");
         }
         return ProdutoMapper.paraProduto(produtoEntity);
     }

@@ -22,6 +22,8 @@ public class ClienteEntity {
     private String cpf;
     private String email;
     private String numeroTelefone;
+
+
     public void atualizaDados(String nome, String cpf, String email, String numeroTelefone) {
         this.inativo = false;
         this.nome = nome;

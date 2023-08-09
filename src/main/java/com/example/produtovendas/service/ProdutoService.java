@@ -22,38 +22,26 @@ public class ProdutoService {
         ProdutoEntity produtoEntity = ProdutoMapper.paraEntity(produto);
         try {
             repository.save(produtoEntity);
-        }catch (Exception ex){
-            throw new BancoDeDadosException("Erro no banco de dados");
-        }try {
             return ProdutoMapper.paraProduto(repository.findById(produtoEntity.getId()).get());
-        }catch (Exception ex){
-            throw new  BancoDeDadosException("Erro no banco de dados");
+        }catch (Exception ex) {
+            throw new BancoDeDadosException("Erro no banco de dados");
         }
-
     }
 
     public Produto consultarProdutoPorId(Long id) throws Exception{
-        ProdutoEntity produtoEntity;
         try {
-             produtoEntity = repository.findById(id).get();
+             return ProdutoMapper.paraProduto(repository.findById(id).get());
         }catch (Exception ex){
             throw new BancoDeDadosException("Erro no banco de dados");
-        }
-        if(produtoEntity.getInativo()){
-            throw new RuntimeException("Produto inativo");
-        }else {
-            return ProdutoMapper.paraProduto(produtoEntity);
         }
     }
 
     public List<Produto> consultaTodosProdutos() throws SQLException{
-        List<ProdutoEntity> produtoEntities;
         try{
-            produtoEntities = repository.findAll().stream().filter(ProdutoEntity -> !ProdutoEntity.getInativo()).toList();
+            return ProdutoMapper.paraProdutos(repository.findAll());
         }catch (Exception ex){
             throw new  BancoDeDadosException("Erro no banco de dados");
         }
-        return ProdutoMapper.paraProdutos(produtoEntities);
     }
 
     public void deletarProduto(Long id) throws SQLException {

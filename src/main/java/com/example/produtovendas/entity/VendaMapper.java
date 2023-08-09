@@ -17,6 +17,6 @@ public class VendaMapper {
     }
 
     public static List<Venda> paraDomains(List<VendaEntity> vendaEntities) {
-        return vendaEntities.stream().map(VendaMapper :: paraDomain).collect(Collectors.toList());
+        return vendaEntities.stream().map(VendaMapper :: paraDomain).toList();
     }
 }

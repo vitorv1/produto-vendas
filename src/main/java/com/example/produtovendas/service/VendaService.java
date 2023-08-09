@@ -50,7 +50,7 @@ public class VendaService {
         return VendaMapper.paraDomain(vendaEntity);
     }
 
-    public static double calcularValorVenda(Integer desconto, List<Produto> produtoList) {
+    private static double calcularValorVenda(Integer desconto, List<Produto> produtoList) {
         double resultado;
         double valorSomaProdutos = 0;
         for (Produto produto : produtoList) {
@@ -68,25 +68,18 @@ public class VendaService {
 
     public Venda buscarPorId(Long id)throws SQLException {
         try{
-           VendaEntity vendaEntity = repositoryVenda.findById(id).get();
-            if(vendaEntity.getInativo()){
-                return VendaMapper.paraDomain(vendaEntity);
-            }else{
-                throw new RuntimeException("Venda não encontrada");
-            }
+           return VendaMapper.paraDomain(repositoryVenda.findById(id).get());
         }catch (Exception ex){
             throw new  BancoDeDadosException("Erro no banco de dados");
         }
     }
 
     public List<Venda> buscarTodos() throws SQLException{
-        List<VendaEntity> vendas;
         try {
-            vendas = repositoryVenda.findAll().stream().filter(VendaEntity -> !VendaEntity.getInativo()).toList();
+            return VendaMapper.paraDomains(repositoryVenda.findAll());
         }catch (Exception ex){
             throw new  BancoDeDadosException("Erro no banco de dados");
         }
-        return VendaMapper.paraDomains(vendas);
     }
 
     public void deletarVenda(Long id) throws SQLException {

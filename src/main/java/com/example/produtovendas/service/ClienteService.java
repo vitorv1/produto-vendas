@@ -20,40 +20,28 @@ public class ClienteService {
     private ClienteRepository repository;
 
     public Cliente cadastroCliente(Cliente cliente) throws SQLException{
-        ClienteEntity clienteEntity = ClienteMapper.paraEntity(cliente);
         try {
+            ClienteEntity clienteEntity = ClienteMapper.paraEntity(cliente);
             repository.save(clienteEntity);
-        }catch (Exception ex){
-            throw new BancoDeDadosException("Erro no banco de dados");
-        }
-        try {
             return ClienteMapper.paraCliente(repository.findById(clienteEntity.getId()).get());
         }catch (Exception ex){
-            throw new  BancoDeDadosException("Erro no banco de dados");
+            throw new BancoDeDadosException("Erro no banco de dados");
         }
     }
 
     public List<Cliente> consultaTodosClientes() throws SQLException{
-        List<ClienteEntity> clienteEntities;
         try {
-             clienteEntities = repository.findAll().stream().filter(ClienteEntity -> !ClienteEntity.getInativo()).toList();
+            return ClienteMapper.paraClientes(repository.findAll());
         }catch (Exception ex){
             throw new  BancoDeDadosException("Erro no banco de dados");
         }
-        return ClienteMapper.paraClientes(clienteEntities);
     }
 
-    public Cliente consultaClientePorId(Long id) throws Exception{
-        ClienteEntity clienteEntity;
+    public Cliente consultaClientePorId(Long id) throws SQLException{
         try{
-             clienteEntity = repository.findById(id).get();
+             return ClienteMapper.paraCliente(repository.findById(id).get());
         }catch (Exception ex){
             throw new BancoDeDadosException("Erro no banco de dados");
-        }
-        if(clienteEntity.getInativo()){
-            throw new RuntimeException("Cliente inativo");
-        }else {
-            return ClienteMapper.paraCliente(clienteEntity);
         }
     }
 
@@ -64,7 +52,7 @@ public class ClienteService {
         }catch (Exception ex){
             throw new  BancoDeDadosException("Erro no banco de dados");
         }
-        clienteEntity.setInativo(false);
+        clienteEntity.setInativo(true);
         try{
             repository.save(clienteEntity);
         }catch (Exception ex){

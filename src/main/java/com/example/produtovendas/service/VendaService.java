@@ -3,16 +3,15 @@ package com.example.produtovendas.service;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
-import com.example.produtovendas.entity.VendaEntity;
-import com.example.produtovendas.entity.VendaMapper;
-import com.example.produtovendas.infra.BancoDeDadosException;
-import com.example.produtovendas.repository.VendaRepository;
+import com.example.produtovendas.infra.entities.VendaEntity;
+import com.example.produtovendas.infra.mappers.VendaMapper;
+import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
+import com.example.produtovendas.infra.repositories.VendaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service

@@ -1,4 +1,4 @@
-package com.example.produtovendas.infra;
+package com.example.produtovendas.controller;
 
 
 import jakarta.persistence.EntityNotFoundException;
@@ -8,38 +8,35 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @RestControllerAdvice
-public class TratadorDeErros {
-
+public class ExceptionHandlerController {
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity erro404(){
+    public ResponseEntity entityNotFoundException() {
         return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity erro400(MethodArgumentNotValidException ex){
+    public ResponseEntity methodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<FieldError> erros = ex.getFieldErrors();
-        return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao :: new).toList());
-    }
-
-    private record DadosErroValidacao(String campo, String mensagem){
-
-        public DadosErroValidacao(FieldError fieldError){
-            this(fieldError.getField(), fieldError.getDefaultMessage());
-        }
+        return ResponseEntity.badRequest().body(erros.stream().map(DadosErroValidacao::new).toList());
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity erroExterno(RuntimeException ex){
+    public ResponseEntity runtimeException(RuntimeException ex) {
         return ResponseEntity.badRequest().body(ex.getMessage());
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity erroBancoDeDados(SQLException ex){
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity exception(Exception ex) {
         return ResponseEntity.internalServerError().body(ex.getMessage());
+    }
+
+    private record DadosErroValidacao(String campo, String mensagem) {
+        public DadosErroValidacao(FieldError fieldError) {
+            this(fieldError.getField(), fieldError.getDefaultMessage());
+        }
     }
 }

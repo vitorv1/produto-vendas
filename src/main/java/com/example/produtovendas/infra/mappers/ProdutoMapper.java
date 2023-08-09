@@ -1,8 +1,8 @@
-package com.example.produtovendas.entity;
+package com.example.produtovendas.infra.mappers;
 
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.infra.entities.ProdutoEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 

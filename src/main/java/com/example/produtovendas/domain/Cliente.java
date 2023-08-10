@@ -24,4 +24,16 @@ public class Cliente {
     @Email
     private String email;
     private String numeroTelefone;
+
+    public void inativar() {
+        this.inativo = true;
+    }
+
+    public void atualizarDados(Cliente clienteAlterado) {
+        this.inativo = false;
+        this.nome = clienteAlterado.getNome();
+        this.cpf = clienteAlterado.getCpf();
+        this.email = clienteAlterado.getEmail();
+        this.numeroTelefone = clienteAlterado.getNumeroTelefone();
+    }
 }

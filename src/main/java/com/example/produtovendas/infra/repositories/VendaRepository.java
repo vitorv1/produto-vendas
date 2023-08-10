@@ -1,6 +1,6 @@
-package com.example.produtovendas.repository;
+package com.example.produtovendas.infra.repositories;
 
-import com.example.produtovendas.entity.VendaEntity;
+import com.example.produtovendas.infra.entities.VendaEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VendaRepository extends JpaRepository<VendaEntity, Long> {

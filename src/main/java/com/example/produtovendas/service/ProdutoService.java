@@ -1,11 +1,10 @@
 package com.example.produtovendas.service;
 
-import ch.qos.logback.core.encoder.EchoEncoder;
 import com.example.produtovendas.domain.Produto;
-import com.example.produtovendas.entity.ProdutoEntity;
-import com.example.produtovendas.entity.ProdutoMapper;
-import com.example.produtovendas.infra.BancoDeDadosException;
-import com.example.produtovendas.repository.ProdutoRepository;
+import com.example.produtovendas.infra.entities.ProdutoEntity;
+import com.example.produtovendas.infra.mappers.ProdutoMapper;
+import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
+import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

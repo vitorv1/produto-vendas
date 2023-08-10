@@ -1,4 +1,4 @@
-package com.example.produtovendas.entity;
+package com.example.produtovendas.infra.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

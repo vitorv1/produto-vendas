@@ -9,11 +9,23 @@ import java.util.stream.Collectors;
 public class ProdutoMapper {
 
     public static Produto paraProduto(ProdutoEntity produtoEntity) {
-        return new Produto(produtoEntity.getId(), produtoEntity.getNome(), produtoEntity.getMarca(), produtoEntity.getValor());
+        return Produto.builder()
+                .id(produtoEntity.getId())
+                .nome(produtoEntity.getNome())
+                .valor(produtoEntity.getValor())
+                .marca(produtoEntity.getMarca())
+                .inativo(produtoEntity.getInativo())
+                .build();
     }
 
     public static ProdutoEntity paraEntity(Produto produto) {
-        return new ProdutoEntity(produto.getId(), produto.getNome(), produto.getMarca(), produto.getValor());
+        return ProdutoEntity.builder()
+                .id(produto.getId())
+                .nome(produto.getNome())
+                .valor(produto.getValor())
+                .marca(produto.getMarca())
+                .inativo(produto.isInativo())
+                .build();
     }
 
     public static List<Produto> paraProdutos(List<ProdutoEntity> produtoEntities) {

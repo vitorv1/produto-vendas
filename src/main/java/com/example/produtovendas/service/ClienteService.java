@@ -3,6 +3,7 @@ package com.example.produtovendas.service;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ClienteService {
 
+    @Autowired
     private final ClienteDataProvider clienteDataProvider;
 
     public Cliente cadastroCliente(Cliente cliente) {
@@ -22,13 +24,7 @@ public class ClienteService {
     }
 
     public Cliente consultaClientePorId(Long id) {
-        Cliente cliente = buscarCliente(id);
-
-        if (cliente.isInativo()) {
-            throw new RuntimeException("Cliente inativo");
-        }
-
-        return cliente;
+        return buscarCliente(id);
     }
 
     public void deletarCliente(Long id) {

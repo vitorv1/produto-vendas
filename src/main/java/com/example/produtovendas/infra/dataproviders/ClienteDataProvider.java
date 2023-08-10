@@ -6,6 +6,7 @@ import com.example.produtovendas.infra.mappers.ClienteMapper;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClienteDataProvider {
 
+    @Autowired
     private final ClienteRepository repository;
 
     public Cliente salvar(Cliente cliente) {
@@ -31,12 +33,7 @@ public class ClienteDataProvider {
 
     public List<Cliente> consultarTodos() {
         try {
-            List<ClienteEntity> clienteEntities = repository.findAll()
-                    .stream()
-                    .filter(ClienteEntity -> !ClienteEntity.getInativo())
-                    .toList();
-            
-            return ClienteMapper.paraClientes(clienteEntities);
+            return ClienteMapper.paraClientes(repository.findAll());
         } catch (Exception ex) {
             throw new BancoDeDadosException("Erro ao buscar todos os Clientes");
         }

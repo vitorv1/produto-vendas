@@ -19,19 +19,19 @@ public class ClienteController {
     private ClienteService clienteService;
 
     @PostMapping
-    public ResponseEntity<Cliente> cadastroCliente(@RequestBody @Valid Cliente cliente, UriComponentsBuilder uriBuilder) throws Exception{
+    public ResponseEntity<Cliente> cadastroCliente(@RequestBody @Valid Cliente cliente, UriComponentsBuilder uriBuilder){
         Cliente clienteBody = clienteService.cadastroCliente(cliente);
         var uri = uriBuilder.path("/clientes/{id}").buildAndExpand(clienteBody.getId()).toUri();
         return ResponseEntity.created(uri).body(clienteBody);
     }
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> concultarTodosClientes()  throws Exception{
+    public ResponseEntity<List<Cliente>> concultarTodosClientes(){
         return ResponseEntity.ok(clienteService.consultaTodosClientes());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Cliente> concultaClientePorId(@PathVariable("id") Long id) throws Exception {
+    public ResponseEntity<Cliente> concultaClientePorId(@PathVariable("id") Long id){
         Cliente cliente = clienteService.consultaClientePorId(id);
         if (cliente == null) {
             return ResponseEntity.noContent().build();
@@ -40,13 +40,13 @@ public class ClienteController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletarCliente(@PathVariable("id") Long id)  throws Exception{
+    public ResponseEntity<Void> deletarCliente(@PathVariable("id") Long id){
         clienteService.deletarCliente(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Cliente> altararCliente(@PathVariable("id") Long id, @RequestBody Cliente cliente) throws Exception {
+    public ResponseEntity<Cliente> altararCliente(@PathVariable("id") Long id, @RequestBody Cliente cliente){
         return ResponseEntity.ok(clienteService.alterarCliente(id, cliente));
     }
 }

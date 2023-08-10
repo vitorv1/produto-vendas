@@ -19,14 +19,14 @@ public class VendaController {
     private VendaService vendaService;
 
     @PostMapping
-    public ResponseEntity<Venda> cadastroVenda(@RequestBody Venda venda, UriComponentsBuilder uriBuilder) throws Exception {
+    public ResponseEntity<Venda> cadastroVenda(@RequestBody Venda venda, UriComponentsBuilder uriBuilder){
         Venda vendaBody = vendaService.cadastroVenda(venda);
         var uri = uriBuilder.path("/vendas/{id}").buildAndExpand(vendaBody.getId()).toUri();
         return ResponseEntity.created(uri).body(vendaBody);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Venda> buscarPorId(@PathVariable("id") Long id)throws Exception {
+    public ResponseEntity<Venda> buscarPorId(@PathVariable("id") Long id){
         Venda venda = vendaService.buscarPorId(id);
         if(venda == null){
             return ResponseEntity.noContent().build();
@@ -35,18 +35,18 @@ public class VendaController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Venda>> buscarTodos() throws Exception {
+    public ResponseEntity<List<Venda>> buscarTodos(){
         return ResponseEntity.ok(vendaService.buscarTodos());
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletarVenda(@PathVariable("id") Long id) throws Exception{
+    public ResponseEntity<Void> deletarVenda(@PathVariable("id") Long id){
         vendaService.deletarVenda(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda) throws Exception{
+    public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda){
         return ResponseEntity.ok(vendaService.alterarVenda(id, venda));
     }
 

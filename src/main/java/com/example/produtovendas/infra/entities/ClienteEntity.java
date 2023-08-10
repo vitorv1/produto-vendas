@@ -7,33 +7,35 @@ import lombok.*;
 @Table(name = "clientes")
 @EqualsAndHashCode(of = "id")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
 @Setter
 @Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ClienteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
-    private boolean inativo;
-    private String cpf;
-    private String email;
-    private String numeroTelefone;
 
-
-    public void atualizaDados(String nome, String cpf, String email, String numeroTelefone) {
-        this.inativo = false;
+    public ClienteEntity(Long id, String nome, String cpf, String email, String numeroTelefone) {
+        this.id = id;
         this.nome = nome;
+        this.inativo = false;
         this.cpf = cpf;
         this.email = email;
         this.numeroTelefone = numeroTelefone;
     }
 
+    private boolean inativo;
+
+    private String cpf;
+    private String email;
+    private String numeroTelefone;
     public boolean getInativo(){
         return this.inativo;
     }
+
 
 }

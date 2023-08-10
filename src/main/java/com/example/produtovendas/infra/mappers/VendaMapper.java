@@ -13,7 +13,7 @@ public class VendaMapper {
     }
 
     public static Venda paraDomain(VendaEntity vendaEntity) {
-        return new Venda(vendaEntity.getId(), ClienteMapper.paraCliente(vendaEntity.getClienteEntity()), vendaEntity.getClienteEntity().getId(), vendaEntity.getValor(), vendaEntity.getDesconto(), ProdutoMapper.paraProdutos(vendaEntity.getListaProdutos()), vendaEntity.getDataVenda());
+        return new Venda(vendaEntity.getId(), ClienteMapper.paraCliente(vendaEntity.getClienteEntity()), vendaEntity.getClienteEntity().getId(), vendaEntity.getValor(), vendaEntity.getInativo(),vendaEntity.getDesconto(), ProdutoMapper.paraProdutos(vendaEntity.getListaProdutos()), vendaEntity.getDataVenda());
     }
 
     public static List<Venda> paraDomains(List<VendaEntity> vendaEntities) {

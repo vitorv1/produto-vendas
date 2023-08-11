@@ -31,7 +31,7 @@ public class VendaService {
 
     public Venda alterarVenda(Long id, Venda vendaDto){
         Venda venda = vendaDataProvider.buscarPorId(id);
-        venda.atualizaDados(vendaDto.getId(), vendaDto.getCliente(), vendaDto.getIdCliente(), vendaDto.getValor(), vendaDto.isInativo(), vendaDto.getDesconto(), vendaDto.getListaProdutos(), vendaDto.getDataVenda());
+        venda.atualizaDados(id ,vendaDto.getIdCliente(),vendaDto.getDesconto(), vendaDto.getListaProdutos());
         return vendaDataProvider.cadastroVenda(venda);
     }
 }

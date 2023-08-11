@@ -27,14 +27,10 @@ public class Venda {
         this.inativo = true;
     }
 
-    public void atualizaDados(Long id, Cliente cliente, Long idCliente, double valor, boolean inativo, Integer desconto, List<Produto> listaProdutos, LocalDate dataVenda) {
+    public void atualizaDados(Long id, Long idCliente, Integer desconto, List<Produto> listaProdutos) {
         this.id = id;
-        this.cliente = cliente;
         this.idCliente = idCliente;
-        this.valor = valor;
-        this.inativo = inativo;
         this.desconto = desconto;
         this.listaProdutos = listaProdutos;
-        this.dataVenda = dataVenda;
     }
 }

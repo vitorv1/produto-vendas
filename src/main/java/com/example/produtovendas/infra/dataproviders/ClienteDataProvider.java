@@ -30,9 +30,7 @@ public class ClienteDataProvider {
             log.info(ex.getMessage());
             throw new BancoDeDadosException("Erro na consulta de todos os clientes para validção");
         }
-        if(ClienteValidation.validaCliente(ClienteMapper.paraClientes(clienteEntities), cliente)){
-            throw new RuntimeException("Cliente já existe no banco de dados");
-        }
+        ClienteValidation.validaCliente(ClienteMapper.paraClientes(clienteEntities), cliente);
         ClienteEntity clienteEntity = ClienteMapper.paraEntity(cliente);
 
         try {

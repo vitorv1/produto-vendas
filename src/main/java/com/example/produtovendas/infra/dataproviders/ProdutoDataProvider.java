@@ -29,9 +29,7 @@ public class ProdutoDataProvider {
             log.info(ex.getMessage());
             throw new BancoDeDadosException("Erro ao consultar todos no banco de dados na validação");
         }
-        if(ProdutoValidation.validaProduto(ProdutoMapper.paraProdutos(produtoEntities), produto)){
-            throw new RuntimeException("Produto já existe no banco de dados");
-        }
+        ProdutoValidation.validaProduto(ProdutoMapper.paraProdutos(produtoEntities), produto);
         ProdutoEntity produtoEntity = ProdutoMapper.paraEntity(produto);
         try {
             repository.save(produtoEntity);

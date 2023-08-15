@@ -14,7 +14,7 @@ public class ProdutoMapper {
                 .nome(produtoEntity.getNome())
                 .valor(produtoEntity.getValor())
                 .marca(produtoEntity.getMarca())
-                .inativo(produtoEntity.getInativo())
+                .inativo(produtoEntity.isInativo())
                 .build();
     }
 

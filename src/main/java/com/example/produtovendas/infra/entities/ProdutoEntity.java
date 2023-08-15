@@ -31,7 +31,4 @@ public class ProdutoEntity {
         this.valor = valor;
     }
 
-    public boolean getInativo(){
-        return this.inativo;
-    }
 }

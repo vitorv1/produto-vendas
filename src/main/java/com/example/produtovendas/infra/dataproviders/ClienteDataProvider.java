@@ -15,12 +15,16 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class ClienteDataProvider {
 
-    @Autowired
+
     private final ClienteRepository repository;
+
+    @Autowired
+    public ClienteDataProvider(ClienteRepository repository) {
+        this.repository = repository;
+    }
 
     public Cliente salvar(Cliente cliente) {
         List<ClienteEntity> clienteEntities;

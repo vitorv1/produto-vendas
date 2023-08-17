@@ -5,7 +5,6 @@ import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 @Service
@@ -15,7 +14,7 @@ public class ProdutoService {
     private ProdutoDataProvider produtoDataProvider;
 
     public Produto cadastroProduto(Produto produto){
-        return produtoDataProvider.cadastroProduto(produto);
+        return produtoDataProvider.salvarProduto(produto);
     }
 
     public Produto consultarProdutoPorId(Long id){
@@ -29,13 +28,13 @@ public class ProdutoService {
     public void deletarProduto(Long id){
         Produto produto = consultarProdutoPorId(id);
         produto.inativar();
-        produtoDataProvider.cadastroProduto(produto);
+        produtoDataProvider.salvarProduto(produto);
     }
 
     public Produto alterarProduto(Long id, Produto produtoDto){
        Produto produto = produtoDataProvider.consultarProdutoPorId(id);
-       produto.atualizaDados(produtoDto.getNome(), produtoDto.getMarca(), produtoDto.getValor());
-       return produtoDataProvider.cadastroProduto(produto);
+       produto.atualizaDados(produtoDto);
+       return produtoDataProvider.salvarProduto(produto);
     }
 
 

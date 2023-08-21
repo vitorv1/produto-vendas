@@ -32,9 +32,7 @@ public class ProdutoService {
     }
 
     public Produto alterarProduto(Long id, Produto produtoDto){
-       Produto produto = produtoDataProvider.consultarProdutoPorId(id);
-       produto.atualizaDados(produtoDto);
-       return produtoDataProvider.salvarProduto(produto);
+        return produtoDataProvider.alterarProduto(id, produtoDto);
     }
 
 

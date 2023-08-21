@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -93,6 +94,19 @@ class ProdutoDataProviderTest {
     }
 
     @Test
+    void testaSeEstaAlterandoProduto(){
+        Long id = 1L;
+        String nome = "Tenis";
+        String marca = "Nike";
+        double valor = 350;
+        Produto produtoDto = new Produto(null, nome, false, marca, valor);
+        Optional<ProdutoEntity> produtoEntity = Optional.of(new ProdutoEntity(1L, "Tenis", false,"Nike", 350));
+
+        Mockito.when(repository.findById(any())).thenReturn(produtoEntity);
+
+    }
+
+    @Test
     void testaSeMetodoSalvarProdutoEstaLancandoException(){
         Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
         BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.salvarProduto(
@@ -100,4 +114,18 @@ class ProdutoDataProviderTest {
         Assertions.assertEquals("Erro no cadastro do produto", exceptionTeste.getMessage());
     }
 
+    @Test
+    void testaSeMetodoConsultaPorIdEstaLancandoException(){
+        Mockito.when(repository.findById(any())).thenThrow(RuntimeException.class);
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.consultarProdutoPorId(3L));
+        Assertions.assertEquals( "Erro na consalta por id",exceptionTeste.getMessage());
+    }
+
+    @Test
+    void testaSeMetodoConsultaTodosEstaLancandoExceprion(){
+        Mockito.when(repository.findAll()).thenThrow(RuntimeException.class);
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.consultaTodosProdutos());
+        Assertions.assertEquals("Erro na consulta por todos", exceptionTeste.getMessage());
+
+    }
 }

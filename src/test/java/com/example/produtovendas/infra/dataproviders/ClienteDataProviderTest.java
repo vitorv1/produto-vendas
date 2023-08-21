@@ -2,7 +2,6 @@ package com.example.produtovendas.infra.dataproviders;
 
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.infra.entities.ClienteEntity;
-import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.ClienteMapper;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 
 class ClienteDataProviderTest {
@@ -45,7 +43,7 @@ class ClienteDataProviderTest {
         String numeroTelefone = "(44)99456-2322";
         Cliente cliente = new Cliente(id, nome, inativo, cpf, email, numeroTelefone);
         Mockito.when(repository.save(any())).thenReturn(ClienteMapper.paraEntity(cliente));
-        Cliente clienteSalvo = clienteDataProvider.salvar(cliente);
+        Cliente clienteSalvo = clienteDataProvider.cadastrarCliente(cliente);
         Assertions.assertEquals(nome, clienteSalvo.getNome());
         Assertions.assertEquals(id, clienteSalvo.getId());
         Assertions.assertEquals(inativo, clienteSalvo.isInativo());
@@ -102,10 +100,61 @@ class ClienteDataProviderTest {
     }
 
     @Test
+    void testaSeEstaAlterandoCliente(){
+        Long id = 1L;
+        String nome = "João";
+        String cpf = "159753864-99";
+        String email = "nunes@gmail.com";
+        String numeroTelefone = "(44)99456-2322";
+
+        String nomeTeste = "Vitor";
+        boolean inativo = false;
+        String cpfTeste = "123456789-11";
+        String emailTeste = "vivi@gmail.com";
+        String numeroTelefoneTeste = "(44)99874-8356";
+        Cliente clienteDto = new Cliente(1L, nome, false, cpf, email, numeroTelefone);
+        Cliente cliente = new Cliente(id, nomeTeste, inativo, cpfTeste, emailTeste, numeroTelefoneTeste);
+        Optional<ClienteEntity> clienteEntity = Optional.of(ClienteMapper.paraEntity(cliente));
+
+        Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
+        Mockito.when(repository.save(any())).thenReturn(ClienteMapper.paraEntity(cliente));
+
+        Cliente clienteTeste =  clienteDataProvider.aterarCliente(id, clienteDto);
+
+        Assertions.assertEquals(id, clienteTeste.getId());
+        Assertions.assertEquals(nomeTeste, clienteTeste.getNome());
+        Assertions.assertEquals(inativo, clienteTeste.isInativo());
+        Assertions.assertEquals(cpfTeste, clienteTeste.getCpf());
+        Assertions.assertEquals(emailTeste, clienteTeste.getEmail());
+        Assertions.assertEquals(numeroTelefoneTeste, clienteTeste.getNumeroTelefone());
+    }
+
+    @Test
+    void testaSeEstaDeletandoCliente(){
+        Long id = 1L;
+        String nome = "João";
+        boolean inativo = false;
+        String cpf = "159753864-99";
+        String email = "nunes@gmail.com";
+        String numeroTelefone = "(44)99456-2322";
+
+        Cliente cliente = new Cliente(id, nome, inativo, cpf, email, numeroTelefone);
+        Optional<ClienteEntity> clienteEntity = Optional.of(ClienteMapper.paraEntity(cliente));
+
+        Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
+        Mockito.when(repository.save(any())).thenReturn(cliente);
+
+        clienteDataProvider.deletarCliente(id);
+
+        Assertions.assertTrue(cliente.isInativo());
+
+    }
+
+    @Test
     void testaSeMetodoSalvarEstaLancandoExecption(){
         Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
 
-        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.salvar(
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.cadastrarCliente(
                 new Cliente(1L, "Vitor", false, "123456789-99", "vivi@gmail.com", "(44)99874-8356")));
         Assertions.assertEquals("Erro ao salvar Cliente", exceptionTeste.getMessage());
 

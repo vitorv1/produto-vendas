@@ -16,7 +16,7 @@ public class ClienteService {
     private final ClienteDataProvider clienteDataProvider;
 
     public Cliente cadastroCliente(Cliente cliente) {
-        return clienteDataProvider.salvar(cliente);
+        return clienteDataProvider.cadastrarCliente(cliente);
     }
 
     public List<Cliente> consultaTodosClientes() {
@@ -28,15 +28,11 @@ public class ClienteService {
     }
 
     public void deletarCliente(Long id) {
-        Cliente cliente = buscarCliente(id);
-        cliente.inativar();
-        clienteDataProvider.salvar(cliente);
+        clienteDataProvider.deletarCliente(id);
     }
 
     public Cliente alterarCliente(Long id, Cliente clienteAlterado) {
-        Cliente cliente = buscarCliente(id);
-        cliente.atualizarDados(clienteAlterado);
-        return clienteDataProvider.salvar(cliente);
+        return clienteDataProvider.aterarCliente(id, clienteAlterado);
     }
 
     private Cliente buscarCliente(Long id) {

@@ -61,4 +61,10 @@ public class ProdutoDataProvider {
             throw new  BancoDeDadosException("Erro na consulta por todos");
         }
     }
+
+    public Produto alterarProduto(Long id, Produto produtoDto){
+        Produto produto = consultarProdutoPorId(id);
+        produto.atualizaDados(produtoDto);
+        return ProdutoMapper.paraProduto(repository.save(ProdutoMapper.paraEntity(produto)));
+    }
 }

@@ -26,7 +26,9 @@ public class VendaService {
     }
 
     public void deletarVenda(Long id){
-       vendaDataProvider.deletarVenda(id);
+        Venda venda = vendaDataProvider.buscarPorId(id);
+        venda.inativar();
+        vendaDataProvider.cadastroVenda(venda);
     }
 
     public Venda alterarVenda(Long id, Venda vendaDto){

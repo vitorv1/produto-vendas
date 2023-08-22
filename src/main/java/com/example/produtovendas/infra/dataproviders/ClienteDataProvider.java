@@ -73,19 +73,29 @@ public class ClienteDataProvider {
         Optional<Cliente> cliente = consultarPorId(id);
         if(cliente.isPresent()){
             cliente.get().atualizarDados(clienteDto);
-            ClienteEntity clienteEntity = repository.save(ClienteMapper.paraEntity(cliente.get()));
+            ClienteEntity clienteEntity;
+            try {
+                 clienteEntity = repository.save(ClienteMapper.paraEntity(cliente.get()));
+            }catch (Exception ex){
+                log.info(ex.getMessage());
+                throw new BancoDeDadosException("Erro ao salvar no banco de dados");
+            }
             return ClienteMapper.paraCliente(clienteEntity);
         }else {
             throw new RuntimeException("Cliente não encontrado");
         }
     }
 
-    public void deletarCliente(Long id){
+    public Cliente deletarCliente(Long id){
         Optional<Cliente> cliente = consultarPorId(id);
         if(cliente.isPresent()){
             cliente.get().inativar();
-            ClienteEntity clienteEntityTeste = ClienteMapper.paraEntity(cliente.get());
-            repository.save(clienteEntityTeste);
+            try{
+                return ClienteMapper.paraCliente(repository.save(ClienteMapper.paraEntity(cliente.get())));
+            }catch (Exception ex){
+                log.info(ex.getMessage());
+                throw new BancoDeDadosException("Erro ao salvar delete do cliente");
+            }
         }else {
             throw new RuntimeException("Cliente não encontrado");
         }

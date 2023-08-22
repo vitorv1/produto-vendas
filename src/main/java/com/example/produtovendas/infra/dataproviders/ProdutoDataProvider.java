@@ -1,6 +1,7 @@
 package com.example.produtovendas.infra.dataproviders;
 
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.ProdutoMapper;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @Slf4j
@@ -44,13 +46,17 @@ public class ProdutoDataProvider {
         }
     }
 
-    public Produto consultarProdutoPorId(Long id) {
+    public Optional<Produto> consultarProdutoPorId(Long id) {
+        Optional<ProdutoEntity> produtoEntity;
+
         try {
-            return ProdutoMapper.paraProduto(repository.findById(id).get());
+            produtoEntity = repository.findById(id);
         }catch (Exception ex){
             log.info(ex.getMessage());
             throw new BancoDeDadosException("Erro na consalta por id");
         }
+
+        return produtoEntity.isEmpty() ? Optional.empty() : Optional.of(ProdutoMapper.paraProduto(produtoEntity.get()));
     }
 
     public List<Produto> consultaTodosProdutos() {
@@ -58,13 +64,31 @@ public class ProdutoDataProvider {
             return ProdutoMapper.paraProdutos(repository.findAll());
         }catch (Exception ex){
             log.info(ex.getMessage());
-            throw new  BancoDeDadosException("Erro na consulta por todos");
+            throw new  BancoDeDadosException("Erro na consulta todos os produtos");
         }
     }
 
     public Produto alterarProduto(Long id, Produto produtoDto){
-        Produto produto = consultarProdutoPorId(id);
-        produto.atualizaDados(produtoDto);
-        return ProdutoMapper.paraProduto(repository.save(ProdutoMapper.paraEntity(produto)));
+        Optional<Produto> produto = consultarProdutoPorId(id);
+        if(produto.isPresent()){
+            produto.get().atualizaDados(produtoDto);
+            try{
+                return ProdutoMapper.paraProduto(repository.save(ProdutoMapper.paraEntity(produto.get())));
+            }catch (Exception ex){
+                throw new BancoDeDadosException("Erro ao salvar alterações");
+            }
+        }else {
+            throw new RuntimeException("Produto não encontrado");
+        }
+    }
+
+    public Produto deletarProduto(Long id){
+        Optional<Produto> produto = consultarProdutoPorId(id);
+        if(produto.isPresent()){
+            produto.get().inativar();
+            return ProdutoMapper.paraProduto(repository.save(ProdutoMapper.paraEntity(produto.get())));
+        }else {
+            throw new RuntimeException("Produto não encontrado");
+        }
     }
 }

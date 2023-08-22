@@ -27,12 +27,12 @@ public class ClienteService {
         return buscarCliente(id);
     }
 
-    public void deletarCliente(Long id) {
-        clienteDataProvider.deletarCliente(id);
+    public Cliente deletarCliente(Long id) {
+        return clienteDataProvider.deletarCliente(id);
     }
 
     public Cliente alterarCliente(Long id, Cliente clienteAlterado) {
-        return clienteDataProvider.aterarCliente(id, clienteAlterado);
+         return clienteDataProvider.aterarCliente(id, clienteAlterado);
     }
 
     private Cliente buscarCliente(Long id) {

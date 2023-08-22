@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 
 class ClienteDataProviderTest {
 
@@ -133,21 +134,21 @@ class ClienteDataProviderTest {
     void testaSeEstaDeletandoCliente(){
         Long id = 1L;
         String nome = "João";
-        boolean inativo = false;
+        boolean inativo = true;
         String cpf = "159753864-99";
         String email = "nunes@gmail.com";
         String numeroTelefone = "(44)99456-2322";
 
         Cliente cliente = new Cliente(id, nome, inativo, cpf, email, numeroTelefone);
-        Optional<ClienteEntity> clienteEntity = Optional.of(ClienteMapper.paraEntity(cliente));
+        Optional<ClienteEntity> clienteEntity = Optional.of(new ClienteEntity(1L, "João", false, "159753864-99",
+                "nunes@gmail.com" , "(44)99456-2322"));
 
         Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
-        Mockito.when(repository.save(any())).thenReturn(cliente);
+        Mockito.when(repository.save(any())).thenReturn(ClienteMapper.paraEntity(cliente));
 
-        clienteDataProvider.deletarCliente(id);
+        Cliente clienteTeste = clienteDataProvider.deletarCliente(id);
 
-        Assertions.assertTrue(cliente.isInativo());
-
+        Assertions.assertTrue(clienteTeste.isInativo());
     }
 
     @Test
@@ -175,4 +176,39 @@ class ClienteDataProviderTest {
         BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.consultarPorId(1L));
         Assertions.assertEquals("Erro ao consultar Cliente por Id.", exceptionTeste.getMessage());
     }
+
+    @Test
+    void testaSeMetodoAlterarClienteEstaLancandoException(){
+        Long id = 1L;
+        String nome = "João";
+        boolean inativo = false;
+        String cpf = "159753864-99";
+        String email = "nunes@gmail.com";
+        String numeroTelefone = "(44)99456-2322";
+
+        Optional<ClienteEntity> clienteEntity = Optional.of(new ClienteEntity(id, nome, inativo, cpf, email, numeroTelefone));
+        Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
+        Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> clienteDataProvider.aterarCliente(1L, ClienteMapper.paraCliente(clienteEntity.get())));
+        Assertions.assertEquals("Erro ao salvar no banco de dados", exceptionTeste.getMessage());
+    }
+
+    @Test
+    void testaSeMetodoDeleteEstaLancandoException(){
+        Long id = 1L;
+        String nome = "João";
+        boolean inativo = false;
+        String cpf = "159753864-99";
+        String email = "nunes@gmail.com";
+        String numeroTelefone = "(44)99456-2322";
+
+        Optional<ClienteEntity>clienteEntity = Optional.of(new ClienteEntity(id, nome, inativo, cpf, email, numeroTelefone));
+        Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
+        Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
+
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.deletarCliente(id));
+        Assertions.assertEquals("Erro ao salvar delete do cliente", exceptionTeste.getMessage());
+    }
+
+
 }

@@ -18,7 +18,7 @@ public class ProdutoService {
     }
 
     public Produto consultarProdutoPorId(Long id){
-        return produtoDataProvider.consultarProdutoPorId(id);
+        return buscarProdutoPorId(id);
     }
 
     public List<Produto> consultaTodosProdutos() {
@@ -26,13 +26,15 @@ public class ProdutoService {
     }
 
     public void deletarProduto(Long id){
-        Produto produto = consultarProdutoPorId(id);
-        produto.inativar();
-        produtoDataProvider.salvarProduto(produto);
+        produtoDataProvider.deletarProduto(id);
     }
 
     public Produto alterarProduto(Long id, Produto produtoDto){
         return produtoDataProvider.alterarProduto(id, produtoDto);
+    }
+
+    private Produto buscarProdutoPorId(Long id){
+        return produtoDataProvider.consultarProdutoPorId(id).orElseThrow(()-> new RuntimeException("Produto não existe"));
     }
 
 

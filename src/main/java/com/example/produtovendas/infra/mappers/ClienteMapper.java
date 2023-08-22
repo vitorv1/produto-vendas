@@ -15,7 +15,7 @@ public class ClienteMapper {
                 .cpf(clienteEntity.getCpf())
                 .email(clienteEntity.getEmail())
                 .numeroTelefone(clienteEntity.getNumeroTelefone())
-                .inativo(clienteEntity.isInativo())
+                .inativo(clienteEntity.getInativo())
                 .build();
     }
 

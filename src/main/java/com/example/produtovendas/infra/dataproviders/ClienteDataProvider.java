@@ -6,6 +6,7 @@ import com.example.produtovendas.infra.mappers.ClienteMapper;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
 import com.example.produtovendas.infra.validacoes.ClienteValidation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -14,18 +15,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class ClienteDataProvider {
 
-
+    @Autowired
     private final ClienteRepository repository;
 
-    @Autowired
-    public ClienteDataProvider(ClienteRepository repository) {
-        this.repository = repository;
-    }
-
-    public Cliente cadastrarCliente(Cliente cliente) {
+    public Cliente salvar(Cliente cliente) {
         List<ClienteEntity> clienteEntities;
         try {
             clienteEntities = repository.findAll();
@@ -67,27 +64,5 @@ public class ClienteDataProvider {
         }
 
         return clienteEntity.isEmpty() ? Optional.empty() : Optional.of(ClienteMapper.paraCliente(clienteEntity.get()));
-    }
-
-    public Cliente aterarCliente(Long id, Cliente clienteDto){
-        Optional<Cliente> cliente = consultarPorId(id);
-        if(cliente.isPresent()){
-            cliente.get().atualizarDados(clienteDto);
-            ClienteEntity clienteEntity = repository.save(ClienteMapper.paraEntity(cliente.get()));
-            return ClienteMapper.paraCliente(clienteEntity);
-        }else {
-            throw new RuntimeException("Cliente não encontrado");
-        }
-    }
-
-    public void deletarCliente(Long id){
-        Optional<Cliente> cliente = consultarPorId(id);
-        if(cliente.isPresent()){
-            cliente.get().inativar();
-            ClienteEntity clienteEntityTeste = ClienteMapper.paraEntity(cliente.get());
-            repository.save(clienteEntityTeste);
-        }else {
-            throw new RuntimeException("Cliente não encontrado");
-        }
     }
 }

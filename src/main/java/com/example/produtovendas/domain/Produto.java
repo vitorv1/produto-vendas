@@ -19,11 +19,11 @@ public class Produto {
     private String marca;
     private double valor;
 
-    public void atualizaDados( Produto produtoDto) {
+    public void atualizaDados(String nome, String marca, double valor) {
         this.inativo = false;
-        this.nome = produtoDto.getNome();
-        this.marca = produtoDto.getMarca();
-        this.valor = produtoDto.getValor();
+        this.nome = nome;
+        this.marca = marca;
+        this.valor = valor;
     }
     public void inativar() {
         this.inativo = true;

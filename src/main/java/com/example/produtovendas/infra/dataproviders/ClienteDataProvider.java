@@ -5,7 +5,6 @@ import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.mappers.ClienteMapper;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
-import com.example.produtovendas.infra.validacoes.ClienteValidation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,22 +14,18 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@RequiredArgsConstructor
 @Slf4j
 public class ClienteDataProvider {
 
-    @Autowired
+
     private final ClienteRepository repository;
 
+    @Autowired
+    public ClienteDataProvider (ClienteRepository repository){
+        this.repository = repository;
+    }
+
     public Cliente salvar(Cliente cliente) {
-        List<ClienteEntity> clienteEntities;
-        try {
-            clienteEntities = repository.findAll();
-        }catch (Exception ex){
-            log.info(ex.getMessage());
-            throw new BancoDeDadosException("Erro na consulta de todos os clientes para validção");
-        }
-        ClienteValidation.validaCliente(ClienteMapper.paraClientes(clienteEntities), cliente);
         ClienteEntity clienteEntity = ClienteMapper.paraEntity(cliente);
 
         try {
@@ -65,4 +60,5 @@ public class ClienteDataProvider {
 
         return clienteEntity.isEmpty() ? Optional.empty() : Optional.of(ClienteMapper.paraCliente(clienteEntity.get()));
     }
+
 }

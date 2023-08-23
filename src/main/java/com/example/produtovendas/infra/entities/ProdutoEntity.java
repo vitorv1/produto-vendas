@@ -22,16 +22,4 @@ public class ProdutoEntity {
     private boolean inativo;
     private String marca;
     private double valor;
-
-    public ProdutoEntity(Long id, String nome, String marca, double valor) {
-        this.inativo = false;
-        this.id = id;
-        this.nome = nome;
-        this.marca = marca;
-        this.valor = valor;
-    }
-
-    public boolean getInativo(){
-        return this.inativo;
-    }
 }

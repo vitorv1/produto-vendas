@@ -1,0 +1,202 @@
+package com.example.produtovendas.infra.dataproviders;
+
+import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.domain.Venda;
+import com.example.produtovendas.infra.entities.ClienteEntity;
+import com.example.produtovendas.infra.entities.ProdutoEntity;
+import com.example.produtovendas.infra.entities.VendaEntity;
+import com.example.produtovendas.infra.mappers.VendaMapper;
+import com.example.produtovendas.infra.repositories.VendaRepository;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+
+class VendaDataProviderTest {
+
+    @Autowired
+    private VendaDataProvider vendaDataProvider;
+
+    @Mock
+    private VendaRepository repository;
+
+    @BeforeEach
+    public void beforeEach(){
+        MockitoAnnotations.initMocks(this);
+        this.vendaDataProvider = new VendaDataProvider(repository);
+    }
+
+    @Test
+    void testeMetodoSalvar(){
+        Long idCliente = 1L;
+        String nome = "Vitor";
+        boolean inativo = false;
+        String cpf = "123456789-11";
+        String email = "vitorhvvieira@gmail.com";
+        String numeroTelefone = "vitorhvvieira@gmail.com";
+
+        Long idProduto1 = 2L;
+        String nomeProduto1 = "Tenis";
+        String marcaProduto1 = "Vans";
+        double valor1 = 300;
+
+        Long idProduto2 = 4L;
+        String nomeProduto2 = "Camiseta";
+        String marcaProduto2 = "High";
+        double valor2 = 400;
+
+        Cliente cliente = new Cliente(idCliente, nome, inativo, cpf, email, numeroTelefone);
+        Produto produto1 = new Produto(idProduto1, nomeProduto1, inativo,marcaProduto1,valor1);
+        Produto produto2 = new Produto(idProduto2, nomeProduto2, inativo, marcaProduto2, valor2);
+
+        List<Produto> produtoList = new ArrayList<>();
+        produtoList.add(produto1);
+        produtoList.add(produto2);
+
+        Venda venda = new Venda(null, cliente, idCliente, 0, inativo, 0, produtoList, LocalDate.now());
+
+        Mockito.when(repository.save(any())).thenReturn(VendaMapper.paraEntity(venda));
+
+        Venda vendaTeste = vendaDataProvider.salvar(venda);
+
+        Assertions.assertNull(vendaTeste.getId());
+        Assertions.assertEquals(cliente.getId(), vendaTeste.getCliente().getId());
+        Assertions.assertEquals(cliente.getNome(), vendaTeste.getCliente().getNome());
+        Assertions.assertEquals(cliente.isInativo(), vendaTeste.getCliente().isInativo());
+        Assertions.assertEquals(cliente.getCpf(), vendaTeste.getCliente().getCpf());
+        Assertions.assertEquals(cliente.getEmail(), vendaTeste.getCliente().getEmail());
+        Assertions.assertEquals(cliente.getNumeroTelefone(), vendaTeste.getCliente().getNumeroTelefone());
+        Assertions.assertEquals(idCliente, vendaTeste.getIdCliente());
+        Assertions.assertEquals(0, vendaTeste.getValor());
+        Assertions.assertEquals(inativo, vendaTeste.isInativo());
+        Assertions.assertEquals(0, vendaTeste.getDesconto());
+        Assertions.assertEquals(produto1.getId(), vendaTeste.getListaProdutos().get(0).getId());
+        Assertions.assertEquals(produto1.getNome(), vendaTeste.getListaProdutos().get(0).getNome());
+        Assertions.assertEquals(produto1.isInativo(), vendaTeste.getListaProdutos().get(0).isInativo());
+        Assertions.assertEquals(produto1.getMarca(), vendaTeste.getListaProdutos().get(0).getMarca());
+        Assertions.assertEquals(produto1.getValor(), vendaTeste.getListaProdutos().get(0).getValor());
+        Assertions.assertEquals(produto2.getId(), vendaTeste.getListaProdutos().get(1).getId());
+        Assertions.assertEquals(produto2.getNome(), vendaTeste.getListaProdutos().get(1).getNome());
+        Assertions.assertEquals(produto2.isInativo(), vendaTeste.getListaProdutos().get(1).isInativo());
+        Assertions.assertEquals(produto2.getMarca(), vendaTeste.getListaProdutos().get(1).getMarca());
+        Assertions.assertEquals(produto2.getValor(), vendaTeste.getListaProdutos().get(1).getValor());
+        Assertions.assertEquals(LocalDate.now(), vendaTeste.getDataVenda());
+    }
+
+    @Test
+    void testaMetodobuscaPorId(){
+        Long id = 1L;
+        Long idCliente = 1L;
+        String nome = "Vitor";
+        boolean inativo = false;
+        String cpf = "123456789-11";
+        String email = "vitorhvvieira@gmail.com";
+        String numeroTelefone = "vitorhvvieira@gmail.com";
+
+        Long idProduto1 = 2L;
+        String nomeProduto1 = "Tenis";
+        String marcaProduto1 = "Vans";
+        double valor1 = 300;
+
+        Long idProduto2 = 4L;
+        String nomeProduto2 = "Camiseta";
+        String marcaProduto2 = "High";
+        double valor2 = 400;
+
+        ClienteEntity clienteEntity = new ClienteEntity(idCliente, nome, inativo, cpf, email, numeroTelefone);
+        ProdutoEntity produtoEntity1 = new ProdutoEntity(idProduto1, nomeProduto1, inativo,marcaProduto1,valor1);
+        ProdutoEntity produtoEntity2 = new ProdutoEntity(idProduto2, nomeProduto2, inativo, marcaProduto2, valor2);
+
+        List<ProdutoEntity> produtoEntityList = new ArrayList<>();
+        produtoEntityList.add(produtoEntity1);
+        produtoEntityList.add(produtoEntity2);
+
+        Optional<VendaEntity> vendaEntity = Optional.of(new VendaEntity(1L, clienteEntity, inativo ,0 ,  0, produtoEntityList, LocalDate.now()));
+
+        Mockito.when(repository.findById(any())).thenReturn(vendaEntity);
+
+        Optional<Venda> vendaTeste = vendaDataProvider.buscarPorId(id);
+        vendaTeste.ifPresent(venda -> {
+            Assertions.assertEquals(id ,vendaTeste.get().getId());
+            Assertions.assertEquals(clienteEntity.getId(), vendaTeste.get().getCliente().getId());
+            Assertions.assertEquals(clienteEntity.getNome(), vendaTeste.get().getCliente().getNome());
+            Assertions.assertEquals(clienteEntity.isInativo(), vendaTeste.get().getCliente().isInativo());
+            Assertions.assertEquals(clienteEntity.getCpf(), vendaTeste.get().getCliente().getCpf());
+            Assertions.assertEquals(clienteEntity.getEmail(), vendaTeste.get().getCliente().getEmail());
+            Assertions.assertEquals(clienteEntity.getNumeroTelefone(), vendaTeste.get().getCliente().getNumeroTelefone());
+            Assertions.assertEquals(idCliente, vendaTeste.get().getIdCliente());
+            Assertions.assertEquals(0, vendaTeste.get().getValor());
+            Assertions.assertEquals(inativo, vendaTeste.get().isInativo());
+            Assertions.assertEquals(0, vendaTeste.get().getDesconto());
+            Assertions.assertEquals(produtoEntity1.getId(), vendaTeste.get().getListaProdutos().get(0).getId());
+            Assertions.assertEquals(produtoEntity1.getNome(), vendaTeste.get().getListaProdutos().get(0).getNome());
+            Assertions.assertEquals(produtoEntity1.isInativo(), vendaTeste.get().getListaProdutos().get(0).isInativo());
+            Assertions.assertEquals(produtoEntity1.getMarca(), vendaTeste.get().getListaProdutos().get(0).getMarca());
+            Assertions.assertEquals(produtoEntity1.getValor(), vendaTeste.get().getListaProdutos().get(0).getValor());
+            Assertions.assertEquals(produtoEntity2.getId(), vendaTeste.get().getListaProdutos().get(1).getId());
+            Assertions.assertEquals(produtoEntity2.getNome(), vendaTeste.get().getListaProdutos().get(1).getNome());
+            Assertions.assertEquals(produtoEntity2.isInativo(), vendaTeste.get().getListaProdutos().get(1).isInativo());
+            Assertions.assertEquals(produtoEntity2.getMarca(), vendaTeste.get().getListaProdutos().get(1).getMarca());
+            Assertions.assertEquals(produtoEntity2.getValor(), vendaTeste.get().getListaProdutos().get(1).getValor());
+            Assertions.assertEquals(LocalDate.now(), vendaTeste.get().getDataVenda());
+        });
+
+    }
+
+    @Test
+    void testeMetodoBuscarTodos(){
+        Long id1 = 1L;
+        Long id2 = 2L;
+        Long idCliente = 1L;
+        String nome = "Vitor";
+        boolean inativo = false;
+        String cpf = "123456789-11";
+        String email = "vitorhvvieira@gmail.com";
+        String numeroTelefone = "vitorhvvieira@gmail.com";
+
+        Long idProduto1 = 2L;
+        String nomeProduto1 = "Tenis";
+        String marcaProduto1 = "Vans";
+        double valor1 = 300;
+
+        Long idProduto2 = 4L;
+        String nomeProduto2 = "Camiseta";
+        String marcaProduto2 = "High";
+        double valor2 = 400;
+
+        ClienteEntity clienteEntity = new ClienteEntity(idCliente, nome, inativo, cpf, email, numeroTelefone);
+        ProdutoEntity produtoEntity1 = new ProdutoEntity(idProduto1, nomeProduto1, inativo,marcaProduto1,valor1);
+        ProdutoEntity produtoEntity2 = new ProdutoEntity(idProduto2, nomeProduto2, inativo, marcaProduto2, valor2);
+
+        List<ProdutoEntity> produtoEntityList = new ArrayList<>();
+        produtoEntityList.add(produtoEntity1);
+        produtoEntityList.add(produtoEntity2);
+
+        VendaEntity vendaEntity1 = new VendaEntity(id1, clienteEntity, inativo ,0 ,  0, produtoEntityList, LocalDate.now());
+        VendaEntity vendaEntity2 = new VendaEntity(id2, clienteEntity, inativo ,0 ,  0, produtoEntityList, LocalDate.now());
+
+        List<VendaEntity> vendaEntityList = new ArrayList<>();
+
+        vendaEntityList.add(vendaEntity1);
+        vendaEntityList.add(vendaEntity2);
+
+        Mockito.when(repository.findAll()).thenReturn(vendaEntityList);
+
+        List<Venda> vendaListTeste = vendaDataProvider.buscarTodos();
+
+        Assertions.assertEquals(id1, vendaListTeste.get(0).getId());
+        Assertions.assertEquals(clienteEntity.getNome(), vendaListTeste.get(0).getCliente().getNome());
+    }
+}

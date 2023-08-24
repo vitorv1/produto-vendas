@@ -6,13 +6,19 @@ import com.example.produtovendas.infra.validacoes.ProdutoValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.swing.plaf.PanelUI;
 import java.util.List;
 
 @Service
 public class ProdutoService {
 
-    @Autowired
+
     private ProdutoDataProvider produtoDataProvider;
+
+    @Autowired
+    public ProdutoService (ProdutoDataProvider produtoDataProvider){
+        this.produtoDataProvider = produtoDataProvider;
+    }
 
     public Produto cadastroProduto(Produto produto){
         List<Produto> produtos;

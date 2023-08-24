@@ -12,11 +12,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ClienteService {
 
-    @Autowired
     private final ClienteDataProvider clienteDataProvider;
+
+    @Autowired
+    public ClienteService (ClienteDataProvider clienteDataProvider){
+        this.clienteDataProvider = clienteDataProvider;
+    }
 
     public Cliente cadastroCliente(Cliente cliente) {
         List<Cliente> clientes ;
@@ -33,10 +36,10 @@ public class ClienteService {
         return clienteDataProvider.consultarPorId(id).orElseThrow(() -> new RuntimeException("Cliente não existente"));
     }
 
-    public void deletarCliente(Long id) {
+    public Cliente deletarCliente(Long id) {
         Cliente cliente = consultaClientePorId(id);
         cliente.inativar();
-        clienteDataProvider.salvar(cliente);
+        return clienteDataProvider.salvar(cliente);
     }
 
     public Cliente alterarCliente(Long id, Cliente clienteAlterado) {

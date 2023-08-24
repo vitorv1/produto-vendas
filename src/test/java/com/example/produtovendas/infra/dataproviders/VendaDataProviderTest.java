@@ -6,6 +6,8 @@ import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
+import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
+import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.mappers.VendaMapper;
 import com.example.produtovendas.infra.repositories.VendaRepository;
 import org.junit.jupiter.api.Assertions;
@@ -188,6 +190,7 @@ class VendaDataProviderTest {
         VendaEntity vendaEntity2 = new VendaEntity(id2, clienteEntity, inativo ,0 ,  0, produtoEntityList, LocalDate.now());
 
         List<VendaEntity> vendaEntityList = new ArrayList<>();
+        List<Produto> produtoList = ProdutoMapper.paraProdutos(produtoEntityList);
 
         vendaEntityList.add(vendaEntity1);
         vendaEntityList.add(vendaEntity2);
@@ -198,5 +201,69 @@ class VendaDataProviderTest {
 
         Assertions.assertEquals(id1, vendaListTeste.get(0).getId());
         Assertions.assertEquals(clienteEntity.getNome(), vendaListTeste.get(0).getCliente().getNome());
+        Assertions.assertEquals(clienteEntity.getId(), vendaListTeste.get(0).getCliente().getId());
+        Assertions.assertEquals(clienteEntity.isInativo(), vendaListTeste.get(0).getCliente().isInativo());
+        Assertions.assertEquals(clienteEntity.getCpf(), vendaListTeste.get(0).getCliente().getCpf());
+        Assertions.assertEquals(clienteEntity.getEmail(), vendaListTeste.get(0).getCliente().getEmail());
+        Assertions.assertEquals(clienteEntity.getNumeroTelefone(), vendaListTeste.get(0).getCliente().getNumeroTelefone());
+        Assertions.assertEquals(inativo, vendaListTeste.get(0).isInativo());
+        Assertions.assertEquals(0, vendaListTeste.get(0).getValor());
+        Assertions.assertEquals(0, vendaListTeste.get(0).getDesconto());
+        Assertions.assertEquals(produtoList.get(0).getId(), vendaListTeste.get(0).getListaProdutos().get(0).getId());
+        Assertions.assertEquals(produtoList.get(0).getNome(), vendaListTeste.get(0).getListaProdutos().get(0).getNome());
+        Assertions.assertEquals(produtoList.get(0).getMarca(), vendaListTeste.get(0).getListaProdutos().get(0).getMarca());
+        Assertions.assertEquals(produtoList.get(0).getValor(), vendaListTeste.get(0).getListaProdutos().get(0).getValor());
+        Assertions.assertEquals(produtoList.get(0).isInativo(), vendaListTeste.get(0).getListaProdutos().get(0).isInativo());
+        Assertions.assertEquals(produtoList.get(1).getId(), vendaListTeste.get(0).getListaProdutos().get(1).getId());
+        Assertions.assertEquals(produtoList.get(1).getNome(), vendaListTeste.get(0).getListaProdutos().get(1).getNome());
+        Assertions.assertEquals(produtoList.get(1).getMarca(), vendaListTeste.get(0).getListaProdutos().get(1).getMarca());
+        Assertions.assertEquals(produtoList.get(1).getValor(), vendaListTeste.get(0).getListaProdutos().get(1).getValor());
+        Assertions.assertEquals(produtoList.get(1).isInativo(), vendaListTeste.get(0).getListaProdutos().get(1).isInativo());
+        Assertions.assertEquals(LocalDate.now(), vendaListTeste.get(0).getDataVenda());
+        Assertions.assertEquals(id2, vendaListTeste.get(1).getId());
+        Assertions.assertEquals(clienteEntity.getNome(), vendaListTeste.get(1).getCliente().getNome());
+        Assertions.assertEquals(clienteEntity.getId(), vendaListTeste.get(1).getCliente().getId());
+        Assertions.assertEquals(clienteEntity.isInativo(), vendaListTeste.get(1).getCliente().isInativo());
+        Assertions.assertEquals(clienteEntity.getCpf(), vendaListTeste.get(1).getCliente().getCpf());
+        Assertions.assertEquals(clienteEntity.getEmail(), vendaListTeste.get(1).getCliente().getEmail());
+        Assertions.assertEquals(clienteEntity.getNumeroTelefone(), vendaListTeste.get(1).getCliente().getNumeroTelefone());
+        Assertions.assertEquals(inativo, vendaListTeste.get(1).isInativo());
+        Assertions.assertEquals(0, vendaListTeste.get(1).getValor());
+        Assertions.assertEquals(0, vendaListTeste.get(1).getDesconto());
+        Assertions.assertEquals(produtoList.get(0).getId(), vendaListTeste.get(1).getListaProdutos().get(0).getId());
+        Assertions.assertEquals(produtoList.get(0).getNome(), vendaListTeste.get(1).getListaProdutos().get(0).getNome());
+        Assertions.assertEquals(produtoList.get(0).getMarca(), vendaListTeste.get(1).getListaProdutos().get(0).getMarca());
+        Assertions.assertEquals(produtoList.get(0).getValor(), vendaListTeste.get(1).getListaProdutos().get(0).getValor());
+        Assertions.assertEquals(produtoList.get(0).isInativo(), vendaListTeste.get(1).getListaProdutos().get(0).isInativo());
+        Assertions.assertEquals(produtoList.get(1).getId(), vendaListTeste.get(1).getListaProdutos().get(1).getId());
+        Assertions.assertEquals(produtoList.get(1).getNome(), vendaListTeste.get(1).getListaProdutos().get(1).getNome());
+        Assertions.assertEquals(produtoList.get(1).getMarca(), vendaListTeste.get(1).getListaProdutos().get(1).getMarca());
+        Assertions.assertEquals(produtoList.get(1).getValor(), vendaListTeste.get(1).getListaProdutos().get(1).getValor());
+        Assertions.assertEquals(produtoList.get(1).isInativo(), vendaListTeste.get(1).getListaProdutos().get(1).isInativo());
+        Assertions.assertEquals(LocalDate.now(), vendaListTeste.get(1).getDataVenda());
+    }
+
+    @Test
+    void testaSeMetodoSalvarEstaLancandoExecption(){
+        Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
+        List<Produto> produtoList = new ArrayList<>();
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> vendaDataProvider.salvar(
+                new Venda(1L, new Cliente(2L, "Vitor", false, "123456789-77", "vivi@gmail.com", "124578-9856"),
+                        2L, 0, false, 0, produtoList, LocalDate.now())));
+        Assertions.assertEquals("Erro ao salvar venda", exceptionTeste.getMessage());
+    }
+
+    @Test
+    void testaSeMetodoConsultarPorIdEstaLancandoException(){
+        Mockito.when(repository.findById(any())).thenThrow(RuntimeException.class);
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> vendaDataProvider.buscarPorId(1L));
+        Assertions.assertEquals("Erro ao consultar por id no banco de dados", exceptionTeste.getMessage());
+    }
+
+    @Test
+    void testaSeMetodoConsultarTodosEstaLancandoException(){
+        Mockito.when(repository.findAll()).thenThrow(RuntimeException.class);
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> vendaDataProvider.buscarTodos());
+        Assertions.assertEquals("Erro ao consultar todos no banco de dados", exceptionTeste.getMessage());
     }
 }

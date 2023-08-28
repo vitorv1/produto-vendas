@@ -60,5 +60,4 @@ public class ClienteDataProvider {
 
         return clienteEntity.isEmpty() ? Optional.empty() : Optional.of(ClienteMapper.paraCliente(clienteEntity.get()));
     }
-
 }

@@ -2,22 +2,20 @@ package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
-import com.example.produtovendas.infra.repositories.ClienteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
-import org.mockito.stubbing.Answer;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
+import static com.example.produtovendas.service.ClienteService.MENSAGEM_CLIENTE_EXISTENTE;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
 class ClienteServiceTest {
 
@@ -50,8 +48,8 @@ class ClienteServiceTest {
 
         clienteList.add(new Cliente(2L, "Daniel", false, "321654987-99", "francis@hotmail.com", "(44)99857-6969"));
         clienteList.add(new Cliente(3L, "Ana", false, "852963741-87", "rita@gmail.com", "(44)99326-8547"));
-        Mockito.when(clienteDataProvider.consultarTodos()).thenReturn(clienteList);
-        Mockito.when(clienteDataProvider.salvar(captor.capture())).thenReturn(cliente);
+        when(clienteDataProvider.consultarTodos()).thenReturn(clienteList);
+        when(clienteDataProvider.salvar(captor.capture())).thenReturn(cliente);
 
         clienteService.cadastroCliente(cliente);
 
@@ -110,27 +108,31 @@ class ClienteServiceTest {
 
     @Test
     void testeMetodoConsultaClientePorId(){
-        /*Long id = 1L;
+        Long id = 1L;
         String nome = "Vitor";
         boolean inativo = false;
         String cpf = "12345678-11";
-        String email = "vivi@gmail.com";
-        String numeroTelefone = "(44)99874-8356";
+        String email = "email@gmail.com";
+        String numeroTelefone = "(44)99999-9999";
 
         Optional<Cliente> cliente = Optional.of(new Cliente(id, nome, inativo, cpf, email, numeroTelefone));
 
-        Mockito.when(clienteDataProvider.consultarPorId(any())).thenReturn(cliente);
+        when(clienteDataProvider.consultarPorId(id)).thenReturn(cliente);
 
-        Cliente clienteTeste = clienteService.consultaClientePorId(id);
+        Cliente clienteTeste = assertDoesNotThrow(() -> clienteService.consultaClientePorId(id));
 
-        Assertions.assertEquals(id, clienteTeste.getId());
-        Assertions.assertEquals(nome, clienteTeste.getNome());
-        Assertions.assertEquals(inativo, clienteTeste.isInativo());
-        Assertions.assertEquals(cpf, clienteTeste.getCpf());
-        Assertions.assertEquals(email, clienteTeste.getEmail());
-        Assertions.assertEquals(numeroTelefone, clienteTeste.getNumeroTelefone());*/
+        Assertions.assertEquals(cliente.get(), clienteTeste);
+        Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarPorId(id);
+    }
+
+    @Test
+    void testeMetodoConsultaClientePorIdNaoExistente(){
         Long id = 1L;
-        clienteService.consultaClientePorId(id);
+        when(clienteDataProvider.consultarPorId(id)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> clienteService.consultaClientePorId(id));
+
+        Assertions.assertEquals(MENSAGEM_CLIENTE_EXISTENTE, exception.getMessage());
         Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarPorId(id);
     }
 
@@ -145,8 +147,8 @@ class ClienteServiceTest {
 
         Optional<Cliente> clienteOptional = Optional.of(new Cliente(id, nome, inativo, cpf, email, numeroTelefone));
 
-        Mockito.when(clienteDataProvider.consultarPorId(any())).thenReturn(clienteOptional);
-        Mockito.when(clienteDataProvider.salvar(captor.capture())).thenReturn(any());
+        when(clienteDataProvider.consultarPorId(any())).thenReturn(clienteOptional);
+        when(clienteDataProvider.salvar(captor.capture())).thenReturn(any());
 
         clienteService.deletarCliente(id);
 

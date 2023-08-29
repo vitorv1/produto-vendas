@@ -2,18 +2,16 @@ package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
-import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.validacoes.ClienteValidation;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class ClienteService {
 
+    public static final String MENSAGEM_CLIENTE_EXISTENTE = "Cliente não existente";
     private final ClienteDataProvider clienteDataProvider;
 
     @Autowired
@@ -33,7 +31,7 @@ public class ClienteService {
     }
 
     public Cliente consultaClientePorId(Long id) {
-        return clienteDataProvider.consultarPorId(id).orElseThrow(() -> new RuntimeException("Cliente não existente"));
+        return clienteDataProvider.consultarPorId(id).orElseThrow(() -> new RuntimeException(MENSAGEM_CLIENTE_EXISTENTE));
     }
 
     public Cliente deletarCliente(Long id) {

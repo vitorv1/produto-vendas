@@ -2,6 +2,7 @@ package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
+import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +66,7 @@ class ClienteServiceTest {
 
     @Test
     void testeMetodoConsultaTodosClientes(){
-        /*Long id = 1L;
+        Long id = 1L;
         String nome = "Vitor";
         boolean inativo = false;
         String cpf = "12345678-11";
@@ -88,22 +89,12 @@ class ClienteServiceTest {
 
         Mockito.when(clienteDataProvider.consultarTodos()).thenReturn(clienteList);
 
-        List<Cliente> clienteListTeste = clienteService.consultaTodosClientes();
+        List<Cliente> clienteListTeste = assertDoesNotThrow(() -> clienteService.consultaTodosClientes());
 
-        Assertions.assertEquals(clienteList.get(0).getId(), clienteListTeste.get(0).getId());
-        Assertions.assertEquals(clienteList.get(0).getNome(), clienteListTeste.get(0).getNome());
-        Assertions.assertEquals(clienteList.get(0).isInativo(), clienteListTeste.get(0).isInativo());
-        Assertions.assertEquals(clienteList.get(0).getCpf(), clienteListTeste.get(0).getCpf());
-        Assertions.assertEquals(clienteList.get(0).getEmail(), clienteListTeste.get(0).getEmail());
-        Assertions.assertEquals(clienteList.get(0).getNumeroTelefone(), clienteListTeste.get(0).getNumeroTelefone());
-        Assertions.assertEquals(clienteList.get(1).getId(), clienteListTeste.get(1).getId());
-        Assertions.assertEquals(clienteList.get(1).getNome(), clienteListTeste.get(1).getNome());
-        Assertions.assertEquals(clienteList.get(1).isInativo(), clienteListTeste.get(1).isInativo());
-        Assertions.assertEquals(clienteList.get(1).getCpf(), clienteListTeste.get(1).getCpf());
-        Assertions.assertEquals(clienteList.get(1).getEmail(), clienteListTeste.get(1).getEmail());
-        Assertions.assertEquals(clienteList.get(1).getNumeroTelefone(), clienteListTeste.get(1).getNumeroTelefone());*/
+        Assertions.assertEquals(clienteListTeste.get(0), cliente1);
+        Assertions.assertEquals(clienteListTeste.get(1), cliente2);
 
-        clienteService.consultaTodosClientes();
+        Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarTodos();
     }
 
     @Test
@@ -132,7 +123,7 @@ class ClienteServiceTest {
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> clienteService.consultaClientePorId(id));
 
-        Assertions.assertEquals(MENSAGEM_CLIENTE_EXISTENTE, exception.getMessage());
+        Assertions.assertEquals(MENSAGEM_CLIENTE_EXISTENTE,exception.getMessage());
         Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarPorId(id);
     }
 
@@ -159,5 +150,28 @@ class ClienteServiceTest {
 
     @Test
     void alterarCliente(){
+        Long id = 1L;
+        String nome = "Vitor";
+        boolean inativo = false;
+        String cpf = "12345678-11";
+        String email = "vivi@gmail.com";
+        String numeroTelefone = "(44)99874-8356";
+
+        Cliente clienteDto = new Cliente(null, nome, false, cpf, email, numeroTelefone);
+
+        Optional<Cliente> clienteOptional = Optional.of(new Cliente(id, "Amanda", inativo,"789456123-99", "mandinha@gmail.com", "9987488-5689"));
+        when(clienteDataProvider.consultarPorId(any())).thenReturn(clienteOptional);
+        when(clienteDataProvider.salvar(captor.capture())).thenReturn(any());
+
+        clienteService.alterarCliente(id, clienteDto);
+
+        Cliente clienteTeste = captor.getValue();
+
+        Assertions.assertEquals(id, clienteTeste.getId());
+        Assertions.assertEquals(clienteDto.getNome(), clienteTeste.getNome());
+        Assertions.assertEquals(clienteDto.isInativo(), clienteTeste.isInativo());
+        Assertions.assertEquals(clienteDto.getCpf(), clienteTeste.getCpf());
+        Assertions.assertEquals(clienteDto.getEmail(), clienteTeste.getEmail());
+        Assertions.assertEquals(clienteDto.getNumeroTelefone(), clienteTeste.getNumeroTelefone());
     }
 }

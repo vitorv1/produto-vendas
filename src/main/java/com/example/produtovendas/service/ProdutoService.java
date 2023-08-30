@@ -12,7 +12,7 @@ import java.util.List;
 @Service
 public class ProdutoService {
 
-
+    public static final String MENSAGEM_PRODUTO_EXISTENTE = "Produto não existe";
     private ProdutoDataProvider produtoDataProvider;
 
     @Autowired

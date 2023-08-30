@@ -28,7 +28,10 @@ public class Venda {
     }
 
     public void atualizaDados(Venda vendaDto) {
+        this.inativo = false;
+        this.cliente = vendaDto.getCliente();
         this.idCliente = vendaDto.getIdCliente();
+        this.valor = vendaDto.getValor();
         this.desconto = vendaDto.getDesconto();
         this.listaProdutos = vendaDto.getListaProdutos();
     }

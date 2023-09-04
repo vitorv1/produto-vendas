@@ -63,11 +63,11 @@ class VendaServiceTest {
         List<Produto> produtos = new ArrayList<>();
 
         produtos.add(new Produto(1L, null, false, null, 0));
+        produtos.add(new Produto(2L, null, false, null, 0));
 
-        Venda venda = new Venda(null, null, id, 0, false, 0, produtos, null);
+        Venda venda = new Venda(null, null, id, 0, false, 10, produtos, null);
 
         Mockito.when(produtoService.consultarProdutoPorId(any())).thenReturn(produto1);
-
         Mockito.when(clienteService.consultaClientePorId(any())).thenReturn(cliente);
         Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(venda);
 
@@ -78,10 +78,11 @@ class VendaServiceTest {
         Assertions.assertNull(vendaTeste.getId());
         Assertions.assertEquals(cliente, vendaTeste.getCliente());
         Assertions.assertEquals(id, vendaTeste.getIdCliente());
-        Assertions.assertEquals(250, vendaTeste.getValor());
+        Assertions.assertEquals(450, vendaTeste.getValor());
         Assertions.assertFalse(vendaTeste.isInativo());
-        Assertions.assertEquals(0, vendaTeste.getDesconto());
+        Assertions.assertEquals(10, vendaTeste.getDesconto());
         Assertions.assertEquals(produto1, vendaTeste.getListaProdutos().get(0));
+        Assertions.assertEquals(produto1, vendaTeste.getListaProdutos().get(1));
         Assertions.assertEquals(LocalDate.now(), vendaTeste.getDataVenda());
     }
 
@@ -226,7 +227,7 @@ class VendaServiceTest {
         Assertions.assertTrue(vendaTeste.isInativo());
     }
 
-   /* @Test
+    @Test
     void testeMetodoAlterarVenda(){
         Long idVenda = 2L;
         Long id = 1L;
@@ -278,13 +279,20 @@ class VendaServiceTest {
 
         Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
         Mockito.when(clienteService.consultaClientePorId(any())).thenReturn(clienteVenda);
+        Mockito.when(produtoService.consultarProdutoPorId(any())).thenReturn(produto1);
+        Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(any());
+
         vendaService.alterarVenda(idVenda, vendaDto);
 
         Venda vendaTeste = captor.getValue();
 
         Assertions.assertEquals(idVenda, vendaTeste.getId());
-        //Assertions.assertEquals(cliente, vendaTeste.);
-
-
-    }*/
+        Assertions.assertEquals(clienteVenda, vendaTeste.getCliente());
+        Assertions.assertEquals(540, vendaTeste.getValor());
+        Assertions.assertFalse(vendaTeste.isInativo());
+        Assertions.assertEquals(10, vendaTeste.getDesconto());
+        Assertions.assertEquals(produto1, vendaTeste.getListaProdutos().get(0));
+        Assertions.assertEquals(produto1, vendaTeste.getListaProdutos().get(1));
+        Assertions.assertEquals(LocalDate.now(), vendaTeste.getDataVenda());
+    }
 }

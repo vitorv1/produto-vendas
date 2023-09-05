@@ -27,12 +27,12 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> concultarTodosClientes(){
+    public ResponseEntity<List<Cliente>> consultarTodosClientes(){
         return ResponseEntity.ok(clienteService.consultaTodosClientes());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Cliente> concultaClientePorId(@PathVariable("id") Long id){
+    public ResponseEntity<Cliente> consultaClientePorId(@PathVariable("id") Long id){
         Cliente cliente = clienteService.consultaClientePorId(id);
         if (cliente == null) {
             return ResponseEntity.noContent().build();

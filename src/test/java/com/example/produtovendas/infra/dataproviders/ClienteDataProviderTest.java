@@ -6,12 +6,12 @@ import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.ClienteMapper;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,19 +19,14 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 
+@ExtendWith(MockitoExtension.class)
 class ClienteDataProviderTest {
-
-    @Autowired
-    private ClienteDataProvider clienteDataProvider;
 
     @Mock
     private ClienteRepository repository;
 
-    @BeforeEach
-    public void beforeEach(){
-        MockitoAnnotations.initMocks(this);
-        this.clienteDataProvider = new ClienteDataProvider(repository);
-    }
+    @InjectMocks
+    private ClienteDataProvider clienteDataProvider;
 
     @Test
     void testeMetodoSalvar(){

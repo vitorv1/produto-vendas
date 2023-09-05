@@ -65,15 +65,44 @@ class ClienteControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(true, validaCliente());
-    }
+                .andExpect(jsonPath("$[0].id", is(builderCliente().get(0).getId())))
+                .andExpect(jsonPath("$[0].nome", is(builderCliente().get(0).getNome())))
+                .andExpect(jsonPath("$[0].inativo", is(builderCliente().get(0).isInativo())))
+                .andExpect(jsonPath("$[0].cpf", is(builderCliente().get(0).getCpf())))
+                .andExpect(jsonPath("$[0].email", is(builderCliente().get(0).getEmail()))
+                .andExpect(jsonPath("&[0].numeroTelefone", is(builderCliente().get(0).getNumeroTelefone())
+                        .andExpect(jsonPath("$[0].id", is(builderCliente().get(1).getId())))
+                        .andExpect(jsonPath("$[0].nome", is(builderCliente().get(1).getNome())))
+                        .andExpect(jsonPath("$[0].inativo", is(builderCliente().get(1).isInativo())))
+                        .andExpect(jsonPath("$[0].cpf", is(builderCliente().get(1).getCpf())))
+                        .andExpect(jsonPath("$[0].email", is(builderCliente().get(1).getEmail()))
+                                .andExpect(jsonPath("&[0].numeroTelefone", is(builderCliente().get(1).getNumeroTelefone());
 
+
+    }
     @Test
     void concultaClientePorId() {
+        when(repository.findById(any())).thenReturn(builderCliente().get(0));
+
+        mockMvc.perform(MockMvcRequestBuilder.get("/clientes/{id}", builderCliente().get(0).getId())).
+                andExpect(status().isOk()).
+                andExpect(content().contentType(MediaType.APPLICATION_JSON)).
+                andExpect("$.id", is(builderCliente().get(0).getId())).
+                andExpect("$.nome", is(builderCliente().get(0).getNome())).
+                andExpect("$.inativo", is(builderCliente().get(0).isInativo())).
+                andExpect("$.cpf", is(builderCliente().get(0).getCpf())).
+                andExpect("$.email", is(builderCliente().get(0).getEmail())).
+                andExpect("$.numeroTelefone", is(builderCliente().get(0).getNumeroTelefone()));
     }
 
     @Test
     void deletarCliente() {
+
+        when(repository.findById(any())).thenReturn(builderCliente().get(0));
+        when(repository.save(any())).thenReturn(builderCliente().get(0));
+
+        mockMvc.perform(MockMvcRequestBuilder.delete("/clientes/{id}", builderCliente().get(0).getId())).
+                andExpect(status().noContent());
     }
 
     @Test

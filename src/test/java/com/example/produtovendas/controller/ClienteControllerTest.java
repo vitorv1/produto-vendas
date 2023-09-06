@@ -12,23 +12,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static net.bytebuddy.matcher.ElementMatchers.is;
 import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.web.servlet.MockMvc;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -49,15 +39,12 @@ class ClienteControllerTest {
         when(repository.findAll()).thenReturn(Collections.emptyList());
         when(repository.save(any())).thenReturn(builderCliente().get(0));
 
-        String clienteJson = "{\"nome\": \"Mariana\", \"cpf\":\"456357159-17\", \"email\": \"email@gmail.com\", \"numeroTelefone\": \"(44)99874-8356\"}";
+        String clienteJson = builderJson();
 
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson));
 
         result.andExpect(MockMvcResultMatchers.status().isCreated());
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.nome").value(builderCliente().get(0).getNome()));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value(builderCliente().get(0).getCpf()));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(builderCliente().get(0).getEmail()));
-        result.andExpect(MockMvcResultMatchers.jsonPath("$.numeroTelefone").value(builderCliente().get(0).getNumeroTelefone()));
+        validaCliente(result);
     }
 
     @Test
@@ -67,40 +54,26 @@ class ClienteControllerTest {
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/clientes"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].id", is(builderCliente().get(0).getId())))
-                .andExpect(jsonPath("$[0].nome", is(builderCliente().get(0).getNome())))
-                .andExpect(jsonPath("$[0].inativo", is(builderCliente().get(0).isInativo())))
-                .andExpect(jsonPath("$[0].cpf", is(builderCliente().get(0).getCpf())))
-                .andExpect(jsonPath("$[0].email", is(builderCliente().get(0).getEmail())))
-                .andExpect(jsonPath("$[0].numeroTelefone", is(builderCliente().get(0).getNumeroTelefone())))
-                .andExpect(jsonPath("$[1].id", is(builderCliente().get(1).getId())))
-                .andExpect(jsonPath("$[1].nome", is(builderCliente().get(1).getNome())))
-                .andExpect(jsonPath("$[1].inativo", is(builderCliente().get(1).isInativo())))
-                .andExpect(jsonPath("$[1].cpf", is(builderCliente().get(1).getCpf())))
-                .andExpect(jsonPath("$[1].email", is(builderCliente().get(1).getEmail())))
-                .andExpect(jsonPath("$[1].numeroTelefone", is(builderCliente().get(1).getNumeroTelefone())));
+                .andExpect(jsonPath("$", hasSize(2)));
+
+        validarAtributosDeCliente(resultActions, "0", builderCliente().get(0));
+        validarAtributosDeCliente(resultActions, "1", builderCliente().get(1));
     }
 
     @Test
     void testeMetodoConsultaClientePorId() throws Exception {
-        when(repository.findById(any())).thenReturn(builderClienteOptional());
+        when(repository.findById(any())).thenReturn(builderClienteOptional().get(0));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/clientes/{id}", builderCliente().get(0).getId())).
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/clientes/{id}", builderCliente().get(0).getId())).
                 andExpect(status().isOk()).
-                andExpect(content().contentType(MediaType.APPLICATION_JSON)).
-                andExpect((ResultMatcher) jsonPath("$.id", is(1L))).
-                andExpect((ResultMatcher) jsonPath( "$.nome", is(builderCliente().get(0).getNome()))).
-                andExpect((ResultMatcher) jsonPath( "$.inativo", is(builderCliente().get(0).isInativo()))).
-                andExpect((ResultMatcher) jsonPath("$.cpf", is(builderCliente().get(0).getCpf()))).
-                andExpect((ResultMatcher) jsonPath( "$.email", is(builderCliente().get(0).getEmail()))).
-                andExpect((ResultMatcher) jsonPath("$.numeroTelefone", is(builderCliente().get(0).getNumeroTelefone())));
+                andExpect(content().contentType(MediaType.APPLICATION_JSON));
+        validaCliente(resultActions);
     }
 
     @Test
-    void deletarCliente() throws Exception {
+    void testeMetodoDeletarCliente() throws Exception {
 
-        when(repository.findById(any())).thenReturn(builderClienteOptional());
+        when(repository.findById(any())).thenReturn(builderClienteOptional().get(0));
         when(repository.save(any())).thenReturn(builderCliente().get(0));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/clientes/{id}", builderCliente().get(0).getId())).
@@ -108,7 +81,15 @@ class ClienteControllerTest {
     }
 
     @Test
-    void altararCliente() {
+    void testeMetodoAltararCliente() throws Exception {
+
+        when(repository.findById(any())).thenReturn(builderClienteOptional().get(1));
+        when(repository.save(any())).thenReturn(builderCliente().get(0));
+        String json = builderJson();
+
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/clientes/{id}", builderCliente().get(1).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
+        andExpect(status().isOk());
+        validaCliente(resultActions);
     }
 
     private List<ClienteEntity> builderCliente(){
@@ -118,7 +99,32 @@ class ClienteControllerTest {
         return clienteEntities;
     }
 
-    private Optional<ClienteEntity> builderClienteOptional(){
-        return Optional.of(new ClienteEntity(1L, "Mariana", false, "456357159-17", "email@gmail.com", "(44)99874-8356"));
+    private List<Optional<ClienteEntity>> builderClienteOptional(){
+        List<Optional<ClienteEntity>> clienteEntityList = new ArrayList<>();
+        clienteEntityList.add(Optional.of(builderCliente().get(0)));
+        clienteEntityList.add(Optional.of(builderCliente().get(1)));
+        return clienteEntityList;
+    }
+
+    public void validarAtributosDeCliente(ResultActions resultActions, String indexClienteList, ClienteEntity cliente) throws Exception {
+        String index = "$[".concat(indexClienteList).concat("].");
+        resultActions.andExpect(jsonPath(index.concat("id")).value(cliente.getId()))
+                .andExpect(jsonPath(index.concat("nome")).value(cliente.getNome()))
+                .andExpect(jsonPath(index.concat("inativo")).value(cliente.isInativo()))
+                .andExpect(jsonPath(index.concat("cpf")).value(cliente.getCpf()))
+                .andExpect(jsonPath(index.concat("email")).value(cliente.getEmail()))
+                .andExpect(jsonPath(index.concat("numeroTelefone")).value(cliente.getNumeroTelefone()));
+    }
+
+    private String builderJson(){
+        return "{\"nome\": \"Mariana\", \"cpf\":\"456357159-17\", \"email\": \"email@gmail.com\", \"numeroTelefone\": \"(44)99874-8356\"}";
+    }
+
+    private void validaCliente(ResultActions resultActions) throws Exception {
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(builderCliente().get(0).getId()));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.nome").value(builderCliente().get(0).getNome()));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.inativo").value(builderCliente().get(0).isInativo()));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value(builderCliente().get(0).getCpf()));
+        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.numeroTelefone").value(builderCliente().get(0).getNumeroTelefone()));
     }
 }

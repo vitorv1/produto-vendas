@@ -1,7 +1,5 @@
 package com.example.produtovendas.controller;
 
-import com.example.produtovendas.domain.Produto;
-import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import org.junit.jupiter.api.Test;
@@ -20,12 +18,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc

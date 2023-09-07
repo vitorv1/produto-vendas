@@ -2,7 +2,6 @@ package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
-import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

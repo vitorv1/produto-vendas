@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.request;
@@ -68,15 +69,23 @@ class ProdutoControllerTest {
     }
 
     @Test
-    void testeMetodoDeletarProduto(){
-        when(repository.findById(any())).thenReturn(builderProdutoOptional().get(1));
+    void testeMetodoDeletarProduto() throws Exception {
+        when(repository.findById(any())).thenReturn(builderProdutoOptional().get(0));
         when(repository.save(any())).thenReturn(builderProduto().get(0));
 
-        ResultActions resultActions = mockMvc.perform()
+        mockMvc.perform(MockMvcRequestBuilders.delete("/produtos/{id}", builderProduto().get(0).getId())).
+                andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
-    void alterarProduto() {
+    void testeMetodoAlterarProduto() throws Exception{
+        when(repository.findById(any())).thenReturn(builderProdutoOptional().get(1));
+        when(repository.save(any())).thenReturn(builderProduto().get(0));
+        String json = builderJson();
+
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/produtos/{id}", builderProduto().get(0).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
+                andExpect(MockMvcResultMatchers.status().isOk());
+        validaProduto(resultActions);
     }
 
     private List<ProdutoEntity> builderProduto(){

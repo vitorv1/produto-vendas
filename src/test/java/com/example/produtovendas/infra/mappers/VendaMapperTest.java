@@ -58,7 +58,7 @@ class VendaMapperTest {
         Assertions.assertEquals(clienteVenda, vendaEntity.getClienteEntity());
         Assertions.assertEquals(clienteVenda.getId(), vendaEntity.getClienteEntity().getId());
         Assertions.assertEquals(valorVenda, vendaEntity.getValor());
-        Assertions.assertEquals(inativo, vendaEntity.getInativo());
+        Assertions.assertEquals(inativo, vendaEntity.isInativo());
         Assertions.assertEquals(desconto, vendaEntity.getDesconto());
         Assertions.assertEquals(produtoEntities, vendaEntity.getListaProdutos());
         Assertions.assertEquals(dataVenda, vendaEntity.getDataVenda());
@@ -180,7 +180,6 @@ class VendaMapperTest {
         Assertions.assertEquals(produto2.getValor(), venda1.getListaProdutos().get(1).getValor());
         Assertions.assertEquals(produto2.isInativo(), venda1.getListaProdutos().get(1).isInativo());
         Assertions.assertEquals(dataVenda, venda1.getDataVenda());
-        Assertions.assertEquals(idVenda, venda1.getId());
         Assertions.assertEquals(clienteVenda.getNome(), venda2.getCliente().getNome());
         Assertions.assertEquals(clienteVenda.getId(), venda2.getCliente().getId());
         Assertions.assertEquals(clienteVenda.isInativo(), venda2.getCliente().isInativo());

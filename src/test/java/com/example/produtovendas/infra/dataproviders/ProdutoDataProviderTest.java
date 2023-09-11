@@ -19,6 +19,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 
 class ProdutoDataProviderTest {
 
@@ -35,112 +36,90 @@ class ProdutoDataProviderTest {
     }
 
     @Test
-    void testaSeTaSalvandoProduto() {
+    void testeMetodoSalvar(){
         Long id = 1L;
         String nome = "Tenis";
-        String marca = "Nike";
         boolean inativo = false;
-        double valor = 350;
-        Produto produto = new Produto(id, nome, inativo,marca, valor);
+        String marca = "Nike";
+        double valor = 250;
+
+        Produto produto = new Produto(id, nome, inativo, marca, valor);
+
         Mockito.when(repository.save(any())).thenReturn(ProdutoMapper.paraEntity(produto));
-        Produto produtoSalvo = produtoDataProvider.salvarProduto(produto);
-        Assertions.assertEquals(nome, produtoSalvo.getNome());
-        Assertions.assertEquals(id, produtoSalvo.getId());
-        Assertions.assertEquals(marca, produtoSalvo.getMarca());
-        Assertions.assertEquals(valor, produtoSalvo.getValor());
-        Assertions.assertEquals(inativo, produtoSalvo.isInativo());
+
+        Produto produtoTeste = produtoDataProvider.salvar(produto);
+
+        Assertions.assertEquals(id, produtoTeste.getId());
+        Assertions.assertEquals(nome, produtoTeste.getNome());
+        Assertions.assertEquals(inativo, produtoTeste.isInativo());
+        Assertions.assertEquals(marca, produtoTeste.getMarca());
+        Assertions.assertEquals(valor, produtoTeste.getValor());
     }
 
     @Test
-    void testaSeEstaconsultandoProdutoPorId() {
-        List<ProdutoEntity> produtoEntities = new ArrayList<>();
-        Produto produto1 = new Produto(1L, "Tenis", false,"Nike", 350);
-        Produto produto2 = new Produto(2L, "Camiseta", false, "Vans", 400);
-        produtoEntities.add(ProdutoMapper.paraEntity(produto1));
-        produtoEntities.add(ProdutoMapper.paraEntity(produto2));
-        Long id = produto1.getId();
-        Mockito.when(repository.findById(any())).thenReturn(produtoEntities.stream().filter(ProdutoEntity -> id.equals(ProdutoEntity.getId())).findFirst());
-        Optional<Produto> produtoConsultado = produtoDataProvider.consultarProdutoPorId(produto1.getId());
-        produtoConsultado.ifPresent(produto -> {
-            Assertions.assertEquals(produto1.getId(), produtoConsultado.get().getId());
-            Assertions.assertEquals(produto1.getNome(), produtoConsultado.get().getNome());
-            Assertions.assertEquals(produto1.isInativo(), produtoConsultado.get().isInativo());
-            Assertions.assertEquals(produto1.getMarca(), produtoConsultado.get().getMarca());
-            Assertions.assertEquals(produto1.getValor(), produtoConsultado.get().getValor());
+    void testeMetodoConsultarPorId(){
+        Long id = 1L;
+        String nome = "Tenis";
+        boolean inativo = false;
+        String marca = "Nike";
+        double valor = 250;
+
+        Optional<ProdutoEntity> produtoEntity = Optional.of(new ProdutoEntity(id, nome, inativo, marca, valor));
+
+        Mockito.when(repository.findById(any())).thenReturn(produtoEntity);
+
+        Optional<Produto> produtoTeste = produtoDataProvider.consultarPorId(1L);
+
+        produtoTeste.ifPresent(produto -> {
+            Assertions.assertEquals(id, produtoTeste.get().getId());
+            Assertions.assertEquals(nome, produtoTeste.get().getNome());
+            Assertions.assertEquals(inativo, produtoTeste.get().isInativo());
+            Assertions.assertEquals(marca, produtoTeste.get().getMarca());
+            Assertions.assertEquals(valor, produtoTeste.get().getValor());
         });
     }
 
     @Test
-    void testaSeEstaconsultandoTodosProdutos() {
+    void testeMetodoConsultaTodos() {
         List<ProdutoEntity> produtoEntities = new ArrayList<>();
-        Produto produto1 = new Produto(1L, "Tenis", false,"Nike", 350);
-        Produto produto2 = new Produto(2L, "Camiseta", false, "Vans", 400);
-        produtoEntities.add(ProdutoMapper.paraEntity(produto1));
-        produtoEntities.add(ProdutoMapper.paraEntity(produto2));
+
+        Long id1 = 1L;
+        String nome1 = "Tenis";
+        boolean inativo = false;
+        String marca1 = "Nike";
+        double valor1 = 250;
+
+        Long id2 = 2L;
+        String nome2 = "Camiseta";
+        String marca2 = "High";
+        double valor2 = 300;
+
+        produtoEntities.add(new ProdutoEntity(id1, nome1, inativo, marca1, valor1));
+        produtoEntities.add(new ProdutoEntity(id2, nome2, inativo,marca2, valor2));
 
         Mockito.when(repository.findAll()).thenReturn(produtoEntities);
 
-        List<Produto> produtoList = produtoDataProvider.consultaTodosProdutos();
+        List<Produto> produtoList = produtoDataProvider.consultaTodos();
 
-        Assertions.assertEquals(produto1.getId(), produtoList.get(0).getId());
-        Assertions.assertEquals(produto1.getNome(), produtoList.get(0).getNome());
-        Assertions.assertEquals(produto1.isInativo(), produtoList.get(0).isInativo());
-        Assertions.assertEquals(produto1.getMarca(), produtoList.get(0).getMarca());
-        Assertions.assertEquals(produto1.getValor(), produtoList.get(0).getValor());
-        Assertions.assertEquals(produto2.getId(), produtoList.get(1).getId());
-        Assertions.assertEquals(produto2.getNome(), produtoList.get(1).getNome());
-        Assertions.assertEquals(produto2.isInativo(), produtoList.get(1).isInativo());
-        Assertions.assertEquals(produto2.getMarca(), produtoList.get(1).getMarca());
-        Assertions.assertEquals(produto2.getValor(), produtoList.get(1).getValor());
-    }
+        Produto produto1 = produtoList.get(0);
+        Produto produto2 = produtoList.get(1);
 
-    @Test
-    void testaSeEstaAlterandoProduto(){
-        Long id = 1L;
-        String nome = "Tenis";
-        String marca = "Nike";
-        double valor = 350;
-
-        String nomeTeste = "Camiseta";
-        String marcaTeste = "High";
-        double valorTeste = 250;
-
-        Produto produto = new Produto(id, nomeTeste, false, marcaTeste, valorTeste);
-        Produto produtoDto = new Produto(1L, nome, false, marca, valor);
-        Optional<ProdutoEntity> produtoEntity = Optional.of(ProdutoMapper.paraEntity(produto));
-
-        Mockito.when(repository.findById(any())).thenReturn(produtoEntity);
-        Mockito.when(repository.save(any())).thenReturn(ProdutoMapper.paraEntity(produto));
-
-        Produto produtoTeste = produtoDataProvider.alterarProduto(id, produtoDto);
-
-        Assertions.assertEquals(id, produtoTeste.getId());
-        Assertions.assertEquals(nomeTeste, produtoTeste.getNome());
-        Assertions.assertEquals(marcaTeste, produtoTeste.getMarca());
-        Assertions.assertEquals(valorTeste, produtoTeste.getValor());
-    }
-
-    @Test
-    void testaSeEstaDeletandoProduto(){
-        Long id = 1L;
-        String nome = "Tenis";
-        boolean inativo = true;
-        String marca = "Nike";
-        double valor = 350;
-        Produto produto = new Produto(id, nome, inativo, marca, valor);
-        Optional<ProdutoEntity> produtoEntity = Optional.of(new ProdutoEntity(id, nome, false, marca, valor));
-        Mockito.when(repository.findById(any())).thenReturn(produtoEntity);
-        Mockito.when(repository.save(any())).thenReturn(ProdutoMapper.paraEntity(produto));
-
-        Produto produtoTeste = produtoDataProvider.deletarProduto(id);
-
-        Assertions.assertTrue(produtoTeste.isInativo());
+        Assertions.assertEquals(id1, produto1.getId());
+        Assertions.assertEquals(nome1, produto1.getNome());
+        Assertions.assertEquals(inativo, produto1.isInativo());
+        Assertions.assertEquals(marca1, produto1.getMarca());
+        Assertions.assertEquals(valor1, produto1.getValor());
+        Assertions.assertEquals(id2, produto2.getId());
+        Assertions.assertEquals(nome2, produto2.getNome());
+        Assertions.assertEquals(inativo, produto2.isInativo());
+        Assertions.assertEquals(marca2, produto2.getMarca());
+        Assertions.assertEquals(valor2, produto2.getValor());
     }
 
     @Test
     void testaSeMetodoSalvarProdutoEstaLancandoException(){
         Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
-        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.salvarProduto(
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.salvar(
                 new Produto(5L, "Tenis", false, "Nike", 350)));
         Assertions.assertEquals("Erro no cadastro do produto", exceptionTeste.getMessage());
     }
@@ -148,29 +127,15 @@ class ProdutoDataProviderTest {
     @Test
     void testaSeMetodoConsultaPorIdEstaLancandoException(){
         Mockito.when(repository.findById(any())).thenThrow(RuntimeException.class);
-        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.consultarProdutoPorId(3L));
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.consultarPorId(3L));
         Assertions.assertEquals( "Erro na consalta por id",exceptionTeste.getMessage());
     }
 
     @Test
     void testaSeMetodoConsultaTodosEstaLancandoExceprion(){
         Mockito.when(repository.findAll()).thenThrow(RuntimeException.class);
-        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.consultaTodosProdutos());
-        Assertions.assertEquals("Erro na consulta todos os produtos", exceptionTeste.getMessage());
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.consultaTodos());
+        Assertions.assertEquals("Erro na consulta por todos", exceptionTeste.getMessage());
 
-    }
-
-    @Test
-    void testaSeMetodoAlterarEstaLancandoExecption(){
-        Long id = 1L;
-        String nome = "Tenis";
-        boolean inativo = true;
-        String marca = "Nike";
-        double valor = 350;
-        Optional<ProdutoEntity> produtoEntity = Optional.of(new ProdutoEntity(id, nome, inativo, marca, valor));
-        Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
-        Mockito.when(repository.findById(any())).thenReturn(produtoEntity);
-        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> produtoDataProvider.alterarProduto(1L, ProdutoMapper.paraProduto(produtoEntity.get())));
-        Assertions.assertEquals("Erro ao salvar alterações", exceptionTeste.getMessage());
     }
 }

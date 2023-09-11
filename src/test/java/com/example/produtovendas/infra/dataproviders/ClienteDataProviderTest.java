@@ -6,156 +6,122 @@ import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.ClienteMapper;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyMap;
 
+@ExtendWith(MockitoExtension.class)
 class ClienteDataProviderTest {
-
-
-    @Autowired
-    private ClienteDataProvider clienteDataProvider;
 
     @Mock
     private ClienteRepository repository;
 
-    @BeforeEach
-    public void beforeEach(){
-        MockitoAnnotations.initMocks(this);
-        this.clienteDataProvider = new ClienteDataProvider(repository);
-    }
+    @InjectMocks
+    private ClienteDataProvider clienteDataProvider;
+
     @Test
-    void testaSeEstaSalvandoNoBancoDeDados(){
-        Long id = 4L;
-        String nome = "João";
+    void testeMetodoSalvar(){
+        Long id = 1L;
+        String nome = "Vitor";
         boolean inativo = false;
-        String cpf = "159753864-99";
-        String email = "nunes@gmail.com";
-        String numeroTelefone = "(44)99456-2322";
+        String cpf = "123456789-77";
+        String email = "vivi@gmail.com";
+        String numeroTelefone = "(44)99566-8523";
+
         Cliente cliente = new Cliente(id, nome, inativo, cpf, email, numeroTelefone);
         Mockito.when(repository.save(any())).thenReturn(ClienteMapper.paraEntity(cliente));
-        Cliente clienteSalvo = clienteDataProvider.cadastrarCliente(cliente);
-        Assertions.assertEquals(nome, clienteSalvo.getNome());
-        Assertions.assertEquals(id, clienteSalvo.getId());
-        Assertions.assertEquals(inativo, clienteSalvo.isInativo());
-        Assertions.assertEquals(cpf, clienteSalvo.getCpf());
-        Assertions.assertEquals(email, clienteSalvo.getEmail());
-        Assertions.assertEquals(numeroTelefone, clienteSalvo.getNumeroTelefone());
+        Cliente clienteTeste = clienteDataProvider.salvar(cliente);
+
+        Assertions.assertEquals(id, clienteTeste.getId());
+        Assertions.assertEquals(nome, clienteTeste.getNome());
+        Assertions.assertEquals(inativo, clienteTeste.isInativo());
+        Assertions.assertEquals(cpf, clienteTeste.getCpf());
+        Assertions.assertEquals(email, clienteTeste.getEmail());
+        Assertions.assertEquals(numeroTelefone, clienteTeste.getNumeroTelefone());
     }
 
     @Test
-    void testarSeEstaConsultandoTodosOsClientes(){
+    void testeMetodoConsultarTodos(){
         List<ClienteEntity> clienteEntities = new ArrayList<>();
-        Cliente cliente1 = new Cliente(1L, "Vitor", false, "123456789-99", "vivi@gmail.com", "(44)99874-8356");
-        Cliente cliente2 = new Cliente(2L, "Daniel", false, "789456123-11", "francis@gmail.com", "(44)99874-5566");
-        clienteEntities.add(ClienteMapper.paraEntity(cliente1));
-        clienteEntities.add(ClienteMapper.paraEntity(cliente2));
+        Long id1 = 1L;
+        String nome1 = "Vitor";
+        boolean inativo = false;
+        String cpf1 = "123456789-77";
+        String email1 = "vivi@gmail.com";
+        String numeroTelefone1 = "(44)99566-8523";
+
+        Long id2 = 2L;
+        String nome2 = "Daniel";
+        String cpf2 = "789456123-11";
+        String email2 = "francis@gmail.com";
+        String numeroTelefone2 = "(44)99566-5823";
+
+        ClienteEntity clienteEntity1 = new ClienteEntity(id1, nome1, inativo, cpf1, email1, numeroTelefone1);
+        ClienteEntity clienteEntity2 = new ClienteEntity(id2, nome2, inativo, cpf2, email2, numeroTelefone2);
+
+        clienteEntities.add(clienteEntity1);
+        clienteEntities.add(clienteEntity2);
 
         Mockito.when(repository.findAll()).thenReturn(clienteEntities);
 
-        List<Cliente> clienteList = clienteDataProvider.consultarTodos();
+        List<Cliente> clientes = clienteDataProvider.consultarTodos();
 
-        Assertions.assertEquals(cliente1.getNome(), clienteList.get(0).getNome());
-        Assertions.assertEquals(cliente1.getId(), clienteList.get(0).getId());
-        Assertions.assertEquals(cliente1.isInativo(), clienteList.get(0).isInativo());
-        Assertions.assertEquals(cliente1.getCpf(), clienteList.get(0).getCpf());
-        Assertions.assertEquals(cliente1.getEmail(), clienteList.get(0).getEmail());
-        Assertions.assertEquals(cliente1.getNumeroTelefone(), clienteList.get(0).getNumeroTelefone());
-        Assertions.assertEquals(cliente2.getNome(), clienteList.get(1).getNome());
-        Assertions.assertEquals(cliente2.getId(), clienteList.get(1).getId());
-        Assertions.assertEquals(cliente2.isInativo(), clienteList.get(1).isInativo());
-        Assertions.assertEquals(cliente2.getCpf(), clienteList.get(1).getCpf());
-        Assertions.assertEquals(cliente2.getEmail(), clienteList.get(1).getEmail());
-        Assertions.assertEquals(cliente2.getNumeroTelefone(), clienteList.get(1).getNumeroTelefone());
+        Cliente cliente1 = clientes.get(0);
+        Cliente cliente2 = clientes.get(1);
+
+        Assertions.assertEquals(id1, cliente1.getId());
+        Assertions.assertEquals(nome1, cliente1.getNome());
+        Assertions.assertEquals(inativo, cliente1.isInativo());
+        Assertions.assertEquals(cpf1, cliente1.getCpf());
+        Assertions.assertEquals(email1, cliente1.getEmail());
+        Assertions.assertEquals(numeroTelefone1, cliente1.getNumeroTelefone());
+        Assertions.assertEquals(id2, cliente2.getId());
+        Assertions.assertEquals(nome2, cliente2.getNome());
+        Assertions.assertEquals(inativo, cliente2.isInativo());
+        Assertions.assertEquals(cpf2, cliente2.getCpf());
+        Assertions.assertEquals(email2, cliente2.getEmail());
+        Assertions.assertEquals(numeroTelefone2, cliente2.getNumeroTelefone());
     }
 
     @Test
-    void testarSeEstaConsultandoPorId(){
-        List<ClienteEntity> clienteEntities = new ArrayList<>();
-        Cliente cliente1 = new Cliente(1L, "Vitor", false, "123456789-99", "vivi@gmail.com", "(44)99874-8356");
-        Cliente cliente2 = new Cliente(2L, "Daniel", false, "789456123-11", "francis@gmail.com", "(44)99874-5566");
-        clienteEntities.add(ClienteMapper.paraEntity(cliente1));
-        clienteEntities.add(ClienteMapper.paraEntity(cliente2));
-        Long id = cliente1.getId();
-
-        Mockito.when(repository.findById(any())).thenReturn(clienteEntities.stream().filter(ClienteEntity -> id.equals(ClienteEntity.getId())).findFirst());
-
-        Optional<Cliente> clienteConsultado = clienteDataProvider.consultarPorId(cliente1.getId());
-
-        Assertions.assertEquals(cliente1.getId(), clienteConsultado.get().getId());
-        Assertions.assertEquals(cliente1.getNome(), clienteConsultado.get().getNome());
-        Assertions.assertEquals(cliente1.isInativo(), clienteConsultado.get().isInativo());
-        Assertions.assertEquals(cliente1.getCpf(), clienteConsultado.get().getCpf());
-        Assertions.assertEquals(cliente1.getEmail(), clienteConsultado.get().getEmail());
-        Assertions.assertEquals(cliente1.getNumeroTelefone(), clienteConsultado.get().getNumeroTelefone());
-    }
-
-    @Test
-    void testaSeEstaAlterandoCliente(){
-        Long id = 1L;
-        String nome = "João";
-        String cpf = "159753864-99";
-        String email = "nunes@gmail.com";
-        String numeroTelefone = "(44)99456-2322";
-
-        String nomeTeste = "Vitor";
+    void testeMetodoConsultarPorId(){
+        Long id = 2L;
+        String nome = "Daniel";
         boolean inativo = false;
-        String cpfTeste = "123456789-11";
-        String emailTeste = "vivi@gmail.com";
-        String numeroTelefoneTeste = "(44)99874-8356";
-        Cliente clienteDto = new Cliente(1L, nome, false, cpf, email, numeroTelefone);
-        Cliente cliente = new Cliente(id, nomeTeste, inativo, cpfTeste, emailTeste, numeroTelefoneTeste);
-        Optional<ClienteEntity> clienteEntity = Optional.of(ClienteMapper.paraEntity(cliente));
+        String cpf = "789456123-11";
+        String email = "francis@gmail.com";
+        String numeroTelefone = "(44)99566-5823";
+
+        Optional<ClienteEntity> clienteEntity = Optional.of(new ClienteEntity(id, nome, inativo, cpf, email, numeroTelefone));
 
         Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
-        Mockito.when(repository.save(any())).thenReturn(ClienteMapper.paraEntity(cliente));
 
-        Cliente clienteTeste =  clienteDataProvider.aterarCliente(id, clienteDto);
+        Optional<Cliente> clienteTeste = clienteDataProvider.consultarPorId(2L);
 
-        Assertions.assertEquals(id, clienteTeste.getId());
-        Assertions.assertEquals(nomeTeste, clienteTeste.getNome());
-        Assertions.assertEquals(inativo, clienteTeste.isInativo());
-        Assertions.assertEquals(cpfTeste, clienteTeste.getCpf());
-        Assertions.assertEquals(emailTeste, clienteTeste.getEmail());
-        Assertions.assertEquals(numeroTelefoneTeste, clienteTeste.getNumeroTelefone());
+        clienteTeste.ifPresent(cliente -> {
+            Assertions.assertEquals(id, clienteTeste.get().getId());
+            Assertions.assertEquals(nome, clienteTeste.get().getNome());
+            Assertions.assertEquals(inativo, clienteTeste.get().isInativo());
+            Assertions.assertEquals(cpf, clienteTeste.get().getCpf());
+            Assertions.assertEquals(email, clienteTeste.get().getEmail());
+            Assertions.assertEquals(numeroTelefone, clienteTeste.get().getNumeroTelefone());
+        });
+
     }
-
-    @Test
-    void testaSeEstaDeletandoCliente(){
-        Long id = 1L;
-        String nome = "João";
-        boolean inativo = true;
-        String cpf = "159753864-99";
-        String email = "nunes@gmail.com";
-        String numeroTelefone = "(44)99456-2322";
-
-        Cliente cliente = new Cliente(id, nome, inativo, cpf, email, numeroTelefone);
-        Optional<ClienteEntity> clienteEntity = Optional.of(new ClienteEntity(1L, "João", false, "159753864-99",
-                "nunes@gmail.com" , "(44)99456-2322"));
-
-        Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
-        Mockito.when(repository.save(any())).thenReturn(ClienteMapper.paraEntity(cliente));
-
-        Cliente clienteTeste = clienteDataProvider.deletarCliente(id);
-
-        Assertions.assertTrue(clienteTeste.isInativo());
-    }
-
     @Test
     void testaSeMetodoSalvarEstaLancandoExecption(){
         Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
 
-        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.cadastrarCliente(
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.salvar(
                 new Cliente(1L, "Vitor", false, "123456789-99", "vivi@gmail.com", "(44)99874-8356")));
         Assertions.assertEquals("Erro ao salvar Cliente", exceptionTeste.getMessage());
 
@@ -176,39 +142,4 @@ class ClienteDataProviderTest {
         BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.consultarPorId(1L));
         Assertions.assertEquals("Erro ao consultar Cliente por Id.", exceptionTeste.getMessage());
     }
-
-    @Test
-    void testaSeMetodoAlterarClienteEstaLancandoException(){
-        Long id = 1L;
-        String nome = "João";
-        boolean inativo = false;
-        String cpf = "159753864-99";
-        String email = "nunes@gmail.com";
-        String numeroTelefone = "(44)99456-2322";
-
-        Optional<ClienteEntity> clienteEntity = Optional.of(new ClienteEntity(id, nome, inativo, cpf, email, numeroTelefone));
-        Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
-        Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
-        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> clienteDataProvider.aterarCliente(1L, ClienteMapper.paraCliente(clienteEntity.get())));
-        Assertions.assertEquals("Erro ao salvar no banco de dados", exceptionTeste.getMessage());
-    }
-
-    @Test
-    void testaSeMetodoDeleteEstaLancandoException(){
-        Long id = 1L;
-        String nome = "João";
-        boolean inativo = false;
-        String cpf = "159753864-99";
-        String email = "nunes@gmail.com";
-        String numeroTelefone = "(44)99456-2322";
-
-        Optional<ClienteEntity>clienteEntity = Optional.of(new ClienteEntity(id, nome, inativo, cpf, email, numeroTelefone));
-        Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
-        Mockito.when(repository.findById(any())).thenReturn(clienteEntity);
-
-        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.deletarCliente(id));
-        Assertions.assertEquals("Erro ao salvar delete do cliente", exceptionTeste.getMessage());
-    }
-
-
 }

@@ -81,6 +81,16 @@ class ProdutoControllerTest {
         validaProduto(resultActions);
     }
 
+    @Test
+    void testeMetodoCadastroProdutoEstaLancandoException() throws Exception {
+        when(repository.findAll()).thenReturn(Builders.builderProduto());
+        when(repository.save(any())).thenReturn(Builders.builderProduto().get(0));
+
+        String json = builderJson();
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/produtos").contentType(MediaType.APPLICATION_JSON).content(json));
+        resultActions.andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
     private void validaProduto(ResultActions resultActions) throws Exception {
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(Builders.builderProduto().get(0).getId()));
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.nome").value(Builders.builderProduto().get(0).getNome()));

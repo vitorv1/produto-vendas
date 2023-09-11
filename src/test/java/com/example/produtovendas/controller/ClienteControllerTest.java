@@ -90,6 +90,17 @@ class ClienteControllerTest {
         validaCliente(resultActions);
     }
 
+    @Test
+    void testeMetodoCadastroClienteEstaLancandoException() throws Exception {
+        when(repository.findAll()).thenReturn(Builders.builderCliente());
+        when(repository.save(any())).thenReturn(Builders.builderCliente().get(0));
+
+        String clienteJson = builderJson();
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson)).
+                andExpect(MockMvcResultMatchers.status().is4xxClientError());
+    }
+
     public void validarAtributosDeCliente(ResultActions resultActions, String indexClienteList, ClienteEntity cliente) throws Exception {
         String index = "$[".concat(indexClienteList).concat("].");
         resultActions.andExpect(jsonPath(index.concat("id")).value(cliente.getId()))

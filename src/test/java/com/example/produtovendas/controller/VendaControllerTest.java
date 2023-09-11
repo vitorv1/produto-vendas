@@ -50,19 +50,44 @@ class VendaControllerTest {
     }
 
     @Test
-    void buscarPorId() {
+    void testeMetodoBuscarPorId() throws Exception {
+        when(repository.findById(any())).thenReturn(Builders.builderVendaOptional().get(0));
+
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/vendas/{id}", Builders.builderVenda().get(0).getId())).
+                andExpect(MockMvcResultMatchers.status().isOk());
+        validaVenda(resultActions);
     }
 
     @Test
-    void buscarTodos() {
+    void testeMetodoBuscarTodos() throws Exception{
+        when(repository.findAll()).thenReturn(Builders.builderVenda());
+
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/vendas")).
+                andExpect(MockMvcResultMatchers.status().isOk());
+        validaVendas(resultActions, "0", Builders.builderVenda().get(0));
+        validaVendas(resultActions, "1", Builders.builderVenda().get(0));
     }
 
     @Test
-    void deletarVenda() {
+    void testeMetodoDeletarVenda() throws Exception {
+        when(repository.findById(any())).thenReturn(Builders.builderVendaOptional().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderVenda().get(0));
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/vendas/{id}", Builders.builderVenda().get(0).getId())).
+                andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
-    void alterarVenda() {
+    void testeMetodoAlterarVenda() throws Exception {
+        when(repository.findById(any())).thenReturn(Builders.builderVendaOptional().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderVenda().get(0));
+
+        String json = builderJson();
+
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/vendas/{id}", Builders.builderVenda().get(0).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
+                andExpect(MockMvcResultMatchers.status().isOk());
+
+        validaVenda(resultActions);
     }
 
     private void validaVenda(ResultActions resultActions) throws Exception{

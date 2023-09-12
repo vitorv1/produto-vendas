@@ -18,7 +18,7 @@ public class Cliente {
     private String nome;
     private boolean inativo;
     @NotBlank
-    @Pattern(regexp = "\\d{11}")
+    //@Pattern(regexp = "\\d{12}")
     private String cpf;
     @NotBlank
     @Email

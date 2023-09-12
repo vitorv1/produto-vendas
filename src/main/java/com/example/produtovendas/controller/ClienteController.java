@@ -20,19 +20,18 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<Cliente> cadastroCliente(@RequestBody @Valid Cliente cliente, UriComponentsBuilder uriBuilder){
-        System.out.println("controller " + cliente);
         Cliente clienteBody = clienteService.cadastroCliente(cliente);
         var uri = uriBuilder.path("/clientes/{id}").buildAndExpand(clienteBody.getId()).toUri();
         return ResponseEntity.created(uri).body(clienteBody);
     }
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> consultarTodosClientes(){
+    public ResponseEntity<List<Cliente>> concultarTodosClientes(){
         return ResponseEntity.ok(clienteService.consultaTodosClientes());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Cliente> consultaClientePorId(@PathVariable("id") Long id){
+    public ResponseEntity<Cliente> concultaClientePorId(@PathVariable("id") Long id){
         Cliente cliente = clienteService.consultaClientePorId(id);
         if (cliente == null) {
             return ResponseEntity.noContent().build();

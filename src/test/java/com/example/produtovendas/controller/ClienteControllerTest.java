@@ -37,7 +37,7 @@ class ClienteControllerTest {
         when(repository.findAll()).thenReturn(Collections.emptyList());
         when(repository.save(any())).thenReturn(Builders.builderCliente().get(0));
 
-        String clienteJson = builderJson();
+        String clienteJson = Builders.builderJsonCliente();
 
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson));
 
@@ -83,7 +83,7 @@ class ClienteControllerTest {
 
         when(repository.findById(any())).thenReturn(Builders.builderClienteOptional().get(1));
         when(repository.save(any())).thenReturn(Builders.builderCliente().get(0));
-        String json = builderJson();
+        String json = Builders.builderJsonCliente();
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/clientes/{id}", Builders.builderCliente().get(1).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
         andExpect(status().isOk());
@@ -95,7 +95,7 @@ class ClienteControllerTest {
         when(repository.findAll()).thenReturn(Builders.builderCliente());
         when(repository.save(any())).thenReturn(Builders.builderCliente().get(0));
 
-        String clienteJson = builderJson();
+        String clienteJson = Builders.builderJsonCliente();
 
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson)).
                 andExpect(MockMvcResultMatchers.status().is4xxClientError());
@@ -109,10 +109,6 @@ class ClienteControllerTest {
                 .andExpect(jsonPath(index.concat("cpf")).value(cliente.getCpf()))
                 .andExpect(jsonPath(index.concat("email")).value(cliente.getEmail()))
                 .andExpect(jsonPath(index.concat("numeroTelefone")).value(cliente.getNumeroTelefone()));
-    }
-
-    private String builderJson(){
-        return "{\"nome\": \"Mariana\", \"cpf\":\"456357159-17\", \"email\": \"email@gmail.com\", \"numeroTelefone\": \"(44)99874-8356\"}";
     }
 
     private void validaCliente(ResultActions resultActions) throws Exception {

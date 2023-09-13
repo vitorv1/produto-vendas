@@ -1,5 +1,7 @@
 package com.example.produtovendas.builders;
 
+import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
@@ -54,6 +56,15 @@ public abstract class Builders {
         vendaEntities.add(new VendaEntity(7L, Builders.builderCliente().get(1), false, 520, 0, produtoList, LocalDate.now()));
         return vendaEntities;
     }
+
+    public static Cliente builderClienteDomain(){
+        return new Cliente(1L, "Mariana", false, "456357159-17", "email@gmail.com", "(44)99874-8356");
+    }
+
+    public static Produto builderProdutoDomain(){
+        return new Produto(1L, "Tenis", false, "Nike", 320);
+    }
+
     public static String builderJsonVenda(){
         return "{\"idCliente\":12,\"desconto\":10,\"listaProdutos\":[{\"id\":3},{\"id\":7}]}";
     }

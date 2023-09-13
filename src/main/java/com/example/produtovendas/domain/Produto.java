@@ -19,7 +19,7 @@ public class Produto {
     private String marca;
     private double valor;
 
-    public void atualizaDados( Produto produtoDto) {
+    public void atualizaDados(Produto produtoDto) {
         this.inativo = false;
         this.nome = produtoDto.getNome();
         this.marca = produtoDto.getMarca();

@@ -29,20 +29,6 @@ public class VendaEntity {
     @ManyToMany
     private List<ProdutoEntity> listaProdutos;
     private LocalDate dataVenda;
-
-    public VendaEntity (Long id, ClienteEntity clienteEntity, double valor, Integer desconto, List<ProdutoEntity> listaProdutos, LocalDate dataVenda){
-        this.inativo = false;
-        this.id = id;
-        this.clienteEntity  = clienteEntity;
-        this.valor = valor;
-        this.desconto = desconto;
-        this.listaProdutos = listaProdutos;
-        this.dataVenda = dataVenda;
-    }
-
-    public boolean getInativo(){
-        return this.inativo;
-    }
 }
 
 

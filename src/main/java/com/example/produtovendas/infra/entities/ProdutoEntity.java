@@ -8,8 +8,8 @@ import lombok.*;
 @Table(name = "produtos")
 @EqualsAndHashCode(of = "id")
 @Getter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Setter
 @Builder
@@ -22,5 +22,4 @@ public class ProdutoEntity {
     private boolean inativo;
     private String marca;
     private double valor;
-
 }

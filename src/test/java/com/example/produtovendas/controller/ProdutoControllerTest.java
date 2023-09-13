@@ -36,7 +36,7 @@ class ProdutoControllerTest {
         when(repository.findAll()).thenReturn(Collections.emptyList());
         when(repository.save(any())).thenReturn(Builders.builderProduto().get(0));
 
-        String json = builderJson();
+        String json = Builders.builderJsonProduto();
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/produtos").contentType(MediaType.APPLICATION_JSON).content(json));
         resultActions.andExpect(MockMvcResultMatchers.status().isCreated());
         validaProduto(resultActions);
@@ -74,7 +74,7 @@ class ProdutoControllerTest {
     void testeMetodoAlterarProduto() throws Exception{
         when(repository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(1));
         when(repository.save(any())).thenReturn(Builders.builderProduto().get(0));
-        String json = builderJson();
+        String json = Builders.builderJsonProduto();
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/produtos/{id}", Builders.builderProduto().get(0).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
                 andExpect(MockMvcResultMatchers.status().isOk());
@@ -86,7 +86,7 @@ class ProdutoControllerTest {
         when(repository.findAll()).thenReturn(Builders.builderProduto());
         when(repository.save(any())).thenReturn(Builders.builderProduto().get(0));
 
-        String json = builderJson();
+        String json =   Builders.builderJsonProduto();
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/produtos").contentType(MediaType.APPLICATION_JSON).content(json));
         resultActions.andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
@@ -106,9 +106,5 @@ class ProdutoControllerTest {
                 .andExpect(jsonPath(index.concat("inativo")).value(produto.isInativo()))
                 .andExpect(jsonPath(index.concat("marca")).value(produto.getMarca()))
                 .andExpect(jsonPath(index.concat("valor")).value(produto.getValor()));
-    }
-
-    private String builderJson(){
-        return "{\"nome\": \"Tenis\", \"marca\":\"Nike\", \"valor\": 320}";
     }
 }

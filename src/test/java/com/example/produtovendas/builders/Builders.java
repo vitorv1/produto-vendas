@@ -47,9 +47,22 @@ public abstract class Builders {
 
     public static List<VendaEntity> builderVenda(){
         List<VendaEntity> vendaEntities = new ArrayList<>();
-        vendaEntities.add(new VendaEntity(2L, Builders.builderCliente().get(0), false, 120, 10, Collections.emptyList(), LocalDate.now()));
-        vendaEntities.add(new VendaEntity(7L, Builders.builderCliente().get(1), false, 520, 0, Collections.emptyList(), LocalDate.now()));
+        List<ProdutoEntity> produtoList = new ArrayList<>();
+        produtoList.add(builderProduto().get(0));
+        produtoList.add(builderProduto().get(0));
+        vendaEntities.add(new VendaEntity(2L, Builders.builderCliente().get(0), false, 120, 10, produtoList, LocalDate.now()));
+        vendaEntities.add(new VendaEntity(7L, Builders.builderCliente().get(1), false, 520, 0, produtoList, LocalDate.now()));
         return vendaEntities;
     }
+    public static String builderJsonVenda(){
+        return "{\"idCliente\":12,\"desconto\":10,\"listaProdutos\":[{\"id\":3},{\"id\":7}]}";
+    }
 
+    public static String builderJsonProduto(){
+        return "{\"nome\": \"Tenis\", \"marca\":\"Nike\", \"valor\": 320}";
+    }
+
+    public static String builderJsonCliente(){
+        return "{\"nome\": \"Mariana\", \"cpf\":\"456357159-17\", \"email\": \"email@gmail.com\", \"numeroTelefone\": \"(44)99874-8356\"}";
+    }
 }

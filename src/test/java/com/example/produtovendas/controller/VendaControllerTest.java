@@ -40,12 +40,13 @@ class VendaControllerTest {
 
     @Test
     void testeMetodoCadastroVenda() throws Exception {
-        when(produtoRepository.findById(any())).thenReturn(Optional.of(new ProdutoEntity()));
+        when(produtoRepository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(0));
         when(clienteRepository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
         when(repository.save(any())).thenReturn(Builders.builderVenda().get(0));
-        String json = builderJson();
+        String json = Builders.builderJsonVenda();
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/vendas").contentType(MediaType.APPLICATION_JSON).content(json)).
                 andExpect(MockMvcResultMatchers.status().isCreated());
+        System.out.println(resultActions);
         validaVenda(resultActions);
     }
 
@@ -82,7 +83,7 @@ class VendaControllerTest {
         when(repository.findById(any())).thenReturn(Builders.builderVendaOptional().get(0));
         when(repository.save(any())).thenReturn(Builders.builderVenda().get(0));
 
-        String json = builderJson();
+        String json = Builders.builderJsonVenda();
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/vendas/{id}", Builders.builderVenda().get(0).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
                 andExpect(MockMvcResultMatchers.status().isOk());
@@ -92,11 +93,11 @@ class VendaControllerTest {
 
     private void validaVenda(ResultActions resultActions) throws Exception{
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(Builders.builderVenda().get(0).getId())).
-                andExpect(MockMvcResultMatchers.jsonPath("$.clienteEntity").value(Builders.builderVenda().get(0).getClienteEntity())).
+                andExpect(MockMvcResultMatchers.jsonPath("$.cliente").value(Builders.builderVenda().get(0).getClienteEntity())).
                 andExpect(MockMvcResultMatchers.jsonPath("$.inativo").value(Builders.builderVenda().get(0).isInativo())).
                 andExpect(MockMvcResultMatchers.jsonPath("$.valor").value(Builders.builderVenda().get(0).getValor())).
                 andExpect(MockMvcResultMatchers.jsonPath("$.desconto").value(Builders.builderVenda().get(0).getDesconto())).
-                andExpect(MockMvcResultMatchers.jsonPath("$.listaProduto").value(Builders.builderVenda().get(0).getListaProdutos())).
+                andExpect(MockMvcResultMatchers.jsonPath("$.listaProdutos").value(Builders.builderVenda().get(0).getListaProdutos())).
                 andExpect(MockMvcResultMatchers.jsonPath("$.dataVenda").value(Builders.builderVenda().get(0).getDataVenda()));
     }
 
@@ -109,9 +110,5 @@ class VendaControllerTest {
                 andExpect(jsonPath(index.concat("desconto")).value(vendaEntity.getDesconto())).
                 andExpect(jsonPath(index.concat("listaProdutos")).value(vendaEntity.getListaProdutos())).
                 andExpect(jsonPath(index.concat("dataVenda")).value(vendaEntity.getDataVenda()));
-    }
-
-    private String builderJson(){
-        return "{\"idCliente\":12,\"desconto\":10,\"listaProdutos\":[{\"id\":3},{\"id\":7}]}";
     }
 }

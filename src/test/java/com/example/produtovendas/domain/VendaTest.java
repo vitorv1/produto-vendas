@@ -1,5 +1,6 @@
 package com.example.produtovendas.domain;
 
+import com.example.produtovendas.builders.Builders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -13,8 +14,7 @@ class VendaTest {
 
     @Test
     void testeMetodoInativar() {
-        List<Produto> produtoList = new ArrayList<>();
-        Venda venda = new Venda(1L, new Cliente(), 2L, 0, false, 0, produtoList, LocalDate.now());
+        Venda venda = Builders.builderVendaDomain().get(0);
         venda.inativar();
         Assertions.assertTrue(venda.isInativo());
     }
@@ -22,22 +22,14 @@ class VendaTest {
     @Test
     void atualizaDados() {
         Long id = 2L;
-        Cliente cliente = new Cliente(1L, "Vitor", false, "123456789-99", "email@gmail.com", "(44)99874-8356");
+        Cliente cliente = Builders.builderClienteDomain().get(0);
         Long idCliente = 1L;
         double valor = 350;
         Integer desconto = 10;
-        List<Produto> produtos = new ArrayList<>();
+        List<Produto> produtos = Builders.builderProdutoDomain(); ;
         LocalDate data = LocalDate.now();
 
-        Produto produto1 = new Produto(3L, "Tenis", false, "Nike", 220);
-        Produto produto2 = new Produto(5L, "Camiseta", false, "Vans", 330);
-
-        produtos.add(produto1);
-        produtos.add(produto2);
-
-        List<Produto> produtoList = new ArrayList<>();
-
-        Venda venda = new Venda(id, new Cliente(), 2L, 0, false, 0, produtoList, LocalDate.now());
+        Venda venda = Builders.builderVendaDomain().get(0);
 
         Venda vendaDto = new Venda(null, cliente, idCliente, valor, false, desconto, produtos, data);
 

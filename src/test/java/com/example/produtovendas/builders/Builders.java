@@ -1,8 +1,14 @@
 package com.example.produtovendas.builders;
 
+import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
+import com.example.produtovendas.infra.mappers.ClienteMapper;
+import com.example.produtovendas.infra.mappers.ProdutoMapper;
+import com.example.produtovendas.infra.mappers.VendaMapper;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -54,6 +60,28 @@ public abstract class Builders {
         vendaEntities.add(new VendaEntity(7L, Builders.builderCliente().get(1), false, 520, 0, produtoList, LocalDate.now()));
         return vendaEntities;
     }
+
+    public static List<Cliente> builderClienteDomain(){
+        List<Cliente> clienteList = new ArrayList<>();
+        clienteList.add(ClienteMapper.paraCliente(Builders.builderCliente().get(0)));
+        clienteList.add(ClienteMapper.paraCliente(Builders.builderCliente().get(1)));
+        return clienteList;
+    }
+
+    public static List<Produto> builderProdutoDomain(){
+        List<Produto> produtoList = new ArrayList<>();
+        produtoList.add(ProdutoMapper.paraProduto(Builders.builderProduto().get(0)));
+        produtoList.add(ProdutoMapper.paraProduto(Builders.builderProduto().get(1)));
+        return produtoList;
+    }
+
+    public static List<Venda> builderVendaDomain(){
+        List<Venda> vendaList = new ArrayList<>();
+        vendaList.add(VendaMapper.paraDomain(Builders.builderVenda().get(0)));
+        vendaList.add(VendaMapper.paraDomain(Builders.builderVenda().get(1)));
+        return vendaList;
+    }
+
     public static String builderJsonVenda(){
         return "{\"idCliente\":12,\"desconto\":10,\"listaProdutos\":[{\"id\":3},{\"id\":7}]}";
     }

@@ -1,7 +1,9 @@
 package com.example.produtovendas.domain;
 
+import com.example.produtovendas.builders.Builders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -9,11 +11,11 @@ class ProdutoTest {
 
     @Test
     void testeMetodoAtualizaDados(){
-        Long id = 3L;
+        Long id = 1L;
         String nome = "Calça";
         String marca = "Vans";
         double valor = 300;
-        Produto produto = new Produto(id, "Tenis", false, "Nike", 250);
+        Produto produto = Builders.builderProdutoDomain().get(0);
         Produto produtoDto = new Produto(null, nome, false, marca, valor);
 
         produto.atualizaDados(produtoDto);
@@ -27,7 +29,7 @@ class ProdutoTest {
 
     @Test
     void testeMetodoInativar() {
-        Produto produto = new Produto(1L, "Tenis", false, "Nike", 250);
+        Produto produto = Builders.builderProdutoDomain().get(0);
         produto.inativar();
         Assertions.assertTrue(produto.isInativo());
     }

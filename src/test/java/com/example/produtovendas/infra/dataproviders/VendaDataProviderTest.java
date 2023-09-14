@@ -1,5 +1,6 @@
 package com.example.produtovendas.infra.dataproviders;
 
+import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static com.example.produtovendas.validators.Validators.validaVendaDomain;
 import static org.mockito.ArgumentMatchers.any;
 
 class VendaDataProviderTest {
@@ -42,59 +43,13 @@ class VendaDataProviderTest {
 
     @Test
     void testeMetodoSalvar(){
-        Long idCliente = 1L;
-        String nome = "Vitor";
-        boolean inativo = false;
-        String cpf = "123456789-11";
-        String email = "vitorhvvieira@gmail.com";
-        String numeroTelefone = "vitorhvvieira@gmail.com";
-
-        Long idProduto1 = 2L;
-        String nomeProduto1 = "Tenis";
-        String marcaProduto1 = "Vans";
-        double valor1 = 300;
-
-        Long idProduto2 = 4L;
-        String nomeProduto2 = "Camiseta";
-        String marcaProduto2 = "High";
-        double valor2 = 400;
-
-        Cliente cliente = new Cliente(idCliente, nome, inativo, cpf, email, numeroTelefone);
-        Produto produto1 = new Produto(idProduto1, nomeProduto1, inativo,marcaProduto1,valor1);
-        Produto produto2 = new Produto(idProduto2, nomeProduto2, inativo, marcaProduto2, valor2);
-
-        List<Produto> produtoList = new ArrayList<>();
-        produtoList.add(produto1);
-        produtoList.add(produto2);
-
-        Venda venda = new Venda(null, cliente, idCliente, 0, inativo, 0, produtoList, LocalDate.now());
+        Venda venda = Builders.builderVendaDomain().get(0);
+        venda.setId(null);
 
         Mockito.when(repository.save(any())).thenReturn(VendaMapper.paraEntity(venda));
 
         Venda vendaTeste = vendaDataProvider.salvar(venda);
-
-        Assertions.assertNull(vendaTeste.getId());
-        Assertions.assertEquals(cliente.getId(), vendaTeste.getCliente().getId());
-        Assertions.assertEquals(cliente.getNome(), vendaTeste.getCliente().getNome());
-        Assertions.assertEquals(cliente.isInativo(), vendaTeste.getCliente().isInativo());
-        Assertions.assertEquals(cliente.getCpf(), vendaTeste.getCliente().getCpf());
-        Assertions.assertEquals(cliente.getEmail(), vendaTeste.getCliente().getEmail());
-        Assertions.assertEquals(cliente.getNumeroTelefone(), vendaTeste.getCliente().getNumeroTelefone());
-        Assertions.assertEquals(idCliente, vendaTeste.getIdCliente());
-        Assertions.assertEquals(0, vendaTeste.getValor());
-        Assertions.assertEquals(inativo, vendaTeste.isInativo());
-        Assertions.assertEquals(0, vendaTeste.getDesconto());
-        Assertions.assertEquals(produto1.getId(), vendaTeste.getListaProdutos().get(0).getId());
-        Assertions.assertEquals(produto1.getNome(), vendaTeste.getListaProdutos().get(0).getNome());
-        Assertions.assertEquals(produto1.isInativo(), vendaTeste.getListaProdutos().get(0).isInativo());
-        Assertions.assertEquals(produto1.getMarca(), vendaTeste.getListaProdutos().get(0).getMarca());
-        Assertions.assertEquals(produto1.getValor(), vendaTeste.getListaProdutos().get(0).getValor());
-        Assertions.assertEquals(produto2.getId(), vendaTeste.getListaProdutos().get(1).getId());
-        Assertions.assertEquals(produto2.getNome(), vendaTeste.getListaProdutos().get(1).getNome());
-        Assertions.assertEquals(produto2.isInativo(), vendaTeste.getListaProdutos().get(1).isInativo());
-        Assertions.assertEquals(produto2.getMarca(), vendaTeste.getListaProdutos().get(1).getMarca());
-        Assertions.assertEquals(produto2.getValor(), vendaTeste.getListaProdutos().get(1).getValor());
-        Assertions.assertEquals(LocalDate.now(), vendaTeste.getDataVenda());
+        validaVendaDomain(vendaTeste, null);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package com.example.produtovendas.domain;
 
+import com.example.produtovendas.builders.Builders;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +10,7 @@ class ClienteTest {
 
     @Test
     void testeMetodoInativar() {
-        Cliente cliente = new Cliente(1L, "Vitor", false, "123456789-77", "vivi@gmail.com", "(44)99874-8356");
+        Cliente cliente = Builders.builderClienteDomain().get(0);
         cliente.inativar();
         Assertions.assertTrue(cliente.isInativo());
     }
@@ -21,7 +22,7 @@ class ClienteTest {
         String cpf = "789456123-99";
         String email = "francis@gmail.com";
         String numeroTelefone = "(44)99875-5623";
-        Cliente cliente = new Cliente(id, "Vitor", false, "123456789-77", "vivi@gmail.com", "(44)99874-8356");
+        Cliente cliente = Builders.builderClienteDomain().get(0);
         Cliente clienteDto = new Cliente(null, nome, false, cpf, email, numeroTelefone);
 
         cliente.atualizarDados(clienteDto);

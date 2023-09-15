@@ -43,10 +43,6 @@ class ClienteServiceTest {
     void testeMetodoCadastroCliente(){
         Cliente cliente = Builders.builderClienteDomain().get(0);
 
-        List<Cliente> clienteList = new ArrayList<>();
-
-        clienteList.add(new Cliente(2L, "Daniel", false, "321654987-99", "francis@hotmail.com", "(44)99857-6969"));
-        clienteList.add(new Cliente(3L, "Ana", false, "852963741-87", "rita@gmail.com", "(44)99326-8547"));
         when(clienteDataProvider.consultarTodos()).thenReturn(Builders.builderClienteDomain());
         when(clienteDataProvider.salvar(captor.capture())).thenReturn(cliente);
 
@@ -63,7 +59,7 @@ class ClienteServiceTest {
 
         List<Cliente> clienteListTeste = assertDoesNotThrow(() -> clienteService.consultaTodosClientes());
 
-        Validators.validaClienteDomain(clienteListTeste.get(0), clienteListTeste.get(1));
+        validaClienteDomain(clienteListTeste.get(0), clienteListTeste.get(1));
 
         Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarTodos();
     }

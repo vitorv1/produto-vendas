@@ -15,26 +15,19 @@ class ClienteMapperTest {
     @Test
     void testaSeRetornaUmClienteDomain() {
         Cliente cliente = ClienteMapper.paraCliente(Builders.builderCliente().get(0));
-        List<ClienteEntity> clienteEntityList = new ArrayList<>();
-        clienteEntityList.add(ClienteMapper.paraEntity(cliente));
-        Validators.validaClienteEntity(clienteEntityList);
+        Validators.validaClienteDomain(cliente, null);
     }
 
     @Test
     void testaSeRetornaUmClienteEntity() {
         Cliente clienteTeste = Builders.builderClienteDomain().get(0);
         ClienteEntity clienteEntity = ClienteMapper.paraEntity(clienteTeste);
-        List<ClienteEntity> clienteEntities = new ArrayList<>();
-        clienteEntities.add(clienteEntity);
-        Validators.validaClienteEntity(clienteEntities);
+        Validators.validaClienteEntity(clienteEntity, null);
     }
 
     @Test
     void testeSeRetornaUmaListaDeClientesDomain() {
         List<Cliente> clientes = ClienteMapper.paraClientes(Builders.builderCliente());
-        List<ClienteEntity> clienteEntities = new ArrayList<>();
-        clienteEntities.add(ClienteMapper.paraEntity(clientes.get(0)));
-        clienteEntities.add(ClienteMapper.paraEntity(clientes.get(1)));
-        Validators.validaClienteEntity(clienteEntities);
+        Validators.validaClienteDomain(clientes.get(0), clientes.get(1));
     }
 }

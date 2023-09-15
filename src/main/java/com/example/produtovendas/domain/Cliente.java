@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 @NoArgsConstructor
@@ -29,7 +30,7 @@ public class Cliente {
         this.inativo = true;
     }
 
-    public void atualizarDados(Cliente clienteAlterado) {
+    public void atualizarDados(@NotNull Cliente clienteAlterado) {
         this.inativo = false;
         this.nome = clienteAlterado.getNome();
         this.cpf = clienteAlterado.getCpf();

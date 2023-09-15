@@ -1,11 +1,11 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.builders.Builders;
-import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import com.example.produtovendas.infra.repositories.VendaRepository;
+import com.example.produtovendas.validators.Validators;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -16,8 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import java.util.Optional;
 
+import static com.example.produtovendas.validators.Validators.validaVendaController;
+import static com.example.produtovendas.validators.Validators.validaVendasController;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -42,73 +43,55 @@ class VendaControllerTest {
     void testeMetodoCadastroVenda() throws Exception {
         when(produtoRepository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(0));
         when(clienteRepository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
-        when(repository.save(any())).thenReturn(Builders.builderVenda().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderVendaEntity().get(0));
         String json = Builders.builderJsonVenda();
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/vendas").contentType(MediaType.APPLICATION_JSON).content(json)).
                 andExpect(MockMvcResultMatchers.status().isCreated());
         System.out.println(resultActions);
-        validaVenda(resultActions);
+        validaVendaController(resultActions);
     }
 
     @Test
     void testeMetodoBuscarPorId() throws Exception {
         when(repository.findById(any())).thenReturn(Builders.builderVendaOptional().get(0));
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/vendas/{id}", Builders.builderVenda().get(0).getId())).
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/vendas/{id}", Builders.builderVendaEntity().get(0).getId())).
                 andExpect(MockMvcResultMatchers.status().isOk());
-        validaVenda(resultActions);
+        validaVendaController(resultActions);
     }
 
     @Test
     void testeMetodoBuscarTodos() throws Exception{
-        when(repository.findAll()).thenReturn(Builders.builderVenda());
+        when(repository.findAll()).thenReturn(Builders.builderVendaEntity());
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/vendas")).
                 andExpect(MockMvcResultMatchers.status().isOk());
-        validaVendas(resultActions, "0", Builders.builderVenda().get(0));
-        validaVendas(resultActions, "1", Builders.builderVenda().get(1));
+        validaVendasController(resultActions, "0", Builders.builderVendaEntity().get(0));
+        validaVendasController(resultActions, "1", Builders.builderVendaEntity().get(1));
     }
 
     @Test
     void testeMetodoDeletarVenda() throws Exception {
         when(repository.findById(any())).thenReturn(Builders.builderVendaOptional().get(0));
-        when(repository.save(any())).thenReturn(Builders.builderVenda().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderVendaEntity().get(0));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/vendas/{id}", Builders.builderVenda().get(0).getId())).
+        mockMvc.perform(MockMvcRequestBuilders.delete("/vendas/{id}", Builders.builderVendaEntity().get(0).getId())).
                 andExpect(MockMvcResultMatchers.status().isNoContent());
     }
 
     @Test
     void testeMetodoAlterarVenda() throws Exception {
         when(repository.findById(any())).thenReturn(Builders.builderVendaOptional().get(0));
-        when(repository.save(any())).thenReturn(Builders.builderVenda().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderVendaEntity().get(0));
         when(clienteRepository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
         when(produtoRepository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(0));
 
         String json = Builders.builderJsonVenda();
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/vendas/{id}", Builders.builderVenda().get(0).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/vendas/{id}", Builders.builderVendaEntity().get(0).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
                 andExpect(MockMvcResultMatchers.status().isOk());
 
-        validaVenda(resultActions);
+        validaVendaController(resultActions);
     }
 
-    private void validaVenda(ResultActions resultActions) throws Exception{
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(Builders.builderVenda().get(0).getId())).
-                andExpect(MockMvcResultMatchers.jsonPath("$.cliente").value(Builders.builderVenda().get(0).getClienteEntity())).
-                andExpect(MockMvcResultMatchers.jsonPath("$.inativo").value(Builders.builderVenda().get(0).isInativo())).
-                andExpect(MockMvcResultMatchers.jsonPath("$.valor").value(Builders.builderVenda().get(0).getValor())).
-                andExpect(MockMvcResultMatchers.jsonPath("$.desconto").value(Builders.builderVenda().get(0).getDesconto()));
-                //andExpect(MockMvcResultMatchers.jsonPath("$.listaProdutos").value(Builders.builderVenda().get(0).getListaProdutos()));
-    }
-
-    private void validaVendas(ResultActions resultActions, String indexListVenda, VendaEntity vendaEntity) throws Exception{
-        String index = "$[".concat(indexListVenda).concat("].");
-        resultActions.andExpect(jsonPath(index.concat("id")).value(vendaEntity.getId())).
-                andExpect(jsonPath(index.concat("cliente")).value(vendaEntity.getClienteEntity())).
-                andExpect(jsonPath(index.concat("inativo")).value(vendaEntity.isInativo())).
-                andExpect(jsonPath(index.concat("valor")).value(vendaEntity.getValor())).
-                andExpect(jsonPath(index.concat("desconto")).value(vendaEntity.getDesconto()));
-                //andExpect(jsonPath(index.concat("listaProdutos")).value(vendaEntity.getListaProdutos())).
-    }
 }

@@ -17,7 +17,7 @@ import java.util.Optional;
 
 public abstract class Builders {
 
-    public static List<ProdutoEntity> builderProduto(){
+    public static List<ProdutoEntity> builderProdutoEntity(){
         List<ProdutoEntity> produtoEntityList = new ArrayList<>();
         produtoEntityList.add(new ProdutoEntity(1L, "Tenis", false, "Nike", 320));
         produtoEntityList.add(new ProdutoEntity(3L ,"Camiseta", false, "Puma", 400));
@@ -26,11 +26,11 @@ public abstract class Builders {
 
     public static List<Optional<ProdutoEntity>> builderProdutoOptional(){
         List<Optional<ProdutoEntity>> produtoEntityList = new ArrayList<>();
-        produtoEntityList.add(Optional.of(builderProduto().get(0)));
-        produtoEntityList.add(Optional.of(builderProduto().get(1)));
+        produtoEntityList.add(Optional.of(builderProdutoEntity().get(0)));
+        produtoEntityList.add(Optional.of(builderProdutoEntity().get(1)));
         return produtoEntityList;
     }
-    public static List<ClienteEntity> builderCliente(){
+    public static List<ClienteEntity> builderClienteEntity(){
         List<ClienteEntity> clienteEntities = new ArrayList<>();
         clienteEntities.add(new ClienteEntity(1L, "Mariana", false, "456357159-17", "email@gmail.com", "(44)99874-8356"));
         clienteEntities.add(new ClienteEntity(3L, "João", false, "789456123-55", "", "(44)98747-5623"));
@@ -38,46 +38,46 @@ public abstract class Builders {
     }
     public static List<Optional<ClienteEntity>> builderClienteOptional(){
         List<Optional<ClienteEntity>> clienteEntityList = new ArrayList<>();
-        clienteEntityList.add(Optional.of(builderCliente().get(0)));
-        clienteEntityList.add(Optional.of(builderCliente().get(1)));
+        clienteEntityList.add(Optional.of(builderClienteEntity().get(0)));
+        clienteEntityList.add(Optional.of(builderClienteEntity().get(1)));
         return clienteEntityList;
     }
 
     public static List<Optional<VendaEntity>> builderVendaOptional(){
         List<Optional<VendaEntity>> vendaEntities = new ArrayList<>();
-        vendaEntities.add(Optional.of(builderVenda().get(0)));
-        vendaEntities.add(Optional.of(builderVenda().get(1)));
+        vendaEntities.add(Optional.of(builderVendaEntity().get(0)));
+        vendaEntities.add(Optional.of(builderVendaEntity().get(1)));
         return vendaEntities;
     }
 
-    public static List<VendaEntity> builderVenda(){
+    public static List<VendaEntity> builderVendaEntity(){
         List<VendaEntity> vendaEntities = new ArrayList<>();
         List<ProdutoEntity> produtoList = new ArrayList<>();
-        produtoList.add(builderProduto().get(0));
-        produtoList.add(builderProduto().get(0));
-        vendaEntities.add(new VendaEntity(2L, Builders.builderCliente().get(0), false, 120, 10, produtoList, LocalDate.now()));
-        vendaEntities.add(new VendaEntity(7L, Builders.builderCliente().get(1), false, 520, 0, produtoList, LocalDate.now()));
+        produtoList.add(builderProdutoEntity().get(0));
+        produtoList.add(builderProdutoEntity().get(1));
+        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), false, 576, 10, produtoList, LocalDate.now()));
+        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), false, 0, 0, produtoList, LocalDate.now()));
         return vendaEntities;
     }
 
     public static List<Cliente> builderClienteDomain(){
         List<Cliente> clienteList = new ArrayList<>();
-        clienteList.add(ClienteMapper.paraCliente(Builders.builderCliente().get(0)));
-        clienteList.add(ClienteMapper.paraCliente(Builders.builderCliente().get(1)));
+        clienteList.add(ClienteMapper.paraCliente(Builders.builderClienteEntity().get(0)));
+        clienteList.add(ClienteMapper.paraCliente(Builders.builderClienteEntity().get(1)));
         return clienteList;
     }
 
     public static List<Produto> builderProdutoDomain(){
         List<Produto> produtoList = new ArrayList<>();
-        produtoList.add(ProdutoMapper.paraProduto(Builders.builderProduto().get(0)));
-        produtoList.add(ProdutoMapper.paraProduto(Builders.builderProduto().get(1)));
+        produtoList.add(ProdutoMapper.paraProduto(Builders.builderProdutoEntity().get(0)));
+        produtoList.add(ProdutoMapper.paraProduto(Builders.builderProdutoEntity().get(1)));
         return produtoList;
     }
 
-    public static List<Venda> builderVendaDomain(){
+    public static List<Venda> builderVendaDomain() {
         List<Venda> vendaList = new ArrayList<>();
-        vendaList.add(VendaMapper.paraDomain(Builders.builderVenda().get(0)));
-        vendaList.add(VendaMapper.paraDomain(Builders.builderVenda().get(1)));
+        vendaList.add(VendaMapper.paraDomain(Builders.builderVendaEntity().get(0)));
+        vendaList.add(VendaMapper.paraDomain(Builders.builderVendaEntity().get(1)));
         return vendaList;
     }
 

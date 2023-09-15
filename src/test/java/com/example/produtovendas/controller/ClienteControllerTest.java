@@ -10,11 +10,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
+import java.util.function.BiConsumer;
+
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import static com.example.produtovendas.validators.Validators.validaCliente;
+import static com.example.produtovendas.validators.Validators.validarAtributosDeCliente;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -35,7 +39,7 @@ class ClienteControllerTest {
     void testeMetodoCadastroCliente() throws Exception {
 
         when(repository.findAll()).thenReturn(Collections.emptyList());
-        when(repository.save(any())).thenReturn(Builders.builderCliente().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));
 
         String clienteJson = Builders.builderJsonCliente();
 
@@ -47,22 +51,22 @@ class ClienteControllerTest {
 
     @Test
     void testeMetodoConsultarTodosClientes() throws Exception {
-        when(repository.findAll()).thenReturn(Builders.builderCliente());
+        when(repository.findAll()).thenReturn(Builders.builderClienteEntity());
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/clientes"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(2)));
 
-        validarAtributosDeCliente(resultActions, "0", Builders.builderCliente().get(0));
-        validarAtributosDeCliente(resultActions, "1", Builders.builderCliente().get(1));
+        validarAtributosDeCliente(resultActions, "0", Builders.builderClienteEntity().get(0));
+        validarAtributosDeCliente(resultActions, "1", Builders.builderClienteEntity().get(1));
     }
 
     @Test
     void testeMetodoConsultaClientePorId() throws Exception {
         when(repository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/clientes/{id}", Builders.builderCliente().get(0).getId())).
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/clientes/{id}", Builders.builderClienteEntity().get(0).getId())).
                 andExpect(status().isOk()).
                 andExpect(content().contentType(MediaType.APPLICATION_JSON));
         validaCliente(resultActions);
@@ -72,9 +76,9 @@ class ClienteControllerTest {
     void testeMetodoDeletarCliente() throws Exception {
 
         when(repository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
-        when(repository.save(any())).thenReturn(Builders.builderCliente().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));
 
-        mockMvc.perform(MockMvcRequestBuilders.delete("/clientes/{id}", Builders.builderCliente().get(0).getId())).
+        mockMvc.perform(MockMvcRequestBuilders.delete("/clientes/{id}", Builders.builderClienteEntity().get(0).getId())).
                 andExpect(status().isNoContent());
     }
 
@@ -82,18 +86,18 @@ class ClienteControllerTest {
     void testeMetodoAltararCliente() throws Exception {
 
         when(repository.findById(any())).thenReturn(Builders.builderClienteOptional().get(1));
-        when(repository.save(any())).thenReturn(Builders.builderCliente().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));
         String json = Builders.builderJsonCliente();
 
-        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/clientes/{id}", Builders.builderCliente().get(1).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
+        ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/clientes/{id}", Builders.builderClienteEntity().get(1).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
         andExpect(status().isOk());
         validaCliente(resultActions);
     }
 
     @Test
     void testeMetodoCadastroClienteEstaLancandoException() throws Exception {
-        when(repository.findAll()).thenReturn(Builders.builderCliente());
-        when(repository.save(any())).thenReturn(Builders.builderCliente().get(0));
+        when(repository.findAll()).thenReturn(Builders.builderClienteEntity());
+        when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));
 
         String clienteJson = Builders.builderJsonCliente();
 
@@ -101,21 +105,15 @@ class ClienteControllerTest {
                 andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 
-    public void validarAtributosDeCliente(ResultActions resultActions, String indexClienteList, ClienteEntity cliente) throws Exception {
-        String index = "$[".concat(indexClienteList).concat("].");
-        resultActions.andExpect(jsonPath(index.concat("id")).value(cliente.getId()))
-                .andExpect(jsonPath(index.concat("nome")).value(cliente.getNome()))
-                .andExpect(jsonPath(index.concat("inativo")).value(cliente.isInativo()))
-                .andExpect(jsonPath(index.concat("cpf")).value(cliente.getCpf()))
-                .andExpect(jsonPath(index.concat("email")).value(cliente.getEmail()))
-                .andExpect(jsonPath(index.concat("numeroTelefone")).value(cliente.getNumeroTelefone()));
-    }
+    @Test
+    void testeMetodoCadastroClienteEstaValidando() throws Exception {
+        when(repository.findAll()).thenReturn(Builders.builderClienteEntity());
+        when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));
 
-    private void validaCliente(ResultActions resultActions) throws Exception {
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(Builders.builderCliente().get(0).getId()));
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.nome").value(Builders.builderCliente().get(0).getNome()));
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.inativo").value(Builders.builderCliente().get(0).isInativo()));
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value(Builders.builderCliente().get(0).getCpf()));
-        resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.numeroTelefone").value(Builders.builderCliente().get(0).getNumeroTelefone()));
+        String clienteJson = Builders.builderJsonCliente();
+
+        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson));
+
+        result.andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }

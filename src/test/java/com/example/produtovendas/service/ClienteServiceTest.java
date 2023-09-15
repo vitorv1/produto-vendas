@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResultUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.produtovendas.service.ClienteService.MENSAGEM_CLIENTE_EXISTENTE;
-import static com.example.produtovendas.validators.Validators.validaClienteDomain;
-import static com.example.produtovendas.validators.Validators.validaProdutoEntity;
+import static com.example.produtovendas.validators.Validators.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -43,7 +43,7 @@ class ClienteServiceTest {
     void testeMetodoCadastroCliente(){
         Cliente cliente = Builders.builderClienteDomain().get(0);
 
-        when(clienteDataProvider.consultarTodos()).thenReturn(Builders.builderClienteDomain());
+        when(clienteDataProvider.consultarTodos()).thenReturn(Collections.emptyList());
         when(clienteDataProvider.salvar(captor.capture())).thenReturn(cliente);
 
         clienteService.cadastroCliente(cliente);
@@ -121,6 +121,6 @@ class ClienteServiceTest {
 
         Cliente clienteTeste = captor.getValue();
 
-        validaClienteDomain(clienteTeste, null);
+        validaClienteDomainAlterado(clienteTeste);
     }
 }

@@ -57,7 +57,7 @@ class ProdutoDataProviderTest {
 
     @Test
     void testeMetodoConsultaTodos() {
-        List<ProdutoEntity> produtoEntities = Builders.builderProduto();
+        List<ProdutoEntity> produtoEntities = Builders.builderProdutoEntity();
 
         Mockito.when(repository.findAll()).thenReturn(produtoEntities);
         List<Produto> produtoList = produtoDataProvider.consultaTodos();

@@ -39,7 +39,7 @@ class ClienteDataProviderTest {
 
     @Test
     void testeMetodoConsultarTodos(){
-        List<ClienteEntity> clienteEntities = Builders.builderCliente();
+        List<ClienteEntity> clienteEntities = Builders.builderClienteEntity();
 
         Mockito.when(repository.findAll()).thenReturn(clienteEntities);
         List<Cliente> clientes = clienteDataProvider.consultarTodos();

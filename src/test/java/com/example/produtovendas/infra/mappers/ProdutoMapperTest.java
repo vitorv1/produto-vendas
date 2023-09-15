@@ -14,7 +14,7 @@ class ProdutoMapperTest {
 
     @Test
     void testaSeRetornaUmProdutoDomain() {
-        Produto produto = ProdutoMapper.paraProduto(Builders.builderProduto().get(0));
+        Produto produto = ProdutoMapper.paraProduto(Builders.builderProdutoEntity().get(0));
         List<ProdutoEntity> produtoEntities = new ArrayList<>();
         produtoEntities.add(ProdutoMapper.paraEntity(produto));
         validaProdutoEntity(produtoEntities);
@@ -30,7 +30,7 @@ class ProdutoMapperTest {
 
     @Test
     void testaSeRetornaUmaListaDeProdutosDomains() {
-        List<Produto> produtoList = ProdutoMapper.paraProdutos(Builders.builderProduto());
+        List<Produto> produtoList = ProdutoMapper.paraProdutos(Builders.builderProdutoEntity());
         List<ProdutoEntity> produtoEntities = new ArrayList<>();
         produtoEntities.add(ProdutoMapper.paraEntity(produtoList.get(0)));
         produtoEntities.add(ProdutoMapper.paraEntity(produtoList.get(1)));

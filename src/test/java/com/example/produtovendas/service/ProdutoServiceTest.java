@@ -13,11 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.produtovendas.builders.Builders.builderProdutoDomain;
 import static com.example.produtovendas.service.ProdutoService.MENSAGEM_PRODUTO_EXISTENTE;
 import static com.example.produtovendas.validators.Validators.validaProdutoDomain;
+import static com.example.produtovendas.validators.Validators.validaProdutoDomainAlterado;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -41,15 +44,10 @@ class ProdutoServiceTest {
 
     @Test
     void testeMetodoCadastroProduto(){
-        Long id3 = 3L;
-        String nome3 = "Colar";
-        String marca3 = "Raiban";
-        double valor3 = 400;
+        Produto produto = Builders.builderProdutoDomain().get(0);
 
-        Produto produto = new Produto(id3, nome3, false, marca3, valor3);
-
-        when(produtoDataProvider.consultaTodos()).thenReturn(Builders.builderProdutoDomain());
-        when(produtoDataProvider.salvar(captor.capture())).thenReturn(any());
+        when(produtoDataProvider.consultaTodos()).thenReturn(Collections.emptyList());
+        when(produtoDataProvider.salvar(captor.capture())).thenReturn(produto);
 
         produtoService.cadastroProduto(produto);
 
@@ -61,18 +59,14 @@ class ProdutoServiceTest {
     @Test
     void testeMetodoConsultarProdutoPorId() {
         Long id1 = 1L;
-        String nome1 = "Tenis";
-        boolean inativo = false;
-        String marca1 = "Nike";
-        double valor1 = 250;
 
-        Optional<Produto> produtoOptional = Optional.of(new Produto(id1, nome1, inativo, marca1, valor1));
+        Optional<Produto> produtoOptional = Optional.of(builderProdutoDomain().get(0));
 
         when(produtoDataProvider.consultarPorId(any())).thenReturn(produtoOptional);
 
         Produto produtoTeste = assertDoesNotThrow(() -> produtoService.consultarProdutoPorId(id1));
 
-        Assertions.assertEquals(produtoOptional.get(), produtoTeste);
+        validaProdutoDomain(produtoTeste, null);
 
         Mockito.verify(produtoDataProvider, Mockito.times(1)).consultarPorId(id1);
     }
@@ -90,30 +84,11 @@ class ProdutoServiceTest {
 
     @Test
     void testeMetodoConsultaTodosProdutos() {
-        Long id1 = 1L;
-        String nome1 = "Tenis";
-        boolean inativo = false;
-        String marca1 = "Nike";
-        double valor1 = 250;
-
-        Long id2 = 2L;
-        String nome2 = "Camiseta";
-        String marca2 = "High";
-        double valor2 = 300;
-
-        List<Produto> produtoList = new ArrayList<>();
-
-        Produto produto1 = new Produto(id1, nome1, inativo, marca1, valor1);
-        Produto produto2 = new Produto(id2, nome2, inativo, marca2, valor2);
-        produtoList.add(produto1);
-        produtoList.add(produto2);
-
-        Mockito.when(produtoDataProvider.consultaTodos()).thenReturn(produtoList);
+        Mockito.when(produtoDataProvider.consultaTodos()).thenReturn(builderProdutoDomain());
 
         List<Produto> produtosTeste = assertDoesNotThrow(()-> produtoService.consultaTodosProdutos());
 
-        Assertions.assertEquals(produtosTeste.get(0), produto1);
-        Assertions.assertEquals(produtosTeste.get(1), produto2);
+        validaProdutoDomain(produtosTeste.get(0), produtosTeste.get(1));
 
         Mockito.verify(produtoDataProvider, Mockito.times(1)).consultaTodos();
     }
@@ -121,12 +96,8 @@ class ProdutoServiceTest {
     @Test
     void testeMetodoDeletarProduto() {
         Long id = 1L;
-        String nome1 = "Tenis";
-        boolean inativo = false;
-        String marca1 = "Nike";
-        double valor1 = 250;
 
-        Optional<Produto> produtoOptional = Optional.of(new Produto(id, nome1, inativo, marca1, valor1));
+        Optional<Produto> produtoOptional = Optional.of(builderProdutoDomain().get(0));
         Mockito.when(produtoDataProvider.consultarPorId(any())).thenReturn(produtoOptional);
         when(produtoDataProvider.salvar(captor.capture())).thenReturn(any());
 
@@ -140,18 +111,10 @@ class ProdutoServiceTest {
     @Test
     void testaMetodoAlterarProduto() {
         Long id = 1L;
-        String nome1 = "Tenis";
-        boolean inativo = false;
-        String marca1 = "Nike";
-        double valor1 = 250;
 
-        String nome2 = "Camiseta";
-        String marca2 = "High";
-        double valor2 = 300;
+        Produto produtoDto = builderProdutoDomain().get(1);
 
-        Produto produtoDto = new Produto(null, nome2, inativo, marca2, valor2);
-
-        Optional<Produto> produtoOptional = Optional.of(new Produto(id, nome1, inativo, marca1, valor1));
+        Optional<Produto> produtoOptional = Optional.of(builderProdutoDomain().get(0));
 
         Mockito.when(produtoDataProvider.consultarPorId(any())).thenReturn(produtoOptional);
         Mockito.when(produtoDataProvider.salvar(captor.capture())).thenReturn(any());
@@ -160,10 +123,6 @@ class ProdutoServiceTest {
 
         Produto produtoTeste = captor.getValue();
 
-        Assertions.assertEquals(produtoTeste.getId(), id);
-        Assertions.assertEquals(produtoTeste.getNome(), nome2);
-        Assertions.assertFalse(produtoTeste.isInativo());
-        Assertions.assertEquals(produtoTeste.getMarca(), marca2);
-        Assertions.assertEquals(produtoTeste.getValor(), valor2);
+        validaProdutoDomainAlterado(produtoTeste);
     }
 }

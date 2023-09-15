@@ -4,14 +4,10 @@ import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
-import com.example.produtovendas.infra.entities.ClienteEntity;
-import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
-import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.mappers.VendaMapper;
 import com.example.produtovendas.infra.repositories.VendaRepository;
-import com.example.produtovendas.validators.Validators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,7 +61,7 @@ class VendaDataProviderTest {
 
     @Test
     void testeMetodoBuscarTodos(){
-        List<VendaEntity> vendaEntities = Builders.builderVenda();
+        List<VendaEntity> vendaEntities = Builders.builderVendaEntity();
         Mockito.when(repository.findAll()).thenReturn(vendaEntities);
 
         List<Venda> vendaListTeste = vendaDataProvider.buscarTodos();

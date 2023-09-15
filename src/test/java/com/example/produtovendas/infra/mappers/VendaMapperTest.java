@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.produtovendas.validators.Validators.validaVendaDomain;
 import static com.example.produtovendas.validators.Validators.validaVendaEntity;
 
 class VendaMapperTest {
@@ -15,25 +16,18 @@ class VendaMapperTest {
     @Test
     void testaSeRetornaUmEntity() {
         VendaEntity vendaEntity = VendaMapper.paraEntity(Builders.builderVendaDomain().get(0));
-        List<VendaEntity> vendaEntities = new ArrayList<>();
-        vendaEntities.add(vendaEntity);
-        validaVendaEntity(vendaEntities);
+        validaVendaEntity(vendaEntity, null);
     }
 
     @Test
     void testaSeRetornaUmDomain() {
         Venda venda = VendaMapper.paraDomain(Builders.builderVenda().get(0));
-        List<VendaEntity> vendaEntities = new ArrayList<>();
-        vendaEntities.add(VendaMapper.paraEntity(venda));
-        validaVendaEntity(vendaEntities);
+        validaVendaDomain(venda, null);
     }
 
     @Test
     void testaSeRetornaUmaListaDeDomains() {
         List<Venda> vendaList = VendaMapper.paraDomains(Builders.builderVenda());
-        List<VendaEntity> vendaEntities = new ArrayList<>();
-        vendaEntities.add(VendaMapper.paraEntity(vendaList.get(0)));
-        vendaEntities.add(VendaMapper.paraEntity(vendaList.get(1)));
-        validaVendaEntity(vendaEntities);
+        validaVendaDomain(vendaList.get(0), vendaList.get(1));
     }
 }

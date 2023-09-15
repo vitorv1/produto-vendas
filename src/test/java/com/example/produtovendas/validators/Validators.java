@@ -15,7 +15,6 @@ import java.util.List;
 
 public abstract class Validators {
 
-<<<<<<< HEAD
     public static void validaClienteEntity(ClienteEntity cliente1, ClienteEntity cliente2){
         List<ClienteEntity> clienteEntities = new ArrayList<>();
         if(cliente1 != null){
@@ -24,9 +23,6 @@ public abstract class Validators {
         if(cliente2 != null){
             clienteEntities.add(cliente2);
         }
-=======
-    public static void validaClienteEntity(List<ClienteEntity> clienteEntities){
->>>>>>> 133e1bf57b292e1800f28c46e617fd4b39f99c02
         for (int i = 0; i < clienteEntities.size(); i++) {
             Assertions.assertEquals(Builders.builderCliente().get(i).getId(), clienteEntities.get(i).getId());
             Assertions.assertEquals(Builders.builderCliente().get(i).getNome(), clienteEntities.get(i).getNome());
@@ -37,11 +33,7 @@ public abstract class Validators {
         }
     }
 
-<<<<<<< HEAD
     public static void validaProdutoEntity( List<ProdutoEntity> produtoEntities){
-=======
-    public static void validaProdutoEntity(List<ProdutoEntity> produtoEntities){
->>>>>>> 133e1bf57b292e1800f28c46e617fd4b39f99c02
         for (int i = 0; i < produtoEntities.size(); i++) {
             Assertions.assertEquals(Builders.builderProduto().get(i).getId(), produtoEntities.get(i).getId());
             Assertions.assertEquals(Builders.builderProduto().get(i).getNome(), produtoEntities.get(i).getNome());
@@ -51,7 +43,6 @@ public abstract class Validators {
         }
     }
 
-<<<<<<< HEAD
     public static void validaVendaEntity(VendaEntity venda1, VendaEntity venda2){
         List<VendaEntity> vendaEntities = new ArrayList<>();
         if(venda1 != null){
@@ -60,9 +51,6 @@ public abstract class Validators {
         if(venda2 != null){
             vendaEntities.add(venda2);
         }
-=======
-    public static void validaVendaEntity(List<VendaEntity> vendaEntities){
->>>>>>> 133e1bf57b292e1800f28c46e617fd4b39f99c02
         for (int i = 0; i < vendaEntities.size(); i++) {
             Assertions.assertEquals(Builders.builderVenda().get(i).getId(), vendaEntities.get(i).getId());
             Assertions.assertEquals(Builders.builderVenda().get(i).getClienteEntity(), vendaEntities.get(i).getClienteEntity());
@@ -83,16 +71,11 @@ public abstract class Validators {
             clienteList.add(cliente2);
         }
         for (int i = 0; i < clienteList.size(); i++) {
-<<<<<<< HEAD
             if(clienteList.get(i).getId() == null){
                 Assertions.assertNull(clienteList.get(i).getId());
             }else {
                 Assertions.assertEquals(Builders.builderClienteDomain().get(i).getId(), clienteList.get(i).getId());
             }
-=======
-            System.out.println(i);
-            Assertions.assertEquals(Builders.builderClienteDomain().get(i).getId(), clienteList.get(i).getId());
->>>>>>> 133e1bf57b292e1800f28c46e617fd4b39f99c02
             Assertions.assertEquals(Builders.builderClienteDomain().get(i).getNome(), clienteList.get(i).getNome());
             Assertions.assertFalse(clienteList.get(i).isInativo());
             Assertions.assertEquals(Builders.builderClienteDomain().get(i).getCpf(), clienteList.get(i).getCpf());

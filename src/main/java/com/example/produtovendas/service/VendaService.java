@@ -68,7 +68,9 @@ public class VendaService {
                 produtoListDto.add(produto);
             }
         }
-        vendaDto.setListaProdutos(produtoListDto);
+        if(produtoListDto.size() > 0){
+            vendaDto.setListaProdutos(produtoListDto);
+        }
         vendaDto.setValor(calcularValorVenda(vendaDto.getDesconto(), vendaDto.getListaProdutos()));
         venda.atualizaDados(vendaDto);
         return vendaDataProvider.salvar(venda);

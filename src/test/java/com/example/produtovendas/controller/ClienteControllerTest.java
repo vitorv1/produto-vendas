@@ -1,8 +1,8 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.builders.Builders;
-import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
+import com.example.produtovendas.validators.Validators;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -10,14 +10,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import java.util.Collections;
-import java.util.function.BiConsumer;
 
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.example.produtovendas.validators.Validators.validaCliente;
+import static com.example.produtovendas.validators.Validators.validaClienteDomain;
 import static com.example.produtovendas.validators.Validators.validarAtributosDeCliente;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -46,7 +45,7 @@ class ClienteControllerTest {
         ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson));
 
         result.andExpect(MockMvcResultMatchers.status().isCreated());
-        validaCliente(result);
+        Validators.validaClienteController(result);
     }
 
     @Test
@@ -69,7 +68,7 @@ class ClienteControllerTest {
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/clientes/{id}", Builders.builderClienteEntity().get(0).getId())).
                 andExpect(status().isOk()).
                 andExpect(content().contentType(MediaType.APPLICATION_JSON));
-        validaCliente(resultActions);
+        Validators.validaClienteController(resultActions);
     }
 
     @Test
@@ -91,7 +90,7 @@ class ClienteControllerTest {
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/clientes/{id}", Builders.builderClienteEntity().get(1).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
         andExpect(status().isOk());
-        validaCliente(resultActions);
+        Validators.validaClienteController(resultActions);
     }
 
     @Test

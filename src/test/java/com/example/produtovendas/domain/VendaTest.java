@@ -29,6 +29,6 @@ class VendaTest {
 
         venda.atualizaDados(vendaDto);
 
-        Validators.validaVendaDomainAlterado(venda);
+        Validators.validaVendaDomain(venda, 1);
     }
 }

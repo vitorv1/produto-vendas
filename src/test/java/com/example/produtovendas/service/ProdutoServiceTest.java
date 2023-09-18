@@ -1,18 +1,14 @@
 package com.example.produtovendas.service;
 
 import com.example.produtovendas.builders.Builders;
-import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
-import jakarta.validation.Valid;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +16,6 @@ import java.util.Optional;
 import static com.example.produtovendas.builders.Builders.builderProdutoDomain;
 import static com.example.produtovendas.service.ProdutoService.MENSAGEM_PRODUTO_EXISTENTE;
 import static com.example.produtovendas.validators.Validators.validaProdutoDomain;
-import static com.example.produtovendas.validators.Validators.validaProdutoDomainAlterado;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -53,7 +48,7 @@ class ProdutoServiceTest {
 
         Produto produtoTeste = captor.getValue();
 
-        validaProdutoDomain(produtoTeste, null);
+        validaProdutoDomain(produtoTeste, 0);
     }
 
     @Test
@@ -66,7 +61,7 @@ class ProdutoServiceTest {
 
         Produto produtoTeste = assertDoesNotThrow(() -> produtoService.consultarProdutoPorId(id1));
 
-        validaProdutoDomain(produtoTeste, null);
+        validaProdutoDomain(produtoTeste, 0);
 
         Mockito.verify(produtoDataProvider, Mockito.times(1)).consultarPorId(id1);
     }
@@ -88,7 +83,8 @@ class ProdutoServiceTest {
 
         List<Produto> produtosTeste = assertDoesNotThrow(()-> produtoService.consultaTodosProdutos());
 
-        validaProdutoDomain(produtosTeste.get(0), produtosTeste.get(1));
+        validaProdutoDomain(produtosTeste.get(0), 0);
+        validaProdutoDomain(produtosTeste.get(1), 1);
 
         Mockito.verify(produtoDataProvider, Mockito.times(1)).consultaTodos();
     }
@@ -123,6 +119,6 @@ class ProdutoServiceTest {
 
         Produto produtoTeste = captor.getValue();
 
-        validaProdutoDomainAlterado(produtoTeste);
+        validaProdutoDomain(produtoTeste, 1);
     }
 }

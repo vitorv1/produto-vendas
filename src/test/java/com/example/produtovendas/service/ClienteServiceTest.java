@@ -3,15 +3,12 @@ package com.example.produtovendas.service;
 import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
-import com.example.produtovendas.validators.Validators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.validation.BindingResultUtils;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -50,7 +47,7 @@ class ClienteServiceTest {
 
         Cliente clienteTeste = captor.getValue();
 
-        validaClienteDomain(clienteTeste, null);
+        validaClienteDomain(clienteTeste, 0);
     }
 
     @Test
@@ -59,7 +56,8 @@ class ClienteServiceTest {
 
         List<Cliente> clienteListTeste = assertDoesNotThrow(() -> clienteService.consultaTodosClientes());
 
-        validaClienteDomain(clienteListTeste.get(0), clienteListTeste.get(1));
+        validaClienteDomain(clienteListTeste.get(0), 0);
+        validaClienteDomain(clienteListTeste.get(1), 1);
 
         Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarTodos();
     }
@@ -74,7 +72,7 @@ class ClienteServiceTest {
 
         Cliente clienteTeste = assertDoesNotThrow(() -> clienteService.consultaClientePorId(id));
 
-        validaClienteDomain(clienteTeste, null);
+        validaClienteDomain(clienteTeste, 0);
 
         Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarPorId(id);
     }
@@ -121,6 +119,6 @@ class ClienteServiceTest {
 
         Cliente clienteTeste = captor.getValue();
 
-        validaClienteDomainAlterado(clienteTeste);
+        validaClienteDomain(clienteTeste, 1);
     }
 }

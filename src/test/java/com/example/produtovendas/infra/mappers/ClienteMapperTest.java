@@ -14,7 +14,7 @@ class ClienteMapperTest {
     @Test
     void testaSeRetornaUmClienteDomain() {
         Cliente cliente = ClienteMapper.paraCliente(Builders.builderClienteEntity().get(0));
-        Validators.validaClienteDomain(cliente, null);
+        Validators.validaClienteDomain(cliente, 0);
     }
 
     @Test
@@ -27,6 +27,7 @@ class ClienteMapperTest {
     @Test
     void testeSeRetornaUmaListaDeClientesDomain() {
         List<Cliente> clientes = ClienteMapper.paraClientes(Builders.builderClienteEntity());
-        Validators.validaClienteDomain(clientes.get(0), clientes.get(1));
+        Validators.validaClienteDomain(clientes.get(0), 0);
+        Validators.validaClienteDomain(clientes.get(1), 1);
     }
 }

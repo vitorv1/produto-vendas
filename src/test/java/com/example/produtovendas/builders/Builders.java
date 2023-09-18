@@ -33,7 +33,7 @@ public abstract class Builders {
     public static List<ClienteEntity> builderClienteEntity(){
         List<ClienteEntity> clienteEntities = new ArrayList<>();
         clienteEntities.add(new ClienteEntity(1L, "Mariana", false, "456357159-17", "email@gmail.com", "(44)99874-8356"));
-        clienteEntities.add(new ClienteEntity(3L, "João", false, "789456123-55", "", "(44)98747-5623"));
+        clienteEntities.add(new ClienteEntity(3L, "João", false, "789456123-55", "email@gmail.com", "(44)98747-5623"));
         return clienteEntities;
     }
     public static List<Optional<ClienteEntity>> builderClienteOptional(){
@@ -52,11 +52,8 @@ public abstract class Builders {
 
     public static List<VendaEntity> builderVendaEntity(){
         List<VendaEntity> vendaEntities = new ArrayList<>();
-        List<ProdutoEntity> produtoList = new ArrayList<>();
-        produtoList.add(builderProdutoEntity().get(0));
-        produtoList.add(builderProdutoEntity().get(1));
-        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), false, 576, 10, produtoList, LocalDate.now()));
-        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), false, 0, 0, produtoList, LocalDate.now()));
+        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), false, 648, 10, builderProdutoEntity(), LocalDate.now()));
+        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), false, 720, 0, builderProdutoEntity(), LocalDate.now()));
         return vendaEntities;
     }
 

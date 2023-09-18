@@ -41,7 +41,7 @@ class ProdutoDataProviderTest {
         Mockito.when(repository.save(any())).thenReturn(ProdutoMapper.paraEntity(produto));
         Produto produtoTeste = produtoDataProvider.salvar(produto);
 
-        validaProdutoDomain(produtoTeste, null);
+        validaProdutoDomain(produtoTeste, 0);
     }
 
     @Test
@@ -52,7 +52,7 @@ class ProdutoDataProviderTest {
 
         Optional<Produto> produtoTeste = produtoDataProvider.consultarPorId(1L);
 
-        produtoTeste.ifPresent(produto -> validaProdutoDomain(produtoTeste.get(), null));
+        produtoTeste.ifPresent(produto -> validaProdutoDomain(produtoTeste.get(), 0));
     }
 
     @Test
@@ -62,7 +62,8 @@ class ProdutoDataProviderTest {
         Mockito.when(repository.findAll()).thenReturn(produtoEntities);
         List<Produto> produtoList = produtoDataProvider.consultaTodos();
 
-        validaProdutoDomain(produtoList.get(0), produtoList.get(1));
+        validaProdutoDomain(produtoList.get(0), 0);
+        validaProdutoDomain(produtoList.get(1), 1);
     }
 
     @Test

@@ -18,7 +18,7 @@ class ProdutoTest {
 
         produto.atualizaDados(produtoDto);
 
-        Validators.validaProdutoDomainAlterado(produto);
+        Validators.validaProdutoDomain(produto, 1);
     }
 
     @Test

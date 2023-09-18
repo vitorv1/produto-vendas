@@ -24,6 +24,6 @@ class ClienteTest {
 
         cliente.atualizarDados(clienteDto);
 
-        Validators.validaClienteDomainAlterado(cliente);
+        Validators.validaClienteDomain(cliente, 1);
     }
 }

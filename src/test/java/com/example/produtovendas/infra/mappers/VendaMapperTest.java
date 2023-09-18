@@ -15,18 +15,19 @@ class VendaMapperTest {
     @Test
     void testaSeRetornaUmEntity() {
         VendaEntity vendaEntity = VendaMapper.paraEntity(Builders.builderVendaDomain().get(0));
-        validaVendaEntity(vendaEntity, null);
+        validaVendaEntity(vendaEntity, 0);
     }
 
     @Test
     void testaSeRetornaUmDomain() {
         Venda venda = VendaMapper.paraDomain(Builders.builderVendaEntity().get(0));
-        validaVendaDomain(venda, null);
+        validaVendaDomain(venda, 0);
     }
 
     @Test
     void testaSeRetornaUmaListaDeDomains() {
         List<Venda> vendaList = VendaMapper.paraDomains(Builders.builderVendaEntity());
-        validaVendaDomain(vendaList.get(0), vendaList.get(1));
+        validaVendaDomain(vendaList.get(0), 0);
+        validaVendaDomain(vendaList.get(1), 1);
     }
 }

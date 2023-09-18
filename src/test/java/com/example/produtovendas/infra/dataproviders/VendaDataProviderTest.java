@@ -46,7 +46,7 @@ class VendaDataProviderTest {
         Mockito.when(repository.save(any())).thenReturn(VendaMapper.paraEntity(venda));
 
         Venda vendaTeste = vendaDataProvider.salvar(venda);
-        validaVendaDomain(vendaTeste, null);
+        validaVendaDomain(vendaTeste, 0);
     }
 
     @Test
@@ -56,7 +56,7 @@ class VendaDataProviderTest {
         Mockito.when(repository.findById(any())).thenReturn(vendaEntity);
 
         Optional<Venda> vendaTeste = vendaDataProvider.buscarPorId(id);
-        vendaTeste.ifPresent(venda -> validaVendaDomain(vendaTeste.get(), null));
+        vendaTeste.ifPresent(venda -> validaVendaDomain(vendaTeste.get(), 0));
     }
 
     @Test
@@ -65,7 +65,8 @@ class VendaDataProviderTest {
         Mockito.when(repository.findAll()).thenReturn(vendaEntities);
 
         List<Venda> vendaListTeste = vendaDataProvider.buscarTodos();
-        validaVendaDomain(vendaListTeste.get(0), vendaListTeste.get(1));
+        validaVendaDomain(vendaListTeste.get(0), 0);
+        validaVendaDomain(vendaListTeste.get(1), 1);
     }
 
     @Test

@@ -31,9 +31,7 @@ public class VendaService {
 
     public Venda cadastroVenda(Venda venda){
         List<Produto> produtoList = new ArrayList<>();
-        for(Produto produto : venda.getListaProdutos()){
-            produtoList.add(produtoService.consultarProdutoPorId(produto.getId()));
-        }
+        venda.getListaProdutos().forEach((produto -> produtoList.add(produtoService.consultarProdutoPorId(produto.getId()))));
         venda.setListaProdutos(produtoList);
         venda.setValor(calcularValorVenda(venda.getDesconto(), produtoList));
         venda.setCliente(clienteService.consultaClientePorId(venda.getIdCliente()));

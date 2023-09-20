@@ -1,5 +1,6 @@
 package com.example.produtovendas.service;
 
+import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
@@ -44,16 +45,12 @@ class VendaServiceTest {
 
     @Test
     void testeMetodoCadastroVenda() {
-        Venda venda = builderVendaDomain().get(0);
-        venda.setId(null);
-        venda.setCliente(null);
-        venda.setDataVenda(null);
+        Venda venda = builderVendaDomainDto(0);
 
         Mockito.when(produtoService.consultarProdutoPorId(any()))
                 .thenReturn(builderProdutoDomain().get(0))
                 .thenAnswer(new Answer<Produto>() {
                     int count = 0;
-
                     @Override
                     public Produto answer(InvocationOnMock invocation){
                         count++;
@@ -131,10 +128,7 @@ class VendaServiceTest {
     @Test
     void testeMetodoAlterarVenda(){
         Long idVenda = 2L;
-        Venda vendaDto = builderVendaDomain().get(1);
-        vendaDto.setId(null);
-        vendaDto.setCliente(null);
-        vendaDto.setDataVenda(null);
+        Venda vendaDto = builderVendaDomainDto(1);
 
         Optional<Venda> vendaOptional = Optional.of(builderVendaDomain().get(0));
 
@@ -148,5 +142,17 @@ class VendaServiceTest {
         Venda vendaTeste = captor.getValue();
 
         validaVendaDomain(vendaTeste, 1);
+    }
+
+    @Test
+    void testeMetodoCadastroEstaLancandoExceptionDeClienteInativo(){
+        Venda venda = builderVendaDomainDto(0);
+        Cliente cliente = builderClienteDomain().get(0);
+        cliente.setInativo(true);
+        Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(any());
+        Mockito.when(clienteService.consultaClientePorId(any())).thenReturn(cliente);
+        Mockito.when(produtoService.consultarProdutoPorId(any())).thenReturn(any());
+
+        Assertions.assertThrows(RuntimeException.class, () -> vendaService.cadastroVenda(venda));
     }
 }

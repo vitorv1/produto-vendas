@@ -4,6 +4,7 @@ import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
+import com.example.produtovendas.infra.validacoes.ProdutoValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,9 +33,12 @@ public class VendaService {
     public Venda cadastroVenda(Venda venda){
         List<Produto> produtoList = new ArrayList<>();
         venda.getListaProdutos().forEach((produto -> produtoList.add(produtoService.consultarProdutoPorId(produto.getId()))));
+        ProdutoValidation.validaProdutoInativo(produtoList);
         venda.setListaProdutos(produtoList);
         venda.setValor(calcularValorVenda(venda.getDesconto(), produtoList));
         venda.setCliente(clienteService.consultaClientePorId(venda.getIdCliente()));
+        if(venda.getCliente().isInativo())
+            throw new RuntimeException("Cliente está inativo, não pode realizar uma venda");
         venda.setDataVenda(LocalDate.now());
         return vendaDataProvider.salvar(venda);
     }

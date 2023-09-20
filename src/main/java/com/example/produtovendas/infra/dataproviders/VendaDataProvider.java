@@ -29,6 +29,7 @@ public class VendaDataProvider {
         try{
            vendaEntity = repositoryVenda.save(vendaEntity);
         }catch (Exception ex){
+            log.info(ex.getMessage());
             throw new BancoDeDadosException("Erro ao salvar venda");
         }
         return VendaMapper.paraDomain(vendaEntity);

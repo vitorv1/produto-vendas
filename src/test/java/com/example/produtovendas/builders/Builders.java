@@ -78,6 +78,14 @@ public abstract class Builders {
         return vendaList;
     }
 
+    public static Venda builderVendaDomainDto(int index){
+        Venda venda = builderVendaDomain().get(index);
+        venda.setId(null);
+        venda.setCliente(null);
+        venda.setDataVenda(null);
+        return venda;
+    }
+
     public static String builderJsonVenda(){
         return "{\"idCliente\":12,\"desconto\":10,\"listaProdutos\":[{\"id\":3},{\"id\":7}]}";
     }

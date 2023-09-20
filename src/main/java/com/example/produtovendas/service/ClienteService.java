@@ -23,7 +23,6 @@ public class ClienteService {
         List<Cliente> clientes ;
         clientes = clienteDataProvider.consultarTodos();
         ClienteValidation.validaCliente(clientes, cliente);
-        System.out.println("Service: " + cliente);
         return clienteDataProvider.salvar(cliente);
     }
 

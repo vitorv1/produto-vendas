@@ -5,91 +5,90 @@ import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
+@RequiredArgsConstructor
 public class VendaService {
-
-
-    private final VendaDataProvider vendaDataProvider;
-
-    private final ProdutoService produtoService;
-
-    private final ClienteService clienteService;
 
     public static final String MENSAGEM_VENDA_EXISTE = "Venda não existe";
 
-    @Autowired
-    public VendaService(ClienteService clienteService, ProdutoService produtoService, VendaDataProvider vendaDataProvider){
-        this.clienteService = clienteService;
-        this.produtoService = produtoService;
-        this.vendaDataProvider = vendaDataProvider;
-    }
+    private final VendaDataProvider vendaDataProvider;
+    private final ProdutoService produtoService;
+    private final ClienteService clienteService;
 
-    public Venda cadastroVenda(Venda venda){
-        List<Produto> produtoList = new ArrayList<>();
-        venda.getListaProdutos().forEach((produto -> produtoList.add(produtoService.consultarProdutoPorId(produto.getId()))));
-        ProdutoValidation.validaProdutoInativo(produtoList);
-        venda.setListaProdutos(produtoList);
-        venda.setValor(calcularValorVenda(venda.getDesconto(), produtoList));
-        venda.setCliente(clienteService.consultaClientePorId(venda.getIdCliente()));
-        if(venda.getCliente().isInativo())
-            throw new RuntimeException("Cliente está inativo, não pode realizar uma venda");
+    public Venda cadastroVenda(Venda venda) {
+        definirClienteCadastro(venda);
+        definirProdutosCadastro(venda);
+        venda.calcularValorVenda();
         venda.setDataVenda(LocalDate.now());
         return vendaDataProvider.salvar(venda);
     }
 
-    public Venda buscarPorId(Long id){
-        return vendaDataProvider.buscarPorId(id).orElseThrow(()-> new RuntimeException("Venda não existe"));
+    public Optional<Venda> buscarPorId(Long id) {
+        return vendaDataProvider.buscarPorId(id);
     }
 
-    public List<Venda> buscarTodos(){
+    public List<Venda> buscarTodos() {
         return vendaDataProvider.buscarTodos();
     }
 
-    public void deletarVenda(Long id){
-        Venda venda = buscarPorId(id);
+    public void deletarVenda(Long id) {
+        Venda venda = buscarExistentePorId(id);
         venda.inativar();
         vendaDataProvider.salvar(venda);
     }
 
-    public Venda alterarVenda(Long id, Venda vendaDto){
-        Venda venda = buscarPorId(id);
-        List<Produto> produtoListDto = new ArrayList<>();
-        if(!Objects.equals(vendaDto.getIdCliente(), venda.getIdCliente())){
-            Cliente cliente = clienteService.consultaClientePorId(vendaDto.getIdCliente());
-            vendaDto.setCliente(cliente);
+    public Venda alterarVenda(Long id, Venda vendaAlterada) {
+        Venda vendaExistente = buscarExistentePorId(id);
+        definirClienteAlteracao(vendaAlterada, vendaExistente);
+        definirProdutosAlteracao(vendaAlterada, vendaExistente);
+        vendaExistente.atualizaDados(vendaAlterada);
+        vendaExistente.calcularValorVenda();
+        return vendaDataProvider.salvar(vendaExistente);
+    }
+
+    public Venda buscarExistentePorId(Long id) {
+        return vendaDataProvider.buscarPorId(id).orElseThrow(() -> new RuntimeException("Venda não existe"));
+    }
+
+    private void definirClienteCadastro(Venda venda) {
+        Cliente cliente = clienteService.consultaClienteExistentePorId(venda.getIdCliente());
+        if (cliente.isInativo()) {
+            throw new RuntimeException("Cliente está inativo, não pode realizar uma venda");
         }
+        venda.setCliente(cliente);
+    }
+
+    private void definirProdutosCadastro(Venda venda) {
+        List<Produto> produtoList = new ArrayList<>();
+        venda.getListaProdutos().forEach((produto -> produtoList.add(produtoService.consultarProdutoExistentePorId(produto.getId()))));
+        ProdutoValidation.validaProdutoInativo(produtoList);
+        venda.setListaProdutos(produtoList);
+    }
+
+    private void definirProdutosAlteracao(Venda vendaDto, Venda venda) {
+        List<Produto> produtoListDto = new ArrayList<>();
+
         for (int i = 0; i < vendaDto.getListaProdutos().size(); i++) {
-            if(!Objects.equals(venda.getListaProdutos().get(i).getId(), vendaDto.getListaProdutos().get(i).getId())){
-                Produto produto = produtoService.consultarProdutoPorId(vendaDto.getListaProdutos().get(i).getId());
+            if (!Objects.equals(venda.getListaProdutos().get(i).getId(), vendaDto.getListaProdutos().get(i).getId())) {
+                Produto produto = produtoService.consultarProdutoExistentePorId(vendaDto.getListaProdutos().get(i).getId());
                 produtoListDto.add(produto);
             }
         }
-        if(produtoListDto.size() > 0){
+        if (produtoListDto.size() > 0) {
             vendaDto.setListaProdutos(produtoListDto);
         }
-        vendaDto.setValor(calcularValorVenda(vendaDto.getDesconto(), vendaDto.getListaProdutos()));
-        venda.atualizaDados(vendaDto);
-        return vendaDataProvider.salvar(venda);
     }
 
-    private static double calcularValorVenda(Integer desconto, List<Produto> produtoList) {
-        double resultado;
-        double valorSomaProdutos = 0;
-        for (Produto produto : produtoList) {
-            valorSomaProdutos += produto.getValor();
+    private void definirClienteAlteracao(Venda vendaDto, Venda venda) {
+        if (!Objects.equals(vendaDto.getIdCliente(), venda.getIdCliente())) {
+            Cliente cliente = clienteService.consultaClienteExistentePorId(vendaDto.getIdCliente());
+            vendaDto.setCliente(cliente);
         }
-        if (desconto > 0) {
-            double valorDesconto = (valorSomaProdutos * desconto) / 100;
-            resultado = valorSomaProdutos - valorDesconto;
-        } else {
-            resultado = valorSomaProdutos;
-        }
-        return resultado;
     }
 }

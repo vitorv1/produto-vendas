@@ -3,6 +3,7 @@ package com.example.produtovendas.controller;
 
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.service.VendaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/vendas")
+@RequiredArgsConstructor
 public class VendaController {
 
-    @Autowired
-    private VendaService vendaService;
+    private final VendaService vendaService;
 
     @PostMapping
     public ResponseEntity<Venda> cadastroVenda(@RequestBody Venda venda, UriComponentsBuilder uriBuilder){
@@ -27,11 +29,9 @@ public class VendaController {
 
     @GetMapping(value = "/{id}")
     public ResponseEntity<Venda> buscarPorId(@PathVariable("id") Long id){
-        Venda venda = vendaService.buscarPorId(id);
-        if(venda == null){
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(venda);
+        Optional<Venda> venda = vendaService.buscarPorId(id);
+        return venda.map(vendaMap -> ResponseEntity.ok(vendaMap))
+                .orElse(ResponseEntity.noContent().build());
     }
 
     @GetMapping
@@ -49,5 +49,4 @@ public class VendaController {
     public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda){
         return ResponseEntity.ok(vendaService.alterarVenda(id, venda));
     }
-
 }

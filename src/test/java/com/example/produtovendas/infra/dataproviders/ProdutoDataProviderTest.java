@@ -9,9 +9,12 @@ import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -20,19 +23,14 @@ import java.util.Optional;
 import static com.example.produtovendas.validators.Validators.validaProdutoDomain;
 import static org.mockito.ArgumentMatchers.any;
 
+@ExtendWith(MockitoExtension.class)
 class ProdutoDataProviderTest {
-
-    @Autowired
-    private ProdutoDataProvider produtoDataProvider;
 
     @Mock
     private ProdutoRepository repository;
 
-    @BeforeEach
-    public void beforeEach(){
-        MockitoAnnotations.initMocks(this);
-        this.produtoDataProvider = new ProdutoDataProvider(repository);
-    }
+    @InjectMocks
+    private ProdutoDataProvider produtoDataProvider;
 
     @Test
     void testeMetodoSalvar(){

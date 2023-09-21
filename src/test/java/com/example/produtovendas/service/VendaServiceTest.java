@@ -1,27 +1,28 @@
 package com.example.produtovendas.service;
 
-import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
 import org.mockito.invocation.InvocationOnMock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.produtovendas.builders.Builders.*;
 import static com.example.produtovendas.service.VendaService.MENSAGEM_VENDA_EXISTE;
-import static com.example.produtovendas.validators.Validators.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static com.example.produtovendas.validators.Validators.validaVendaDomain;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 
+@ExtendWith(MockitoExtension.class)
 class VendaServiceTest {
 
     @Mock
@@ -36,20 +37,14 @@ class VendaServiceTest {
     @Captor
     private ArgumentCaptor<Venda> captor;
 
-    @Autowired
+    @InjectMocks
     private  VendaService vendaService;
-
-    @BeforeEach
-    public void beforeEach(){
-        MockitoAnnotations.initMocks(this);
-        this.vendaService = new VendaService(clienteService, produtoService,vendaDataProvider);
-    }
 
     @Test
     void testeMetodoCadastroVenda() {
         Venda venda = builderVendaDomainDto(0);
 
-        Mockito.when(produtoService.consultarProdutoPorId(any()))
+        Mockito.when(produtoService.consultarProdutoExistentePorId(any()))
                 .thenReturn(builderProdutoDomain().get(0))
                 .thenAnswer(new Answer<Produto>() {
                     int count = 0;
@@ -59,7 +54,7 @@ class VendaServiceTest {
                         return builderProdutoDomain().get(count);
                     }
                 });
-        Mockito.when(clienteService.consultaClientePorId(any())).thenReturn(builderClienteDomain().get(0));
+        Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(builderClienteDomain().get(0));
         Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(venda);
 
         vendaService.cadastroVenda(venda);
@@ -77,7 +72,7 @@ class VendaServiceTest {
 
         Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
 
-        Venda vendaTeste = assertDoesNotThrow(() -> vendaService.buscarPorId(idVenda));
+        Venda vendaTeste = assertDoesNotThrow(() -> vendaService.buscarPorId(idVenda)).get();
 
         validaVendaDomain(vendaTeste, 0);
 
@@ -89,7 +84,7 @@ class VendaServiceTest {
         Long idVenda = 1L;
         Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(Optional.empty());
 
-        RuntimeException exceptionTeste = assertThrows(RuntimeException.class,() -> vendaService.buscarPorId(idVenda));
+        RuntimeException exceptionTeste = assertThrows(RuntimeException.class,() -> vendaService.buscarExistentePorId(idVenda));
 
         Assertions.assertEquals(MENSAGEM_VENDA_EXISTE, exceptionTeste.getMessage());
 
@@ -135,8 +130,8 @@ class VendaServiceTest {
         Optional<Venda> vendaOptional = Optional.of(builderVendaDomain().get(0));
 
         Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
-        Mockito.when(clienteService.consultaClientePorId(any())).thenReturn(builderClienteDomain().get(1));
-        Mockito.when(produtoService.consultarProdutoPorId(any())).thenReturn(builderProdutoDomain().get(0));
+        Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(builderClienteDomain().get(1));
+        Mockito.when(produtoService.consultarProdutoExistentePorId(any())).thenReturn(builderProdutoDomain().get(0));
         Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(any());
 
         vendaService.alterarVenda(idVenda, vendaDto);
@@ -152,9 +147,7 @@ class VendaServiceTest {
         Cliente cliente = builderClienteDomain().get(0);
         cliente.setInativo(true);
         Optional<Venda> vendaOptional = Optional.of(builderVendaDomain().get(0));
-        Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
-        Mockito.when(clienteService.consultaClientePorId(any())).thenReturn(cliente);
-        Mockito.when(produtoService.consultarProdutoPorId(any())).thenReturn(null);
+        Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(cliente);
 
         Assertions.assertThrows(RuntimeException.class, () -> vendaService.cadastroVenda(venda));
     }

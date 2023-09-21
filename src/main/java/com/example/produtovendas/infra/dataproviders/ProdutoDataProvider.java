@@ -16,21 +16,17 @@ import java.util.Optional;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ProdutoDataProvider {
 
-
     private final ProdutoRepository repository;
-
-    public ProdutoDataProvider (ProdutoRepository repository){
-        this.repository = repository;
-    }
 
     public Produto salvar(Produto produto) {
         ProdutoEntity produtoEntity = ProdutoMapper.paraEntity(produto);
         try {
             produtoEntity = repository.save(produtoEntity);
-        }catch (Exception ex) {
-            log.info(ex.getMessage());
+        } catch (Exception ex) {
+            log.error("Erro no cadastro do produto", ex);
             throw new BancoDeDadosException("Erro no cadastro do produto");
         }
         return ProdutoMapper.paraProduto(produtoEntity);
@@ -39,9 +35,9 @@ public class ProdutoDataProvider {
     public Optional<Produto> consultarPorId(Long id) {
         Optional<ProdutoEntity> produtoEntity;
         try {
-             produtoEntity = repository.findById(id);
-        }catch (Exception ex){
-            log.info(ex.getMessage());
+            produtoEntity = repository.findById(id);
+        } catch (Exception ex) {
+            log.error("Erro na consalta por id", ex);
             throw new BancoDeDadosException("Erro na consalta por id");
         }
 
@@ -49,11 +45,11 @@ public class ProdutoDataProvider {
     }
 
     public List<Produto> consultaTodos() {
-        try{
+        try {
             return ProdutoMapper.paraProdutos(repository.findAll());
-        }catch (Exception ex){
-            log.info(ex.getMessage());
-            throw new  BancoDeDadosException("Erro na consulta por todos");
+        } catch (Exception ex) {
+            log.error("Erro na consulta por todos", ex);
+            throw new BancoDeDadosException("Erro na consulta por todos");
         }
     }
 

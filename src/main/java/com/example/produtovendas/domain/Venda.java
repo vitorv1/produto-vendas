@@ -35,4 +35,21 @@ public class Venda {
         this.desconto = vendaDto.getDesconto();
         this.listaProdutos = vendaDto.getListaProdutos();
     }
+
+    public void calcularValorVenda() {
+        double resultado;
+        double valorSomaProdutos = 0;
+        for (Produto produto : this.listaProdutos) {
+            valorSomaProdutos += produto.getValor();
+        }
+
+        if (this.desconto > 0) {
+            double valorDesconto = (valorSomaProdutos * this.desconto) / 100;
+            resultado = valorSomaProdutos - valorDesconto;
+        } else {
+            resultado = valorSomaProdutos;
+        }
+
+        this.valor = resultado;
+    }
 }

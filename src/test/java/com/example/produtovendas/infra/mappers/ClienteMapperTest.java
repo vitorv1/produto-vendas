@@ -11,6 +11,7 @@ import java.util.List;
 class ClienteMapperTest {
 
     List<ClienteEntity> clienteEntityList = new ArrayList<>();
+
     @Test
     void testaSeRetornaUmClienteDomain() {
         Cliente cliente = ClienteMapper.paraCliente(Builders.builderClienteEntity().get(0));

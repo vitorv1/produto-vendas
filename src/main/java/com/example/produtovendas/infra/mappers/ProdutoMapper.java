@@ -29,10 +29,10 @@ public class ProdutoMapper {
     }
 
     public static List<Produto> paraProdutos(List<ProdutoEntity> produtoEntities) {
-      return produtoEntities.stream().map(ProdutoMapper :: paraProduto).collect(Collectors.toList());
+        return produtoEntities.stream().map(ProdutoMapper::paraProduto).collect(Collectors.toList());
     }
 
     public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList) {
-        return produtoList.stream().map(ProdutoMapper :: paraEntity).collect(Collectors.toList());
+        return produtoList.stream().map(ProdutoMapper::paraEntity).collect(Collectors.toList());
     }
 }

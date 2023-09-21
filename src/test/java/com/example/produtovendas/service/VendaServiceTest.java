@@ -131,7 +131,6 @@ class VendaServiceTest {
 
         Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
         Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(builderClienteDomain().get(1));
-        Mockito.when(produtoService.consultarProdutoExistentePorId(any())).thenReturn(builderProdutoDomain().get(0));
         Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(any());
 
         vendaService.alterarVenda(idVenda, vendaDto);

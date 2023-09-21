@@ -32,7 +32,7 @@ class ProdutoMapperTest {
     }
 
     @Test
-    void testeSeRetornaUmProdutoEntitys(){
+    void testeSeRetornaUmProdutoEntitys() {
         List<ProdutoEntity> produtoList = ProdutoMapper.paraEntitys(Builders.builderProdutoDomain());
         validaProdutoEntity(produtoList.get(0), 0);
         validaProdutoEntity(produtoList.get(1), 1);

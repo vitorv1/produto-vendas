@@ -6,7 +6,9 @@ import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
@@ -20,10 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class ProdutoServiceTest {
-
-    @Autowired
-    private ProdutoService produtoService;
 
     @Mock
     private ProdutoDataProvider produtoDataProvider;
@@ -31,11 +31,8 @@ class ProdutoServiceTest {
     @Captor
     private ArgumentCaptor<Produto> captor;
 
-    @BeforeEach
-    public void beforeEach(){
-        MockitoAnnotations.initMocks(this);
-        this.produtoService = new ProdutoService(produtoDataProvider);
-    }
+    @InjectMocks
+    private ProdutoService produtoService;
 
     @Test
     void testeMetodoCadastroProduto(){
@@ -59,7 +56,7 @@ class ProdutoServiceTest {
 
         when(produtoDataProvider.consultarPorId(any())).thenReturn(produtoOptional);
 
-        Produto produtoTeste = assertDoesNotThrow(() -> produtoService.consultarProdutoPorId(id1));
+        Produto produtoTeste = assertDoesNotThrow(() -> produtoService.consultarProdutoExistentePorId(id1));
 
         validaProdutoDomain(produtoTeste, 0);
 
@@ -71,7 +68,7 @@ class ProdutoServiceTest {
         Long id = 1L;
         when(produtoDataProvider.consultarPorId(any())).thenReturn(Optional.empty());
 
-        RuntimeException exceptionTeste = assertThrows(RuntimeException.class, () -> produtoService.consultarProdutoPorId(id));
+        RuntimeException exceptionTeste = assertThrows(RuntimeException.class, () -> produtoService.consultarProdutoExistentePorId(id));
 
         Assertions.assertEquals(MENSAGEM_PRODUTO_EXISTENTE, exceptionTeste.getMessage());
         Mockito.verify(produtoDataProvider, Mockito.times(1)).consultarPorId(id);

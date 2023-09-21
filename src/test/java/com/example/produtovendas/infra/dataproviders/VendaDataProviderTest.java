@@ -9,12 +9,12 @@ import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.VendaMapper;
 import com.example.produtovendas.infra.repositories.VendaRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -24,19 +24,15 @@ import java.util.Optional;
 import static com.example.produtovendas.validators.Validators.validaVendaDomain;
 import static org.mockito.ArgumentMatchers.any;
 
+@ExtendWith(MockitoExtension.class)
 class VendaDataProviderTest {
 
-    @Autowired
-    private VendaDataProvider vendaDataProvider;
 
     @Mock
     private VendaRepository repository;
 
-    @BeforeEach
-    public void beforeEach(){
-        MockitoAnnotations.initMocks(this);
-        this.vendaDataProvider = new VendaDataProvider(repository);
-    }
+    @InjectMocks
+    private VendaDataProvider vendaDataProvider;
 
     @Test
     void testeMetodoSalvar(){

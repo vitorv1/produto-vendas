@@ -4,25 +4,22 @@ import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.produtovendas.service.ClienteService.MENSAGEM_CLIENTE_EXISTENTE;
+import static com.example.produtovendas.service.ClienteService.MENSAGEM_CLIENTE_NAO_EXISTENTE;
 import static com.example.produtovendas.validators.Validators.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 class ClienteServiceTest {
-
-    @Autowired
-    private ClienteService clienteService;
 
     @Mock
     private ClienteDataProvider clienteDataProvider;
@@ -30,17 +27,14 @@ class ClienteServiceTest {
     @Captor
     ArgumentCaptor<Cliente> captor;
 
-    @BeforeEach
-    public void beforeEach(){
-        MockitoAnnotations.initMocks(this);
-        this.clienteService = new ClienteService(clienteDataProvider);
-    }
+    @InjectMocks
+    private ClienteService clienteService;
 
     @Test
     void testeMetodoCadastroCliente(){
         Cliente cliente = Builders.builderClienteDomain().get(0);
 
-        when(clienteDataProvider.consultarTodos()).thenReturn(Collections.emptyList());
+        when(clienteDataProvider.consultarPorCpf(cliente.getCpf())).thenReturn(Optional.empty());
         when(clienteDataProvider.salvar(captor.capture())).thenReturn(cliente);
 
         clienteService.cadastroCliente(cliente);
@@ -70,7 +64,7 @@ class ClienteServiceTest {
 
         when(clienteDataProvider.consultarPorId(id)).thenReturn(cliente);
 
-        Cliente clienteTeste = assertDoesNotThrow(() -> clienteService.consultaClientePorId(id));
+        Cliente clienteTeste = assertDoesNotThrow(() -> clienteService.consultaClienteExistentePorId(id));
 
         validaClienteDomain(clienteTeste, 0);
 
@@ -82,9 +76,9 @@ class ClienteServiceTest {
         Long id = 1L;
         when(clienteDataProvider.consultarPorId(id)).thenReturn(Optional.empty());
 
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> clienteService.consultaClientePorId(id));
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> clienteService.consultaClienteExistentePorId(id));
 
-        Assertions.assertEquals(MENSAGEM_CLIENTE_EXISTENTE,exception.getMessage());
+        Assertions.assertEquals(MENSAGEM_CLIENTE_NAO_EXISTENTE,exception.getMessage());
         Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarPorId(id);
     }
 

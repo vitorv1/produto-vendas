@@ -15,43 +15,39 @@ import java.util.Optional;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class VendaDataProvider {
 
     private final VendaRepository repositoryVenda;
 
-    @Autowired
-    public VendaDataProvider(VendaRepository repository){
-        this.repositoryVenda = repository;
-    }
-
-    public Venda salvar(Venda venda){
+    public Venda salvar(Venda venda) {
         VendaEntity vendaEntity = VendaMapper.paraEntity(venda);
-        try{
-           vendaEntity = repositoryVenda.save(vendaEntity);
-        }catch (Exception ex){
-            log.info(ex.getMessage());
+        try {
+            vendaEntity = repositoryVenda.save(vendaEntity);
+        } catch (Exception ex) {
+            log.error("Erro ao salvar venda", ex);
             throw new BancoDeDadosException("Erro ao salvar venda");
         }
         return VendaMapper.paraDomain(vendaEntity);
     }
 
-    public Optional<Venda> buscarPorId(Long id){
+    public Optional<Venda> buscarPorId(Long id) {
         Optional<VendaEntity> vendaEntity;
-        try{
+        try {
             vendaEntity = repositoryVenda.findById(id);
-        }catch (Exception ex){
-            log.info(ex.getMessage());
-            throw new  BancoDeDadosException("Erro ao consultar por id no banco de dados");
+        } catch (Exception ex) {
+            log.error("Erro ao consultar por id no banco de dados", ex);
+            throw new BancoDeDadosException("Erro ao consultar por id no banco de dados");
         }
         return vendaEntity.isEmpty() ? Optional.empty() : Optional.of(VendaMapper.paraDomain(vendaEntity.get()));
     }
 
-    public List<Venda> buscarTodos(){
+    public List<Venda> buscarTodos() {
         try {
             return VendaMapper.paraDomains(repositoryVenda.findAll());
-        }catch (Exception ex){
-            log.info(ex.getMessage());
-            throw new  BancoDeDadosException("Erro ao consultar todos no banco de dados");
+        } catch (Exception ex) {
+            log.error("Erro ao consultar todos no banco de dados", ex);
+            throw new BancoDeDadosException("Erro ao consultar todos no banco de dados");
         }
     }
 }

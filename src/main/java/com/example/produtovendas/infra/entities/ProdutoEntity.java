@@ -3,7 +3,6 @@ package com.example.produtovendas.infra.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
-
 @Entity(name = "Produto")
 @Table(name = "produtos")
 @EqualsAndHashCode(of = "id")

@@ -1,5 +1,6 @@
 package com.example.produtovendas.service;
 
+import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
@@ -19,6 +20,7 @@ import static com.example.produtovendas.service.VendaService.MENSAGEM_VENDA_EXIS
 import static com.example.produtovendas.validators.Validators.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 class VendaServiceTest {
 
@@ -149,9 +151,10 @@ class VendaServiceTest {
         Venda venda = builderVendaDomainDto(0);
         Cliente cliente = builderClienteDomain().get(0);
         cliente.setInativo(true);
-        Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(any());
+        Optional<Venda> vendaOptional = Optional.of(builderVendaDomain().get(0));
+        Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
         Mockito.when(clienteService.consultaClientePorId(any())).thenReturn(cliente);
-        Mockito.when(produtoService.consultarProdutoPorId(any())).thenReturn(any());
+        Mockito.when(produtoService.consultarProdutoPorId(any())).thenReturn(null);
 
         Assertions.assertThrows(RuntimeException.class, () -> vendaService.cadastroVenda(venda));
     }

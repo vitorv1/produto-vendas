@@ -1,15 +1,10 @@
 package com.example.produtovendas.infra.validacoes;
 
-import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Produto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 import java.util.List;
-
 import static com.example.produtovendas.builders.Builders.builderProdutoDomain;
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProdutoValidationTest {
 

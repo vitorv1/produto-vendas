@@ -1,15 +1,18 @@
 package com.example.produtovendas.builders;
 
 import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.domain.Estoque;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.entities.ClienteEntity;
+import com.example.produtovendas.infra.entities.EstoqueEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
 import com.example.produtovendas.infra.mappers.ClienteMapper;
 import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.mappers.VendaMapper;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +22,8 @@ public abstract class Builders {
 
     public static List<ProdutoEntity> builderProdutoEntity(){
         List<ProdutoEntity> produtoEntityList = new ArrayList<>();
-        produtoEntityList.add(new ProdutoEntity(1L, "Tenis", false, "Nike", 320));
-        produtoEntityList.add(new ProdutoEntity(3L ,"Camiseta", false, "Puma", 400));
+        produtoEntityList.add(new ProdutoEntity(1L, "Tenis", false, "Nike", new BigDecimal(320), 0));
+        produtoEntityList.add(new ProdutoEntity(3L ,"Camiseta", false, "Puma", new BigDecimal(400), 0));
         return produtoEntityList;
     }
 
@@ -52,8 +55,8 @@ public abstract class Builders {
 
     public static List<VendaEntity> builderVendaEntity(){
         List<VendaEntity> vendaEntities = new ArrayList<>();
-        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), false, 648, 10, builderProdutoEntity(), LocalDate.now()));
-        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), false, 720, 0, builderProdutoEntity(), LocalDate.now()));
+        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), false, new BigDecimal(648), 10, builderProdutoEntity(), LocalDate.now()));
+        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), false, new BigDecimal(720), 0, builderProdutoEntity(), LocalDate.now()));
         return vendaEntities;
     }
 

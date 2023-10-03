@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ class VendaDataProviderTest {
         List<Produto> produtoList = new ArrayList<>();
         BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> vendaDataProvider.salvar(
                 new Venda(1L, new Cliente(2L, "Vitor", false, "123456789-77", "vivi@gmail.com", "124578-9856"),
-                        2L, 0, false, 0, produtoList, LocalDate.now())));
+                        2L, new BigDecimal(0), false, 0, produtoList, LocalDate.now())));
         Assertions.assertEquals("Erro ao salvar venda", exceptionTeste.getMessage());
     }
 

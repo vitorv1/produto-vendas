@@ -3,6 +3,8 @@ package com.example.produtovendas.domain;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,7 +19,8 @@ public class Produto {
     private boolean inativo;
     @NotBlank
     private String marca;
-    private double valor;
+    private BigDecimal valor;
+    private Integer quantidade;
 
     public void atualizaDados(Produto produtoDto) {
         this.inativo = false;

@@ -1,8 +1,10 @@
 package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.infra.dataproviders.EstoqueDataPovider;
 import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,20 +13,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProdutoService {
 
     public static final String MENSAGEM_PRODUTO_EXISTENTE = "Produto não existe";
-    private ProdutoDataProvider produtoDataProvider;
+    private final ProdutoDataProvider produtoDataProvider;
+    private final EstoqueService estoqueService;
 
-    @Autowired
-    public ProdutoService(ProdutoDataProvider produtoDataProvider) {
-        this.produtoDataProvider = produtoDataProvider;
-    }
 
     public Produto cadastroProduto(Produto produto) {
         List<Produto> produtos = produtoDataProvider.consultaTodos();
         ProdutoValidation.validaProduto(produtos, produto);
-        return produtoDataProvider.salvar(produto);
+        Produto produtoSalvo = produtoDataProvider.salvar(produto);
+        estoqueService.cadastroEstoque(produtoSalvo);
+        return produtoSalvo;
     }
 
     public Optional<Produto> consultarProdutoPorId(Long id) {

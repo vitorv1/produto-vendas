@@ -9,11 +9,28 @@ import java.util.stream.Collectors;
 public class VendaMapper {
 
     public static VendaEntity paraEntity(Venda venda) {
-        return new VendaEntity(venda.getId(), ClienteMapper.paraEntity(venda.getCliente()), venda.isInativo(), venda.getValor(), venda.getDesconto(), ProdutoMapper.paraEntitys(venda.getListaProdutos()), venda.getDataVenda());
+        return VendaEntity.builder().
+                id(venda.getId()).
+                clienteEntity(ClienteMapper.paraEntity(venda.getCliente())).
+                inativo(venda.isInativo()).
+                valor(venda.getValor()).
+                desconto(venda.getDesconto()).
+                listaProdutos(ProdutoMapper.paraEntitys(venda.getListaProdutos())).
+                dataVenda(venda.getDataVenda()).
+                build();
     }
 
     public static Venda paraDomain(VendaEntity vendaEntity) {
-        return new Venda(vendaEntity.getId(), ClienteMapper.paraCliente(vendaEntity.getClienteEntity()), vendaEntity.getClienteEntity().getId(), vendaEntity.getValor(), vendaEntity.isInativo(), vendaEntity.getDesconto(), ProdutoMapper.paraProdutos(vendaEntity.getListaProdutos()), vendaEntity.getDataVenda());
+        return Venda.builder().
+                id(vendaEntity.getId()).
+                cliente(ClienteMapper.paraCliente(vendaEntity.getClienteEntity())).
+                idCliente(vendaEntity.getClienteEntity().getId()).
+                inativo(vendaEntity.isInativo()).
+                valor(vendaEntity.getValor()).
+                desconto(vendaEntity.getDesconto()).
+                listaProdutos(ProdutoMapper.paraProdutos(vendaEntity.getListaProdutos())).
+                dataVenda(vendaEntity.getDataVenda()).
+                build();
     }
 
     public static List<Venda> paraDomains(List<VendaEntity> vendaEntities) {

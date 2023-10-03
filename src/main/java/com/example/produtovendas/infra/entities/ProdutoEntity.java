@@ -1,7 +1,10 @@
 package com.example.produtovendas.infra.entities;
 
+import com.example.produtovendas.domain.Estoque;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.math.BigDecimal;
 
 @Entity(name = "Produto")
 @Table(name = "produtos")
@@ -20,5 +23,6 @@ public class ProdutoEntity {
     private String nome;
     private boolean inativo;
     private String marca;
-    private double valor;
+    private BigDecimal valor;
+    private Integer quantidade;
 }

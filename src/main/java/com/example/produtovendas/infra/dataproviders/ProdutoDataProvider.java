@@ -4,6 +4,7 @@ import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.ProdutoMapper;
+import com.example.produtovendas.infra.repositories.EstoqueRepository;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +21,7 @@ import java.util.Optional;
 public class ProdutoDataProvider {
 
     private final ProdutoRepository repository;
+    private final EstoqueRepository estoqueRepository;
 
     public Produto salvar(Produto produto) {
         ProdutoEntity produtoEntity = ProdutoMapper.paraEntity(produto);

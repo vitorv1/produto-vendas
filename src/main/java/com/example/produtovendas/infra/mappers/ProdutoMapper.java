@@ -15,6 +15,7 @@ public class ProdutoMapper {
                 .valor(produtoEntity.getValor())
                 .marca(produtoEntity.getMarca())
                 .inativo(produtoEntity.isInativo())
+                .quantidade(produtoEntity.getQuantidade())
                 .build();
     }
 
@@ -25,14 +26,15 @@ public class ProdutoMapper {
                 .valor(produto.getValor())
                 .marca(produto.getMarca())
                 .inativo(produto.isInativo())
+                .quantidade(produto.getQuantidade())
                 .build();
     }
 
     public static List<Produto> paraProdutos(List<ProdutoEntity> produtoEntities) {
-        return produtoEntities.stream().map(ProdutoMapper::paraProduto).collect(Collectors.toList());
+        return produtoEntities.stream().map(ProdutoMapper::paraProduto).toList();
     }
 
     public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList) {
-        return produtoList.stream().map(ProdutoMapper::paraEntity).collect(Collectors.toList());
+        return produtoList.stream().map(ProdutoMapper::paraEntity).toList();
     }
 }

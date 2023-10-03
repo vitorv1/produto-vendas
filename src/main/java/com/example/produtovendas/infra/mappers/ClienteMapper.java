@@ -31,6 +31,6 @@ public class ClienteMapper {
     }
 
     public static List<Cliente> paraClientes(List<ClienteEntity> clienteEntities) {
-        return clienteEntities.stream().map(ClienteMapper::paraCliente).collect(Collectors.toList());
+        return clienteEntities.stream().map(ClienteMapper::paraCliente).toList();
     }
 }

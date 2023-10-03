@@ -1,10 +1,8 @@
 package com.example.produtovendas.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -12,12 +10,13 @@ import java.util.List;
 @AllArgsConstructor
 @ToString
 @Setter
+@Builder
 public class Venda {
 
     private Long id;
     private Cliente cliente;
     private Long idCliente;
-    private double valor;
+    private BigDecimal valor;
     private boolean inativo;
     private Integer desconto;
     private List<Produto> listaProdutos;
@@ -40,7 +39,7 @@ public class Venda {
         double resultado;
         double valorSomaProdutos = 0;
         for (Produto produto : this.listaProdutos) {
-            valorSomaProdutos += produto.getValor();
+            valorSomaProdutos += produto.getValor().doubleValue();
         }
 
         if (this.desconto > 0) {
@@ -50,6 +49,6 @@ public class Venda {
             resultado = valorSomaProdutos;
         }
 
-        this.valor = resultado;
+        this.valor = BigDecimal.valueOf(resultado);
     }
 }

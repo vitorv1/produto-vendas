@@ -16,7 +16,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import static com.example.produtovendas.validators.Validators.validaClienteDomain;
 import static com.example.produtovendas.validators.Validators.validarAtributosDeCliente;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -95,24 +94,12 @@ class ClienteControllerTest {
 
     @Test
     void testeMetodoCadastroClienteEstaLancandoException() throws Exception {
-        when(repository.findAll()).thenReturn(Builders.builderClienteEntity());
+        when(repository.findByCpf(any())).thenReturn(Builders.builderClienteOptional().get(0));
         when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));
 
         String clienteJson = Builders.builderJsonCliente();
 
-        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson)).
+        mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson)).
                 andExpect(MockMvcResultMatchers.status().is4xxClientError());
-    }
-
-    @Test
-    void testeMetodoCadastroClienteEstaValidando() throws Exception {
-        when(repository.findAll()).thenReturn(Builders.builderClienteEntity());
-        when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));
-
-        String clienteJson = Builders.builderJsonCliente();
-
-        ResultActions result = mockMvc.perform(MockMvcRequestBuilders.post("/clientes").contentType(MediaType.APPLICATION_JSON).content(clienteJson));
-
-        result.andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }

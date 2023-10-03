@@ -31,4 +31,8 @@ public class Produto {
     public void inativar() {
         this.inativo = true;
     }
+
+    public void ajustaQuantidade(Integer quantidade){
+        this.quantidade = this.quantidade - quantidade;
+    }
 }

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -22,12 +23,13 @@ public class VendaService {
     private final VendaDataProvider vendaDataProvider;
     private final ProdutoService produtoService;
     private final ClienteService clienteService;
+    private final EstoqueService estoqueService;
 
     public Venda cadastroVenda(Venda venda) {
         definirClienteCadastro(venda);
         definirProdutosCadastro(venda);
         venda.calcularValorVenda();
-        venda.setDataVenda(LocalDate.parse(LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))));
+        venda.setDataVenda(LocalDate.now());
         return vendaDataProvider.salvar(venda);
     }
 
@@ -70,6 +72,11 @@ public class VendaService {
         List<Produto> produtoList = new ArrayList<>();
         venda.getListaProdutos().forEach((produto -> produtoList.add(produtoService.consultarProdutoExistentePorId(produto.getId()))));
         ProdutoValidation.validaProdutoInativo(produtoList);
+        estoqueService.definirQuantidadeEstoque(venda, produtoList);
+        validaQuntidadeEstoqueProduto(produtoList);
+        for (int i = 0; i < produtoList.size(); i++) {
+           produtoList.get(i).setQuantidade(venda.getListaProdutos().get(i).getQuantidade());
+        }
         venda.setListaProdutos(produtoList);
     }
 
@@ -92,5 +99,12 @@ public class VendaService {
             Cliente cliente = clienteService.consultaClienteExistentePorId(vendaDto.getIdCliente());
             vendaDto.setCliente(cliente);
         }
+    }
+
+    private void validaQuntidadeEstoqueProduto(List<Produto> produtoList){
+        List<Produto> produtosValidacao = produtoList.stream().filter(produto -> produto.getQuantidade() <= 0).toList();
+
+        if(!produtosValidacao.isEmpty())
+            throw new RuntimeException("Produto em falta no estoque");
     }
 }

@@ -1,14 +1,11 @@
 package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Produto;
-import com.example.produtovendas.infra.dataproviders.EstoqueDataPovider;
 import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.plaf.PanelUI;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +22,7 @@ public class ProdutoService {
         List<Produto> produtos = produtoDataProvider.consultaTodos();
         ProdutoValidation.validaProduto(produtos, produto);
         Produto produtoSalvo = produtoDataProvider.salvar(produto);
-        estoqueService.cadastroEstoque(produtoSalvo);
+        estoqueService.criarEstoque(produtoSalvo);
         return produtoSalvo;
     }
 

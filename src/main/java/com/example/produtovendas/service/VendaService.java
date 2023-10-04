@@ -72,12 +72,8 @@ public class VendaService {
         List<Produto> produtoList = new ArrayList<>();
         venda.getListaProdutos().forEach((produto -> produtoList.add(produtoService.consultarProdutoExistentePorId(produto.getId()))));
         ProdutoValidation.validaProdutoInativo(produtoList);
-        estoqueService.definirQuantidadeEstoque(venda, produtoList);
         validaQuntidadeEstoqueProduto(produtoList);
-        for (int i = 0; i < produtoList.size(); i++) {
-           produtoList.get(i).setQuantidade(venda.getListaProdutos().get(i).getQuantidade());
-        }
-        venda.setListaProdutos(produtoList);
+        venda.setListaProdutos(estoqueService.definirQuantidadeEstoque(produtoList));
     }
 
     private void definirProdutosAlteracao(Venda vendaDto, Venda venda) {

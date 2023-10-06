@@ -97,10 +97,32 @@ public class VendaService {
         }
     }
 
-    private void validaQuntidadeEstoqueProduto(List<Produto> produtoList){
+    private void validaQuntidadeEstoqueProduto(List<Produto> produtoList) {
+        List<Produto> produtosRepetidos = new ArrayList<>();
+        for (int i = 0; i < produtoList.size(); i++) {
+            Long id = produtoList.get(i).getId();
+            for (int j = i + 1; j < produtoList.size(); j++) {
+                if (Objects.equals(produtoList.get(j).getId(), id)){
+                    produtosRepetidos.add(produtoList.get(i));
+                }
+            }
+        }
+
+        for (int i = 0; i < produtosRepetidos.size(); i++) {
+            int repitidos = 1;
+            Long id = produtoList.get(i).getId();
+            for (int j = i + 1; j < produtoList.size(); j++) {
+                if(Objects.equals(produtoList.get(j).getId(), id)){
+                    repitidos += 1;
+                }
+            }
+            if(produtoList.get(i).getQuantidade() < repitidos)
+                throw new RuntimeException("Produto em falta no estoque");
+        }
         List<Produto> produtosValidacao = produtoList.stream().filter(produto -> produto.getQuantidade() <= 0).toList();
 
-        if(!produtosValidacao.isEmpty())
-            throw new RuntimeException("Produto em falta no estoque");
+            if (!produtosValidacao.isEmpty())
+                throw new RuntimeException("Produto em falta no estoque");
+
     }
 }

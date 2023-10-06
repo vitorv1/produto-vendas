@@ -8,11 +8,9 @@ import com.example.produtovendas.infra.repositories.EstoqueRepository;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Component
@@ -34,7 +32,7 @@ public class ProdutoDataProvider {
         return ProdutoMapper.paraProduto(produtoEntity);
     }
 
-    public Optional<Produto> consultarPorId(Long id) {
+    public Produto consultarPorId(Long id) {
         Optional<ProdutoEntity> produtoEntity;
         try {
             produtoEntity = repository.findById(id);

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 public class VendaService {
 
     public static final String MENSAGEM_VENDA_EXISTE = "Venda não existe";
+    public static final String MENSAGEM_PRODUTO_FALTA = "Produto em falta no estoque";
 
     private final VendaDataProvider vendaDataProvider;
     private final ProdutoService produtoService;
@@ -98,31 +99,22 @@ public class VendaService {
     }
 
     private void validaQuntidadeEstoqueProduto(List<Produto> produtoList) {
-        List<Produto> produtosRepetidos = new ArrayList<>();
+        int repitidos = 1;
         for (int i = 0; i < produtoList.size(); i++) {
             Long id = produtoList.get(i).getId();
             for (int j = i + 1; j < produtoList.size(); j++) {
                 if (Objects.equals(produtoList.get(j).getId(), id)){
-                    produtosRepetidos.add(produtoList.get(i));
-                }
-            }
-        }
-
-        for (int i = 0; i < produtosRepetidos.size(); i++) {
-            int repitidos = 1;
-            Long id = produtoList.get(i).getId();
-            for (int j = i + 1; j < produtoList.size(); j++) {
-                if(Objects.equals(produtoList.get(j).getId(), id)){
-                    repitidos += 1;
+                   repitidos ++;
                 }
             }
             if(produtoList.get(i).getQuantidade() < repitidos)
-                throw new RuntimeException("Produto em falta no estoque");
+                throw new RuntimeException(MENSAGEM_PRODUTO_FALTA);
         }
+
         List<Produto> produtosValidacao = produtoList.stream().filter(produto -> produto.getQuantidade() <= 0).toList();
 
             if (!produtosValidacao.isEmpty())
-                throw new RuntimeException("Produto em falta no estoque");
+                throw new RuntimeException(MENSAGEM_PRODUTO_FALTA);
 
     }
 }

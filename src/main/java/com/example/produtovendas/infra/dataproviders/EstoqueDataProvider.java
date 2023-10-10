@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class EstoqueDataPovider {
+public class EstoqueDataProvider {
 
     private final EstoqueRepository repository;
 

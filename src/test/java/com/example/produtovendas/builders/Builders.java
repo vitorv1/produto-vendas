@@ -89,6 +89,11 @@ public abstract class Builders {
         return venda;
     }
 
+    public static EstoqueEntity builderEstoqueEntity(){
+        ProdutoEntity produtoEntity = builderProdutoEntity().get(0);
+        return new EstoqueEntity(produtoEntity.getId(), produtoEntity.getQuantidade(), produtoEntity);
+    }
+
     public static String builderJsonVenda(){
         return "{\"idCliente\":12,\"desconto\":10,\"listaProdutos\":[{\"id\":3},{\"id\":7}]}";
     }

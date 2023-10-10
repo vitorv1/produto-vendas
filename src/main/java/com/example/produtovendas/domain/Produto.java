@@ -27,6 +27,7 @@ public class Produto {
         this.nome = produtoDto.getNome();
         this.marca = produtoDto.getMarca();
         this.valor = produtoDto.getValor();
+        this.quantidade = produtoDto.getQuantidade();
     }
     public void inativar() {
         this.inativo = true;

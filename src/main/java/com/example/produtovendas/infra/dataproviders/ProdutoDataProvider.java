@@ -32,7 +32,7 @@ public class ProdutoDataProvider {
         return ProdutoMapper.paraProduto(produtoEntity);
     }
 
-    public Produto consultarPorId(Long id) {
+    public Optional<Produto> consultarPorId(Long id) {
         Optional<ProdutoEntity> produtoEntity;
         try {
             produtoEntity = repository.findById(id);

@@ -2,11 +2,14 @@ package com.example.produtovendas.validators;
 
 import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.domain.Estoque;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.entities.ClienteEntity;
+import com.example.produtovendas.infra.entities.EstoqueEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
+import org.apache.tomcat.util.security.Escape;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -14,6 +17,8 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.example.produtovendas.builders.Builders.builderEstoqueDomain;
+import static com.example.produtovendas.builders.Builders.builderEstoqueEntity;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public abstract class Validators {
@@ -158,5 +163,21 @@ public abstract class Validators {
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.inativo").value(Builders.builderClienteEntity().get(0).isInativo()));
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.cpf").value(Builders.builderClienteEntity().get(0).getCpf()));
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.numeroTelefone").value(Builders.builderClienteEntity().get(0).getNumeroTelefone()));
+    }
+
+    public static void validaEstoqueDomain(Estoque estoque){
+        if(estoque.getId() == null){
+            Assertions.assertNull(estoque.getId());
+        }else{
+            Assertions.assertEquals(builderEstoqueDomain().getId(), estoque.getId());
+        }
+        validaProdutoDomain(estoque.getProduto(), 0);
+        Assertions.assertEquals(builderEstoqueDomain().getQuantidade(), estoque.getQuantidade());
+    }
+
+    public static void validaEstoqueEntity(EstoqueEntity estoqueEntity){
+        Assertions.assertEquals(builderEstoqueEntity().getId(), estoqueEntity.getId());
+        validaProdutoEntity(estoqueEntity.getProdutoEntity(), 0);
+        Assertions.assertEquals(builderEstoqueEntity().getQuantidade(), estoqueEntity.getQuantidade());
     }
 }

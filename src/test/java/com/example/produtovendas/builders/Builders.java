@@ -9,6 +9,7 @@ import com.example.produtovendas.infra.entities.EstoqueEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
 import com.example.produtovendas.infra.mappers.ClienteMapper;
+import com.example.produtovendas.infra.mappers.EstoqueMapper;
 import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.mappers.VendaMapper;
 
@@ -92,6 +93,10 @@ public abstract class Builders {
     public static EstoqueEntity builderEstoqueEntity(){
         ProdutoEntity produtoEntity = builderProdutoEntity().get(0);
         return new EstoqueEntity(produtoEntity.getId(), produtoEntity.getQuantidade(), produtoEntity);
+    }
+
+    public static Estoque builderEstoqueDomain(){
+        return EstoqueMapper.paraDomain(builderEstoqueEntity());
     }
 
     public static String builderJsonVenda(){

@@ -9,6 +9,7 @@ public class EstoqueMapper {
         return Estoque.builder()
                 .id(estoqueEntity.getId())
                 .quantidade(estoqueEntity.getQuantidade())
+                .produto(ProdutoMapper.paraProduto(estoqueEntity.getProdutoEntity()))
                 .build();
     }
 
@@ -16,8 +17,7 @@ public class EstoqueMapper {
         return EstoqueEntity.builder()
                 .id(estoque.getId())
                 .quantidade(estoque.getQuantidade())
+                .produtoEntity(ProdutoMapper.paraEntity(estoque.getProduto()))
                 .build();
     }
-
-
 }

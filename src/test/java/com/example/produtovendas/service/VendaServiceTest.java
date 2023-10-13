@@ -32,7 +32,11 @@ class VendaServiceTest {
     private ClienteService clienteService;
 
     @Mock
+    private EstoqueService estoqueService;
+
+    @Mock
     private VendaDataProvider vendaDataProvider;
+
 
     @Captor
     private ArgumentCaptor<Venda> captor;
@@ -56,6 +60,7 @@ class VendaServiceTest {
                 });
         Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(builderClienteDomain().get(0));
         Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(venda);
+
 
         vendaService.cadastroVenda(venda);
 

@@ -1,11 +1,9 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.builders.Builders;
-import com.example.produtovendas.infra.entities.VendaEntity;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import com.example.produtovendas.infra.repositories.VendaRepository;
-import com.example.produtovendas.validators.Validators;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -41,7 +39,7 @@ class VendaControllerTest {
 
     @Test
     void testeMetodoCadastroVenda() throws Exception {
-        when(produtoRepository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(0));
+        when(produtoRepository.findById(any())).thenReturn(Builders.builderProdutoOptionalEntity().get(0));
         when(clienteRepository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
         when(repository.save(any())).thenReturn(Builders.builderVendaEntity().get(0));
         String json = Builders.builderJsonVenda();
@@ -84,7 +82,7 @@ class VendaControllerTest {
         when(repository.findById(any())).thenReturn(Builders.builderVendaOptional().get(0));
         when(repository.save(any())).thenReturn(Builders.builderVendaEntity().get(0));
         when(clienteRepository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
-        when(produtoRepository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(0));
+        when(produtoRepository.findById(any())).thenReturn(Builders.builderProdutoOptionalEntity().get(0));
 
         String json = Builders.builderJsonVenda();
 

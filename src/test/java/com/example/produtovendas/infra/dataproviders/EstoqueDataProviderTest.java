@@ -1,9 +1,11 @@
 package com.example.produtovendas.infra.dataproviders;
 
 import com.example.produtovendas.domain.Estoque;
+import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.EstoqueMapper;
 import com.example.produtovendas.infra.repositories.EstoqueRepository;
 import com.example.produtovendas.validators.Validators;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,5 +32,12 @@ class EstoqueDataProviderTest {
         Mockito.when(repository.save(any())).thenReturn(EstoqueMapper.paraEntity(estoque));
         Estoque estoqueTeste = estoqueDataProvider.salvar(estoque);
         Validators.validaEstoqueDomain(estoqueTeste);
+    }
+
+    @Test
+    void testaSeMetodoSalvarEstaLancandoException(){
+        Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> estoqueDataProvider.salvar(builderEstoqueDomain()));
+        Assertions.assertEquals("Erro ao cadastrar no estoque", exceptionTeste.getMessage());
     }
 }

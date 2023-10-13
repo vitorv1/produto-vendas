@@ -12,7 +12,7 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-import javax.swing.text.html.Option;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,35 +30,41 @@ class EstoqueServiceTest {
     private EstoqueService estoqueService;
 
     @Captor
-    ArgumentCaptor<Estoque> captor;
+    ArgumentCaptor<Estoque> captorEstoque;
+
+    @Captor
+    ArgumentCaptor<Produto> captorProduto;
 
 
     @Test
     void testeMetodoCriarEstoque() {
         Estoque estoque = builderEstoqueDomain();
-        Mockito.when(estoqueDataProvider.salvar(captor.capture())).thenReturn(estoque);
+        Mockito.when(estoqueDataProvider.salvar(captorEstoque.capture())).thenReturn(estoque);
 
         estoqueService.criarEstoque(builderProdutoDomain().get(0));
 
-        Estoque estoqueTeste = captor.getValue();
+        Estoque estoqueTeste = captorEstoque.getValue();
 
         Validators.validaEstoqueDomain(estoqueTeste);
     }
 
     @Test
-    void definirQuantidadeEstoque() {
+    void definirQuantidadeEstoqueDeProdutosDiferentes() {
         List<Produto> produtoList = builderProdutoDomain();
-        Optional<Produto> produtoOptional = Optional.of(builderProdutoDomain().get(0));
+        Optional<Produto> produtoOptional = builderProdutoOptionalDomain().get(0);
 
         Mockito.when(produtoDataProvider.consultarPorId(any()))
                 .thenReturn(produtoOptional)
-                .thenAnswer(new Answer<Produto>() {
+                .thenAnswer(new Answer<Optional<Produto>>() {
                     int count = 0;
                     @Override
-                    public Produto answer(InvocationOnMock invocationOnMock){
+                    public Optional<Produto> answer(InvocationOnMock invocationOnMock){
                         count ++;
-                        return builderProdutoDomain().get(count);
+                        return builderProdutoOptionalDomain().get(count);
                      }
                 });
+        Mockito.when(produtoDataProvider.salvar(captorProduto.capture())).thenReturn(any());
+
+        estoqueService.definirQuantidadeEstoque(produtoList);
     }
 }

@@ -7,15 +7,12 @@ import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +41,7 @@ class ProdutoDataProviderTest {
 
     @Test
     void testeMetodoConsultarPorId(){
-        Optional<ProdutoEntity> produtoEntity = Builders.builderProdutoOptional().get(0);
+        Optional<ProdutoEntity> produtoEntity = Builders.builderProdutoOptionalEntity().get(0);
 
         Mockito.when(repository.findById(any())).thenReturn(produtoEntity);
 

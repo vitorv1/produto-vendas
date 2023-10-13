@@ -23,16 +23,23 @@ public abstract class Builders {
 
     public static List<ProdutoEntity> builderProdutoEntity(){
         List<ProdutoEntity> produtoEntityList = new ArrayList<>();
-        produtoEntityList.add(new ProdutoEntity(1L, "Tenis", false, "Nike", new BigDecimal(320), 0));
-        produtoEntityList.add(new ProdutoEntity(3L ,"Camiseta", false, "Puma", new BigDecimal(400), 0));
+        produtoEntityList.add(new ProdutoEntity(1L, "Tenis", false, "Nike", new BigDecimal(320), 5));
+        produtoEntityList.add(new ProdutoEntity(3L ,"Camiseta", false, "Puma", new BigDecimal(400), 5));
         return produtoEntityList;
     }
 
-    public static List<Optional<ProdutoEntity>> builderProdutoOptional(){
+    public static List<Optional<ProdutoEntity>> builderProdutoOptionalEntity(){
         List<Optional<ProdutoEntity>> produtoEntityList = new ArrayList<>();
         produtoEntityList.add(Optional.of(builderProdutoEntity().get(0)));
         produtoEntityList.add(Optional.of(builderProdutoEntity().get(1)));
         return produtoEntityList;
+    }
+
+    public static List<Optional<Produto>> builderProdutoOptionalDomain(){
+        List<Optional<Produto>> produtoListDomainOp = new ArrayList<>();
+        produtoListDomainOp.add(Optional.of(builderProdutoDomain().get(0)));
+        produtoListDomainOp.add(Optional.of(builderProdutoDomain().get(1)));
+        return produtoListDomainOp;
     }
     public static List<ClienteEntity> builderClienteEntity(){
         List<ClienteEntity> clienteEntities = new ArrayList<>();

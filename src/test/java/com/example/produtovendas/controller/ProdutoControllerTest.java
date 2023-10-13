@@ -1,7 +1,6 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.builders.Builders;
-import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +45,7 @@ class ProdutoControllerTest {
 
     @Test
     void testeMetodoConsultarProdutoPorId() throws Exception {
-        when(repository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(0));
+        when(repository.findById(any())).thenReturn(Builders.builderProdutoOptionalEntity().get(0));
 
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.get("/produtos/{id}", Builders.builderProdutoEntity().get(0).getId()));
         resultActions.andExpect(MockMvcResultMatchers.status().isOk());
@@ -65,7 +64,7 @@ class ProdutoControllerTest {
 
     @Test
     void testeMetodoDeletarProduto() throws Exception {
-        when(repository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(0));
+        when(repository.findById(any())).thenReturn(Builders.builderProdutoOptionalEntity().get(0));
         when(repository.save(any())).thenReturn(Builders.builderProdutoEntity().get(0));
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/produtos/{id}", Builders.builderProdutoEntity().get(0).getId())).
@@ -74,7 +73,7 @@ class ProdutoControllerTest {
 
     @Test
     void testeMetodoAlterarProduto() throws Exception{
-        when(repository.findById(any())).thenReturn(Builders.builderProdutoOptional().get(1));
+        when(repository.findById(any())).thenReturn(Builders.builderProdutoOptionalEntity().get(1));
         when(repository.save(any())).thenReturn(Builders.builderProdutoEntity().get(0));
         String json = Builders.builderJsonProduto();
 

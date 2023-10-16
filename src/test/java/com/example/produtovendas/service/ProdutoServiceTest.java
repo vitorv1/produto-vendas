@@ -2,6 +2,7 @@ package com.example.produtovendas.service;
 
 import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.infra.dataproviders.EstoqueDataProvider;
 import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,9 @@ class ProdutoServiceTest {
     @Mock
     private ProdutoDataProvider produtoDataProvider;
 
+    @Mock
+    private EstoqueService estoqueService;
+
     @Captor
     private ArgumentCaptor<Produto> captor;
 
@@ -39,6 +43,7 @@ class ProdutoServiceTest {
         Produto produto = Builders.builderProdutoDomain().get(0);
 
         when(produtoDataProvider.consultaTodos()).thenReturn(Collections.emptyList());
+       // when(estoqueService.criarEstoque()).thenReturn();
         when(produtoDataProvider.salvar(captor.capture())).thenReturn(produto);
 
         produtoService.cadastroProduto(produto);

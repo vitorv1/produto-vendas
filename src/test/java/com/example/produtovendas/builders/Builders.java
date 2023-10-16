@@ -63,8 +63,8 @@ public abstract class Builders {
 
     public static List<VendaEntity> builderVendaEntity(){
         List<VendaEntity> vendaEntities = new ArrayList<>();
-        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), false, new BigDecimal(648), 10, builderProdutoEntity(), LocalDate.now()));
-        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), false, new BigDecimal(720), 0, builderProdutoEntity(), LocalDate.now()));
+        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), false, new BigDecimal("648.0"), 10, builderProdutoEntity(), LocalDate.now()));
+        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), false, new BigDecimal("720.0"), 0, builderProdutoEntity(), LocalDate.now()));
         return vendaEntities;
     }
 

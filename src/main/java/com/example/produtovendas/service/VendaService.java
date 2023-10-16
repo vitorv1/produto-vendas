@@ -29,6 +29,7 @@ public class VendaService {
     public Venda cadastroVenda(Venda venda) {
         definirClienteCadastro(venda);
         definirProdutosCadastro(venda);
+        System.out.println(venda.getListaProdutos());
         venda.calcularValorVenda();
         venda.setDataVenda(LocalDate.now());
         return vendaDataProvider.salvar(venda);

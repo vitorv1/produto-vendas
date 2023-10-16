@@ -60,6 +60,9 @@ class VendaServiceTest {
                 });
         Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(builderClienteDomain().get(0));
         Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(venda);
+        List<Produto> produtoList = builderProdutoDomain();
+        produtoList.forEach(produto -> produto.setQuantidade(produto.getQuantidade() - 1));
+        Mockito.when(estoqueService.definirQuantidadeEstoque(any())).thenReturn(produtoList);
 
 
         vendaService.cadastroVenda(venda);

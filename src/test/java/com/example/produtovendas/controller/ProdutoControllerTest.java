@@ -1,8 +1,10 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.builders.Builders;
+import com.example.produtovendas.infra.repositories.EstoqueRepository;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,12 +33,15 @@ class ProdutoControllerTest {
     @MockBean
     private ProdutoRepository repository;
 
+    @MockBean
+    private EstoqueRepository estoqueRepository;
+
 
     @Test
     void testeMetodoCadastroProduto() throws Exception {
         when(repository.findAll()).thenReturn(Collections.emptyList());
         when(repository.save(any())).thenReturn(Builders.builderProdutoEntity().get(0));
-
+        when(estoqueRepository.save(any())).thenReturn(Builders.builderEstoqueEntity());
         String json = Builders.builderJsonProduto();
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/produtos").contentType(MediaType.APPLICATION_JSON).content(json));
         resultActions.andExpect(MockMvcResultMatchers.status().isCreated());

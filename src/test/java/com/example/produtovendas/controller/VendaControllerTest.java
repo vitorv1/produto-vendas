@@ -45,7 +45,6 @@ class VendaControllerTest {
         String json = Builders.builderJsonVenda();
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.post("/vendas").contentType(MediaType.APPLICATION_JSON).content(json)).
                 andExpect(MockMvcResultMatchers.status().isCreated());
-        System.out.println(resultActions);
         validaVendaController(resultActions);
     }
 

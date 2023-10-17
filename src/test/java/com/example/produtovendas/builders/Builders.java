@@ -76,10 +76,7 @@ public abstract class Builders {
     }
 
     public static List<Produto> builderProdutoDomain(){
-        List<Produto> produtoList = new ArrayList<>();
-        produtoList.add(ProdutoMapper.paraProduto(Builders.builderProdutoEntity().get(0)));
-        produtoList.add(ProdutoMapper.paraProduto(Builders.builderProdutoEntity().get(1)));
-        return produtoList;
+        return ProdutoMapper.paraProdutos(builderProdutoEntity());
     }
 
     public static List<Venda> builderVendaDomain() {

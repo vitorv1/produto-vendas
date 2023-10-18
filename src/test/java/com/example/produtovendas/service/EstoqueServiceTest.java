@@ -5,6 +5,7 @@ import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.infra.dataproviders.EstoqueDataProvider;
 import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
 import com.example.produtovendas.validators.Validators;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.*;
@@ -63,8 +64,16 @@ class EstoqueServiceTest {
                         return builderProdutoOptionalDomain().get(count);
                      }
                 });
-        Mockito.when(produtoDataProvider.salvar(captorProduto.capture())).thenReturn(any());
+
+        Mockito.verify(produtoDataProvider, Mockito.times(2)).salvar(captorProduto.capture());
+
+        List<Produto> produtosDefinidos = captorProduto.getAllValues();
 
         estoqueService.definirQuantidadeEstoque(produtoList);
+
+        System.out.println(produtosDefinidos);
+
+        Assertions.assertEquals(builderProdutoDomain().get(0).getQuantidade() - 1, produtosDefinidos.get(0).getQuantidade());
+        Assertions.assertEquals(builderProdutoDomain().get(1).getQuantidade() - 1, produtosDefinidos.get(1).getQuantidade());
     }
 }

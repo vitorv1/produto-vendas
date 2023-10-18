@@ -1,6 +1,8 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.builders.Builders;
+import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.repositories.ClienteRepository;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import com.example.produtovendas.infra.repositories.VendaRepository;
@@ -15,9 +17,12 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.util.Optional;
+
 import static com.example.produtovendas.validators.Validators.validaVendaController;
 import static com.example.produtovendas.validators.Validators.validaVendasController;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -39,7 +44,10 @@ class VendaControllerTest {
 
     @Test
     void testeMetodoCadastroVenda() throws Exception {
+        ProdutoEntity produtoAjustado = Builders.builderProdutoEntity().get(0);
+        produtoAjustado.setQuantidade(produtoAjustado.getQuantidade() - 1);
         when(produtoRepository.findById(any())).thenReturn(Builders.builderProdutoOptionalEntity().get(0));
+        when(produtoRepository.save(any())).thenReturn(produtoAjustado);
         when(clienteRepository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
         when(repository.save(any())).thenReturn(Builders.builderVendaEntity().get(0));
         String json = Builders.builderJsonVenda();

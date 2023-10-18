@@ -23,8 +23,6 @@ public class EstoqueService {
     }
 
     public List<Produto> definirQuantidadeEstoque(List<Produto> produtoList){
-        System.out.println("oi");
-        System.out.println(produtoList);
         return produtoList.stream().map(produto -> alterarQuantidadeProduto(produto.getId())).collect(Collectors.toList());
     }
 

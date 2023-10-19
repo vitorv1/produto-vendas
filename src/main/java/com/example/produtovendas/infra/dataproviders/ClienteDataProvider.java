@@ -19,14 +19,19 @@ public class ClienteDataProvider {
 
     private final ClienteRepository repository;
 
+    private static final String MENSAGEM_ERRO_CADASTRO_CLIENTE = "Erro ao salvar Cliente";
+    private static final String MENSAGEM_ERRO_CONSULTA_TODOS_CLIENTES = "Erro ao buscar todos os Clientes";
+    private static final String MENSAGEM_ERRO_CONSULTA_CPF_CLIENTE = "Erro ao buscar todos os Clientes";
+    private static final String MENSAGEM_ERRO_CONSULTA_ID_CLIENTE = "Erro ao consultar Cliente por Id";
+
     public Cliente salvar(Cliente cliente) {
         ClienteEntity clienteEntity = ClienteMapper.paraEntity(cliente);
 
         try {
             clienteEntity = repository.save(clienteEntity);
         } catch (Exception ex) {
-            log.error("Erro ao salvar Cliente", ex);
-            throw new BancoDeDadosException("Erro ao salvar Cliente");
+            log.error(MENSAGEM_ERRO_CADASTRO_CLIENTE, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_CADASTRO_CLIENTE);
         }
 
         return ClienteMapper.paraCliente(clienteEntity);
@@ -36,8 +41,8 @@ public class ClienteDataProvider {
         try {
             return ClienteMapper.paraClientes(repository.findAll());
         } catch (Exception ex) {
-            log.error("Erro ao buscar todos os Clientes", ex);
-            throw new BancoDeDadosException("Erro ao buscar todos os Clientes");
+            log.error(MENSAGEM_ERRO_CONSULTA_TODOS_CLIENTES, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_TODOS_CLIENTES);
         }
     }
 
@@ -46,8 +51,8 @@ public class ClienteDataProvider {
             Optional<ClienteEntity> cliente = repository.findByCpf(cpf);
             return cliente.isPresent() ? Optional.of(ClienteMapper.paraCliente(cliente.get())) : Optional.empty();
         } catch (Exception ex) {
-            log.error("Erro ao buscar todos os Clientes", ex);
-            throw new BancoDeDadosException("Erro ao buscar todos os Clientes");
+            log.error(MENSAGEM_ERRO_CONSULTA_CPF_CLIENTE, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_CPF_CLIENTE);
         }
     }
 
@@ -58,8 +63,8 @@ public class ClienteDataProvider {
         try {
             clienteEntity = repository.findById(id);
         } catch (Exception ex) {
-            log.error("Erro ao consultar Cliente por Id", ex);
-            throw new BancoDeDadosException("Erro ao consultar Cliente por Id.");
+            log.error(MENSAGEM_ERRO_CONSULTA_ID_CLIENTE, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_ID_CLIENTE);
         }
 
         return clienteEntity.isEmpty() ? Optional.empty() : Optional.of(ClienteMapper.paraCliente(clienteEntity.get()));

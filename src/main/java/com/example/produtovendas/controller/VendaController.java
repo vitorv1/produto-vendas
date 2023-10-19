@@ -4,7 +4,6 @@ package com.example.produtovendas.controller;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.service.VendaService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;

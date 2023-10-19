@@ -13,7 +13,6 @@ import org.mockito.invocation.InvocationOnMock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.stubbing.Answer;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -73,5 +72,22 @@ class EstoqueServiceTest {
 
         Assertions.assertEquals(builderProdutoDomain().get(0).getQuantidade() - 1, produtosDefinidos.get(0).getQuantidade());
         Assertions.assertEquals(builderProdutoDomain().get(1).getQuantidade() - 1, produtosDefinidos.get(1).getQuantidade());
+    }
+
+    @Test
+    void definirQuantidadeEstoqueDeProdutosIguais(){
+        List<Produto> produtoList = builderProdutoDomain();
+        Optional<Produto> produtoOptional = builderProdutoOptionalDomain().get(0);
+
+        Mockito.when(produtoDataProvider.consultarPorId(any())).thenReturn(produtoOptional);
+
+        estoqueService.definirQuantidadeEstoque(produtoList);
+
+        Mockito.verify(produtoDataProvider, Mockito.times(2)).salvar(captorProduto.capture());
+
+        List<Produto> produtosDefinidos = captorProduto.getAllValues();
+
+        Assertions.assertEquals(builderProdutoDomain().get(0).getQuantidade() - 2, produtosDefinidos.get(0).getQuantidade());
+        Assertions.assertEquals(builderProdutoDomain().get(0).getQuantidade() - 2, produtosDefinidos.get(1).getQuantidade());
     }
 }

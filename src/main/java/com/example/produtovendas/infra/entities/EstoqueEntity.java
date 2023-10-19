@@ -3,7 +3,6 @@ package com.example.produtovendas.infra.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.stereotype.Component;
 
 @Entity(name = "Estoque")
 @Table(name = "estoques")

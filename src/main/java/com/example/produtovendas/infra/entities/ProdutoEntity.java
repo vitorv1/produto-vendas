@@ -1,6 +1,5 @@
 package com.example.produtovendas.infra.entities;
 
-import com.example.produtovendas.domain.Estoque;
 import jakarta.persistence.*;
 import lombok.*;
 

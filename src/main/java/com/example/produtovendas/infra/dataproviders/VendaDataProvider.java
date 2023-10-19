@@ -7,7 +7,6 @@ import com.example.produtovendas.infra.mappers.VendaMapper;
 import com.example.produtovendas.infra.repositories.VendaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,13 +19,17 @@ public class VendaDataProvider {
 
     private final VendaRepository repositoryVenda;
 
+    private static final String MENSAGEM_ERRO_SALVAR_VENDA = "Erro ao salvar venda";
+    private static final String MENSAGEM_ERRO_BUSCA_ID_VENDA = "Erro ao consultar por id no banco de dados";
+    private static final String MENSAGEM_ERRO_BUSCA_TODOS_VENDAS = "Erro ao consultar todos no banco de dados";
+
     public Venda salvar(Venda venda) {
         VendaEntity vendaEntity = VendaMapper.paraEntity(venda);
         try {
             vendaEntity = repositoryVenda.save(vendaEntity);
         } catch (Exception ex) {
-            log.error("Erro ao salvar venda", ex);
-            throw new BancoDeDadosException("Erro ao salvar venda");
+            log.error(MENSAGEM_ERRO_SALVAR_VENDA, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_SALVAR_VENDA);
         }
         return VendaMapper.paraDomain(vendaEntity);
     }
@@ -36,8 +39,8 @@ public class VendaDataProvider {
         try {
             vendaEntity = repositoryVenda.findById(id);
         } catch (Exception ex) {
-            log.error("Erro ao consultar por id no banco de dados", ex);
-            throw new BancoDeDadosException("Erro ao consultar por id no banco de dados");
+            log.error(MENSAGEM_ERRO_BUSCA_ID_VENDA, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_BUSCA_ID_VENDA);
         }
         return vendaEntity.isEmpty() ? Optional.empty() : Optional.of(VendaMapper.paraDomain(vendaEntity.get()));
     }
@@ -46,8 +49,8 @@ public class VendaDataProvider {
         try {
             return VendaMapper.paraDomains(repositoryVenda.findAll());
         } catch (Exception ex) {
-            log.error("Erro ao consultar todos no banco de dados", ex);
-            throw new BancoDeDadosException("Erro ao consultar todos no banco de dados");
+            log.error(MENSAGEM_ERRO_BUSCA_TODOS_VENDAS, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_BUSCA_TODOS_VENDAS);
         }
     }
 }

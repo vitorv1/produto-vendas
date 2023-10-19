@@ -6,13 +6,10 @@ import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

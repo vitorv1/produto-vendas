@@ -4,7 +4,6 @@ import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.infra.entities.VendaEntity;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class VendaMapper {
 

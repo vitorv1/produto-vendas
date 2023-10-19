@@ -16,6 +16,8 @@ public class EstoqueDataProvider {
 
     private final EstoqueRepository repository;
 
+    private static final String MENSAGEM_ERRO_SALVAR_ESTOQUE = "Erro ao cadastrar no estoque";
+
 
     public Estoque salvar(Estoque estoque){
         EstoqueEntity estoqueEntity = EstoqueMapper.paraEntity(estoque);
@@ -23,8 +25,8 @@ public class EstoqueDataProvider {
         try {
             estoqueEntity = repository.save(estoqueEntity);
         }catch (Exception ex){
-            log.error("Erro ao cadastrar no estoque", ex);
-            throw new BancoDeDadosException("Erro ao cadastrar no estoque");
+            log.error(MENSAGEM_ERRO_SALVAR_ESTOQUE, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_SALVAR_ESTOQUE);
         }
 
         return EstoqueMapper.paraDomain(estoqueEntity);

@@ -19,15 +19,18 @@ import java.util.Optional;
 public class ProdutoDataProvider {
 
     private final ProdutoRepository repository;
-    private final EstoqueRepository estoqueRepository;
+
+    private static final String MENSAGEM_ERRO_SALVAR_PRODUTO = "Erro no cadastro do produto";
+    private static final String MENSAGEM_ERRO_CONSULTA_ID_PRODUTO = "Erro na consalta por id";
+    private static final String MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS = "Erro na consulta por todos";
 
     public Produto salvar(Produto produto) {
         ProdutoEntity produtoEntity = ProdutoMapper.paraEntity(produto);
         try {
             produtoEntity = repository.save(produtoEntity);
         } catch (Exception ex) {
-            log.error("Erro no cadastro do produto", ex);
-            throw new BancoDeDadosException("Erro no cadastro do produto");
+            log.error(MENSAGEM_ERRO_SALVAR_PRODUTO, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_SALVAR_PRODUTO);
         }
         return ProdutoMapper.paraProduto(produtoEntity);
     }
@@ -37,8 +40,8 @@ public class ProdutoDataProvider {
         try {
             produtoEntity = repository.findById(id);
         } catch (Exception ex) {
-            log.error("Erro na consalta por id", ex);
-            throw new BancoDeDadosException("Erro na consalta por id");
+            log.error(MENSAGEM_ERRO_CONSULTA_ID_PRODUTO, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_ID_PRODUTO);
         }
 
         return produtoEntity.isEmpty() ? Optional.empty() : Optional.of(ProdutoMapper.paraProduto(produtoEntity.get()));
@@ -48,8 +51,8 @@ public class ProdutoDataProvider {
         try {
             return ProdutoMapper.paraProdutos(repository.findAll());
         } catch (Exception ex) {
-            log.error("Erro na consulta por todos", ex);
-            throw new BancoDeDadosException("Erro na consulta por todos");
+            log.error(MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS);
         }
     }
 

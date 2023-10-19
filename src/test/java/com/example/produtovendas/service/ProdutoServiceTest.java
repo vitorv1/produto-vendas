@@ -43,10 +43,11 @@ class ProdutoServiceTest {
         Produto produto = Builders.builderProdutoDomain().get(0);
 
         when(produtoDataProvider.consultaTodos()).thenReturn(Collections.emptyList());
-       // when(estoqueService.criarEstoque()).thenReturn();
         when(produtoDataProvider.salvar(captor.capture())).thenReturn(produto);
 
         produtoService.cadastroProduto(produto);
+
+        Mockito.verify(estoqueService, Mockito.times(1)).criarEstoque(any());
 
         Produto produtoTeste = captor.getValue();
 

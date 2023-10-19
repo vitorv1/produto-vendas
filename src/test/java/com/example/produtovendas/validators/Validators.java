@@ -9,7 +9,6 @@ import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.EstoqueEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
-import org.apache.tomcat.util.security.Escape;
 import org.junit.jupiter.api.Assertions;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;

@@ -69,10 +69,7 @@ public abstract class Builders {
     }
 
     public static List<Cliente> builderClienteDomain(){
-        List<Cliente> clienteList = new ArrayList<>();
-        clienteList.add(ClienteMapper.paraCliente(Builders.builderClienteEntity().get(0)));
-        clienteList.add(ClienteMapper.paraCliente(Builders.builderClienteEntity().get(1)));
-        return clienteList;
+        return ClienteMapper.paraClientes(builderClienteEntity());
     }
 
     public static List<Produto> builderProdutoDomain(){
@@ -80,10 +77,7 @@ public abstract class Builders {
     }
 
     public static List<Venda> builderVendaDomain() {
-        List<Venda> vendaList = new ArrayList<>();
-        vendaList.add(VendaMapper.paraDomain(Builders.builderVendaEntity().get(0)));
-        vendaList.add(VendaMapper.paraDomain(Builders.builderVendaEntity().get(1)));
-        return vendaList;
+        return VendaMapper.paraDomains(builderVendaEntity());
     }
 
     public static Venda builderVendaDomainDto(int index){

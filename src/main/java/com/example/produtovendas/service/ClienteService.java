@@ -1,7 +1,9 @@
 package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
+import com.example.produtovendas.infra.mappers.ClienteMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +19,13 @@ public class ClienteService {
 
     private final ClienteDataProvider clienteDataProvider;
 
-    public Cliente cadastroCliente(Cliente cliente) {
+    public ClienteDto cadastroCliente(ClienteDto clienteDto) {
+        Cliente cliente = ClienteMapper.paraDomainDeDto(clienteDto);
         Optional<Cliente> clientePorCpf = clienteDataProvider.consultarPorCpf(cliente.getCpf());
         clientePorCpf.ifPresent(clienteExistente -> {
             throw new RuntimeException(MENSAGEM_CLIENTE_EXISTENTE);
         });
-        return clienteDataProvider.salvar(cliente);
+        return ClienteMapper.paraDtoDeDomain(clienteDataProvider.salvar(cliente));
     }
 
     public List<Cliente> consultaTodosClientes() {
@@ -39,10 +42,10 @@ public class ClienteService {
         return clienteDataProvider.salvar(cliente);
     }
 
-    public Cliente alterarCliente(Long id, Cliente clienteAlterado) {
+    public ClienteDto alterarCliente(Long id, ClienteDto clienteAlterado) {
         Cliente cliente = consultaClienteExistentePorId(id);
         cliente.atualizarDados(clienteAlterado);
-        return clienteDataProvider.salvar(cliente);
+        return ClienteMapper.paraDtoDeDomain(clienteDataProvider.salvar(cliente));
     }
 
     public Cliente consultaClienteExistentePorId(Long id) {

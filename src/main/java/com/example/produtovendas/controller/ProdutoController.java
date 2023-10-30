@@ -1,6 +1,7 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.service.ProdutoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,9 @@ public class ProdutoController {
     private final ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<Produto> cadastroProduto(@RequestBody @Valid Produto produto, UriComponentsBuilder uriBuilder){
-        Produto produtoBody = produtoService.cadastroProduto(produto);
-        var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoBody.getId()).toUri();
+    public ResponseEntity<ProdutoDto> cadastroProduto(@RequestBody @Valid ProdutoDto produtoDto, UriComponentsBuilder uriBuilder){
+        ProdutoDto produtoBody = produtoService.cadastroProduto(produtoDto);
+        var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoBody.id()).toUri();
         return ResponseEntity.created(uri).body(produtoBody);
     }
 
@@ -44,7 +45,7 @@ public class ProdutoController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto){
-        return ResponseEntity.ok(produtoService.alterarProduto(id, produto));
+    public ResponseEntity<ProdutoDto> alterarProduto(@PathVariable("id") Long id, @RequestBody ProdutoDto produtoDto){
+        return ResponseEntity.ok(produtoService.alterarProduto(id, produtoDto));
     }
 }

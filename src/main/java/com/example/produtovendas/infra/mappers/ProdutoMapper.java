@@ -1,6 +1,9 @@
 package com.example.produtovendas.infra.mappers;
 
+import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.dtos.ClienteDto;
+import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 
 import java.util.List;
@@ -35,5 +38,24 @@ public class ProdutoMapper {
 
     public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList) {
         return produtoList.stream().map(ProdutoMapper::paraEntity).toList();
+    }
+
+    public static Produto paraDomainDeDto(ProdutoDto produtoDto){
+        return Produto.builder()
+                .nome(produtoDto.nome())
+                .quantidade(produtoDto.quantidade())
+                .marca(produtoDto.marca())
+                .valor(produtoDto.valor())
+                .build();
+    }
+
+    public static ProdutoDto paraDtoDeDomain(Produto produto){
+        return ProdutoDto.builder()
+                .id(produto.getId())
+                .nome(produto.getNome())
+                .marca(produto.getMarca())
+                .quantidade(produto.getQuantidade())
+                .valor(produto.getValor())
+                .build();
     }
 }

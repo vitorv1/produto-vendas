@@ -1,6 +1,7 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.service.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,9 @@ public class ClienteController {
     private final ClienteService clienteService;
 
     @PostMapping
-    public ResponseEntity<Cliente> cadastroCliente(@RequestBody @Valid Cliente cliente, UriComponentsBuilder uriBuilder) {
-        Cliente clienteBody = clienteService.cadastroCliente(cliente);
-        var uri = uriBuilder.path("/clientes/{id}").buildAndExpand(clienteBody.getId()).toUri();
+    public ResponseEntity<ClienteDto> cadastroCliente(@RequestBody @Valid ClienteDto dto, UriComponentsBuilder uriBuilder) {
+        ClienteDto clienteBody = clienteService.cadastroCliente(dto);
+        var uri = uriBuilder.path("/clientes/{id}").buildAndExpand(clienteBody.id()).toUri();
         return ResponseEntity.created(uri).body(clienteBody);
     }
 
@@ -44,7 +45,7 @@ public class ClienteController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Cliente> altararCliente(@PathVariable("id") Long id, @RequestBody Cliente cliente) {
-        return ResponseEntity.ok(clienteService.alterarCliente(id, cliente));
+    public ResponseEntity<ClienteDto> altararCliente(@PathVariable("id") Long id, @RequestBody ClienteDto clienteDto) {
+        return ResponseEntity.ok(clienteService.alterarCliente(id, clienteDto));
     }
 }

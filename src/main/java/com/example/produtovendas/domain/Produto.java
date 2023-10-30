@@ -1,5 +1,6 @@
 package com.example.produtovendas.domain;
 
+import com.example.produtovendas.dtos.ProdutoDto;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -22,12 +23,12 @@ public class Produto {
     private BigDecimal valor;
     private Integer quantidade;
 
-    public void atualizaDados(Produto produtoDto) {
+    public void atualizaDados(ProdutoDto produtoDto) {
         this.inativo = false;
-        this.nome = produtoDto.getNome();
-        this.marca = produtoDto.getMarca();
-        this.valor = produtoDto.getValor();
-        this.quantidade = produtoDto.getQuantidade();
+        this.nome = produtoDto.nome();
+        this.marca = produtoDto.marca();
+        this.valor = produtoDto.valor();
+        this.quantidade = produtoDto.quantidade();
     }
     public void inativar() {
         this.inativo = true;

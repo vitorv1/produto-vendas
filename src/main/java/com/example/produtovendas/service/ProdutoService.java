@@ -1,7 +1,9 @@
 package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
+import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,12 +20,13 @@ public class ProdutoService {
     private final EstoqueService estoqueService;
 
 
-    public Produto cadastroProduto(Produto produto) {
+    public ProdutoDto cadastroProduto(ProdutoDto produtoDto) {
+        Produto produto = ProdutoMapper.paraDomainDeDto(produtoDto);
         List<Produto> produtos = produtoDataProvider.consultaTodos();
         ProdutoValidation.validaProduto(produtos, produto);
         Produto produtoSalvo = produtoDataProvider.salvar(produto);
         estoqueService.criarEstoque(produtoSalvo);
-        return produtoSalvo;
+        return ProdutoMapper.paraDtoDeDomain(produtoSalvo);
     }
 
     public Optional<Produto> consultarProdutoPorId(Long id) {
@@ -40,10 +43,10 @@ public class ProdutoService {
         produtoDataProvider.salvar(produto);
     }
 
-    public Produto alterarProduto(Long id, Produto produtoDto) {
+    public ProdutoDto alterarProduto(Long id, ProdutoDto produtoDto) {
         Produto produto = consultarProdutoExistentePorId(id);
         produto.atualizaDados(produtoDto);
-        return produtoDataProvider.salvar(produto);
+        return ProdutoMapper.paraDtoDeDomain(produtoDataProvider.salvar(produto));
     }
 
     public Produto consultarProdutoExistentePorId(Long id) {

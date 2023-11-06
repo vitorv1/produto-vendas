@@ -58,4 +58,8 @@ public class ProdutoMapper {
                 .valor(produto.getValor())
                 .build();
     }
+
+    public static List<ProdutoDto> paraDtosDeDomains(List<Produto> produtoList){
+        return produtoList.stream().map(ProdutoMapper::paraDtoDeDomain).toList();
+    }
 }

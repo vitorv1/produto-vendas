@@ -27,14 +27,13 @@ public class ProdutoController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id){
-        Optional<Produto> produto = produtoService.consultarProdutoPorId(id);
-        return produto.map(produtoMap -> ResponseEntity.ok(produtoMap))
-                .orElse(ResponseEntity.noContent().build());
+    public ResponseEntity<ProdutoDto> consultarProdutoPorId(@PathVariable("id") Long id){
+        ProdutoDto produtoDto = produtoService.consultarProdutoPorId(id);
+        return ResponseEntity.ok().body(produtoDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> consultarTodosProdutos(){
+    public ResponseEntity<List<ProdutoDto>> consultarTodosProdutos(){
         return ResponseEntity.ok(produtoService.consultaTodosProdutos());
     }
 

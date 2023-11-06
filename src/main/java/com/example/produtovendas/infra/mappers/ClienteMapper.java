@@ -52,4 +52,8 @@ public class ClienteMapper {
                 .numeroTelefone(cliente.getNumeroTelefone())
                 .build();
     }
+
+    public static List<ClienteDto> paraDtosDeDomains(List<Cliente> clienteList){
+        return clienteList.stream().map(ClienteMapper::paraDtoDeDomain).toList();
+    }
 }

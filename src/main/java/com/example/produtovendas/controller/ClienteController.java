@@ -1,6 +1,5 @@
 package com.example.produtovendas.controller;
 
-import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.service.ClienteService;
 import jakarta.validation.Valid;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/clientes")
@@ -27,15 +25,14 @@ public class ClienteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> consultarTodosClientes() {
+    public ResponseEntity<List<ClienteDto>> consultarTodosClientes() {
         return ResponseEntity.ok(clienteService.consultaTodosClientes());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Cliente> consultaClientePorId(@PathVariable("id") Long id) {
-        Optional<Cliente> cliente = clienteService.consultaClientePorId(id);
-        return cliente.map(clienteMap -> ResponseEntity.ok(clienteMap))
-                .orElse(ResponseEntity.noContent().build());
+    public ResponseEntity<ClienteDto> consultaClientePorId(@PathVariable("id") Long id) {
+        ClienteDto clienteDto = clienteService.consultaClientePorId(id);
+        return ResponseEntity.ok().body(clienteDto);
     }
 
     @DeleteMapping(value = "/{id}")

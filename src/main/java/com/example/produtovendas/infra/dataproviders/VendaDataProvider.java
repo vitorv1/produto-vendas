@@ -24,6 +24,7 @@ public class VendaDataProvider {
     private static final String MENSAGEM_ERRO_BUSCA_TODOS_VENDAS = "Erro ao consultar todos no banco de dados";
 
     public Venda salvar(Venda venda) {
+        System.out.println(venda);
         VendaEntity vendaEntity = VendaMapper.paraEntity(venda);
         try {
             vendaEntity = repositoryVenda.save(vendaEntity);

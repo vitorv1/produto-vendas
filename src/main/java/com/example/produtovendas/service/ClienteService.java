@@ -4,6 +4,7 @@ import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
 import com.example.produtovendas.infra.mappers.ClienteMapper;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -28,12 +29,17 @@ public class ClienteService {
         return ClienteMapper.paraDtoDeDomain(clienteDataProvider.salvar(cliente));
     }
 
-    public List<Cliente> consultaTodosClientes() {
-        return clienteDataProvider.consultarTodos();
+    public List<ClienteDto> consultaTodosClientes() {
+        return ClienteMapper.paraDtosDeDomains(clienteDataProvider.consultarTodos());
     }
 
-    public Optional<Cliente> consultaClientePorId(Long id) {
-        return clienteDataProvider.consultarPorId(id);
+    public ClienteDto consultaClientePorId(Long id) {
+        Optional<Cliente> cliente = clienteDataProvider.consultarPorId(id);
+        if(cliente.isPresent()){
+            return ClienteMapper.paraDtoDeDomain(cliente.get());
+        }else {
+            throw new EntityNotFoundException(MENSAGEM_CLIENTE_NAO_EXISTENTE);
+        }
     }
 
     public Cliente deletarCliente(Long id) {
@@ -49,6 +55,6 @@ public class ClienteService {
     }
 
     public Cliente consultaClienteExistentePorId(Long id) {
-        return consultaClientePorId(id).orElseThrow(() -> new RuntimeException(MENSAGEM_CLIENTE_NAO_EXISTENTE));
+        return ClienteMapper.paraDomainDeDto(consultaClientePorId(id));
     }
 }

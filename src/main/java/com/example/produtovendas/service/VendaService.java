@@ -3,8 +3,11 @@ package com.example.produtovendas.service;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
+import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
+import com.example.produtovendas.infra.mappers.VendaMapper;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,20 +26,26 @@ public class VendaService {
     private final ClienteService clienteService;
     private final EstoqueService estoqueService;
 
-    public Venda cadastroVenda(Venda venda) {
+    public VendaDto cadastroVenda(VendaDto vendaDto) {
+        Venda venda = VendaMapper.paraDomainDeDto(vendaDto);
         definirClienteCadastro(venda);
         definirProdutosCadastro(venda);
         venda.calcularValorVenda();
         venda.setDataVenda(LocalDate.now());
-        return vendaDataProvider.salvar(venda);
+        return VendaMapper.paraDtoDeDomain(vendaDataProvider.salvar(venda));
     }
 
-    public Optional<Venda> buscarPorId(Long id) {
-        return vendaDataProvider.buscarPorId(id);
+    public VendaDto buscarPorId(Long id) {
+        Optional<Venda> venda = vendaDataProvider.buscarPorId(id);
+        if(venda.isPresent()){
+            return VendaMapper.paraDtoDeDomain(venda.get());
+        }else{
+            throw new EntityNotFoundException(MENSAGEM_VENDA_EXISTE);
+        }
     }
 
-    public List<Venda> buscarTodos() {
-        return vendaDataProvider.buscarTodos();
+    public List<VendaDto> buscarTodos() {
+        return VendaMapper.paraDtosDeDomains(vendaDataProvider.buscarTodos());
     }
 
     public void deletarVenda(Long id) {
@@ -45,13 +54,14 @@ public class VendaService {
         vendaDataProvider.salvar(venda);
     }
 
-    public Venda alterarVenda(Long id, Venda vendaAlterada) {
+    public VendaDto alterarVenda(Long id, VendaDto vendaDto) {
+        Venda vendaAlterada = VendaMapper.paraDomainDeDto(vendaDto);
         Venda vendaExistente = buscarExistentePorId(id);
         definirClienteAlteracao(vendaAlterada, vendaExistente);
         definirProdutosAlteracao(vendaAlterada, vendaExistente);
         vendaExistente.atualizaDados(vendaAlterada);
         vendaExistente.calcularValorVenda();
-        return vendaDataProvider.salvar(vendaExistente);
+        return VendaMapper.paraDtoDeDomain(vendaDataProvider.salvar(vendaExistente));
     }
 
     public Venda buscarExistentePorId(Long id) {
@@ -112,6 +122,5 @@ public class VendaService {
 
             if (!produtosValidacao.isEmpty())
                 throw new RuntimeException(MENSAGEM_PRODUTO_FALTA);
-
     }
 }

@@ -5,6 +5,7 @@ import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
 import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -29,12 +30,17 @@ public class ProdutoService {
         return ProdutoMapper.paraDtoDeDomain(produtoSalvo);
     }
 
-    public Optional<Produto> consultarProdutoPorId(Long id) {
-        return produtoDataProvider.consultarPorId(id);
+    public ProdutoDto consultarProdutoPorId(Long id) {
+        Optional<Produto> produto = produtoDataProvider.consultarPorId(id);
+        if(produto.isPresent()){
+            return ProdutoMapper.paraDtoDeDomain(produto.get());
+        }else{
+            throw new EntityNotFoundException(MENSAGEM_PRODUTO_EXISTENTE);
+        }
     }
 
-    public List<Produto> consultaTodosProdutos() {
-        return produtoDataProvider.consultaTodos();
+    public List<ProdutoDto> consultaTodosProdutos() {
+        return ProdutoMapper.paraDtosDeDomains(produtoDataProvider.consultaTodos());
     }
 
     public void deletarProduto(Long id) {

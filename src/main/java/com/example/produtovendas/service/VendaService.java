@@ -5,6 +5,7 @@ import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
+import com.example.produtovendas.infra.entities.VendaEntity;
 import com.example.produtovendas.infra.mappers.VendaMapper;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,6 +33,7 @@ public class VendaService {
         definirProdutosCadastro(venda);
         venda.calcularValorVenda();
         venda.setDataVenda(LocalDate.now());
+        System.out.println("Venda: " + venda);
         return VendaMapper.paraDtoDeDomain(vendaDataProvider.salvar(venda));
     }
 
@@ -60,7 +62,9 @@ public class VendaService {
         definirClienteAlteracao(vendaAlterada, vendaExistente);
         definirProdutosAlteracao(vendaAlterada, vendaExistente);
         vendaExistente.atualizaDados(vendaAlterada);
-        vendaExistente.calcularValorVenda();
+        System.out.println(vendaExistente.getListaProdutos());
+        if(vendaExistente.getListaProdutos() != null)
+            vendaExistente.calcularValorVenda();
         return VendaMapper.paraDtoDeDomain(vendaDataProvider.salvar(vendaExistente));
     }
 
@@ -70,6 +74,7 @@ public class VendaService {
 
     private void definirClienteCadastro(Venda venda) {
         Cliente cliente = clienteService.consultaClienteExistentePorId(venda.getIdCliente());
+        System.out.println("Cliente: " + cliente.toString());
         if (cliente.isInativo()) {
             throw new RuntimeException("Cliente está inativo, não pode realizar uma venda");
         }
@@ -89,8 +94,10 @@ public class VendaService {
 
         for (int i = 0; i < vendaDto.getListaProdutos().size(); i++) {
             if (!Objects.equals(venda.getListaProdutos().get(i).getId(), vendaDto.getListaProdutos().get(i).getId())) {
-                Produto produto = produtoService.consultarProdutoExistentePorId(vendaDto.getListaProdutos().get(i).getId());
-                produtoListDto.add(produto);
+                if(vendaDto.getListaProdutos().get(i).getId() != null){
+                    Produto produto = produtoService.consultarProdutoExistentePorId(vendaDto.getListaProdutos().get(i).getId());
+                    produtoListDto.add(produto);
+                }
             }
         }
         if (produtoListDto.size() > 0) {
@@ -100,8 +107,10 @@ public class VendaService {
 
     private void definirClienteAlteracao(Venda vendaDto, Venda venda) {
         if (!Objects.equals(vendaDto.getIdCliente(), venda.getIdCliente())) {
-            Cliente cliente = clienteService.consultaClienteExistentePorId(vendaDto.getIdCliente());
-            vendaDto.setCliente(cliente);
+            if(vendaDto.getIdCliente() != null){
+                Cliente cliente = clienteService.consultaClienteExistentePorId(vendaDto.getIdCliente());
+                vendaDto.setCliente(cliente);
+            }
         }
     }
 

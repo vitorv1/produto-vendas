@@ -5,9 +5,8 @@ import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.entities.VendaEntity;
 
 import java.util.List;
-import java.util.Optional;
 
-public class VendaMapper {
+public abstract class VendaMapper{
 
     public static VendaEntity paraEntity(Venda venda) {
         return VendaEntity.builder().
@@ -21,24 +20,31 @@ public class VendaMapper {
                 build();
     }
 
+
     public static Venda paraDomain(VendaEntity vendaEntity) {
         return Venda.builder().
                 id(vendaEntity.getId()).
-                cliente(ClienteMapper.paraCliente(vendaEntity.getClienteEntity())).
+                cliente(ClienteMapper.paraDomain(vendaEntity.getClienteEntity())).
                 idCliente(vendaEntity.getClienteEntity().getId()).
                 inativo(vendaEntity.isInativo()).
                 valor(vendaEntity.getValor()).
                 desconto(vendaEntity.getDesconto()).
-                listaProdutos(ProdutoMapper.paraProdutos(vendaEntity.getListaProdutos())).
+                listaProdutos(ProdutoMapper.paraDomains(vendaEntity.getListaProdutos())).
                 dataVenda(vendaEntity.getDataVenda()).
                 build();
     }
 
-    public static List<Venda> paraDomains(List<VendaEntity> vendaEntities) {
-        return vendaEntities.stream().map(VendaMapper::paraDomain).toList();
+
+    public static Venda paraDomainDeDto(VendaDto vendaDto) {
+        return Venda.builder()
+                .idCliente(vendaDto.idCliente())
+                .desconto(vendaDto.desconto())
+                .listaProdutos(vendaDto.listaProdutos())
+                .build();
     }
 
-    public static VendaDto paraDtoDeDomain(Venda venda){
+
+    public static VendaDto paraDtoDeDomain(Venda venda) {
         return VendaDto.builder()
                 .id(venda.getId())
                 .idCliente(venda.getIdCliente())
@@ -50,15 +56,11 @@ public class VendaMapper {
                 .build();
     }
 
-    public static Venda paraDomainDeDto(VendaDto vendaDto){
-        return Venda.builder()
-                .idCliente(vendaDto.idCliente())
-                .desconto(vendaDto.desconto())
-                .listaProdutos(vendaDto.listaProdutos())
-                .build();
+    public static List<VendaDto> paraDtosDeDomains(List<Venda> vendaList) {
+        return vendaList.stream().map(VendaMapper::paraDtoDeDomain).toList();
     }
 
-    public static List<VendaDto> paraDtosDeDomains(List<Venda> vendaList){
-        return vendaList.stream().map(VendaMapper::paraDtoDeDomain).toList();
+    public static List<Venda> paraDomains(List<VendaEntity> vendaEntities) {
+        return vendaEntities.stream().map(VendaMapper::paraDomain).toList();
     }
 }

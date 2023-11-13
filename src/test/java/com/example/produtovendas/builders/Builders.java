@@ -8,10 +8,7 @@ import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.EstoqueEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.entities.VendaEntity;
-import com.example.produtovendas.infra.mappers.ClienteMapper;
-import com.example.produtovendas.infra.mappers.EstoqueMapper;
-import com.example.produtovendas.infra.mappers.ProdutoMapper;
-import com.example.produtovendas.infra.mappers.VendaMapper;
+import com.example.produtovendas.infra.mappers.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -69,15 +66,15 @@ public abstract class Builders {
     }
 
     public static List<Cliente> builderClienteDomain(){
-        return ClienteMapper.paraClientes(builderClienteEntity());
+        return MapperManager.getInstance(1).paraDomains(builderClienteEntity());
     }
 
     public static List<Produto> builderProdutoDomain(){
-        return ProdutoMapper.paraProdutos(builderProdutoEntity());
+        return MapperManager.getInstance(3).paraDomains(builderProdutoEntity());
     }
 
     public static List<Venda> builderVendaDomain() {
-        return VendaMapper.paraDomains(builderVendaEntity());
+        return MapperManager.getInstance(4).paraDomains(builderVendaEntity());
     }
 
     public static Venda builderVendaDomainDto(int index){
@@ -94,7 +91,7 @@ public abstract class Builders {
     }
 
     public static Estoque builderEstoqueDomain(){
-        return EstoqueMapper.paraDomain(builderEstoqueEntity());
+        return (Estoque) MapperManager.getInstance(2).paraDomain(builderEstoqueEntity());
     }
 
     public static String builderJsonVenda(){

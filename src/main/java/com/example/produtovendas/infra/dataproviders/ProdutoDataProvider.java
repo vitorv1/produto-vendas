@@ -4,7 +4,6 @@ import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
 import com.example.produtovendas.infra.mappers.ProdutoMapper;
-import com.example.produtovendas.infra.repositories.EstoqueRepository;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,7 @@ public class ProdutoDataProvider {
             log.error(MENSAGEM_ERRO_SALVAR_PRODUTO, ex);
             throw new BancoDeDadosException(MENSAGEM_ERRO_SALVAR_PRODUTO);
         }
-        return ProdutoMapper.paraProduto(produtoEntity);
+        return ProdutoMapper.paraDomain(produtoEntity);
     }
 
     public Optional<Produto> consultarPorId(Long id) {
@@ -44,12 +43,12 @@ public class ProdutoDataProvider {
             throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_ID_PRODUTO);
         }
 
-        return produtoEntity.isEmpty() ? Optional.empty() : Optional.of(ProdutoMapper.paraProduto(produtoEntity.get()));
+        return produtoEntity.isEmpty() ? Optional.empty() : Optional.of(ProdutoMapper.paraDomain(produtoEntity.get()));
     }
 
-    public List<Produto> consultaTodos() {
+    public List consultaTodos() {
         try {
-            return ProdutoMapper.paraProdutos(repository.findAll());
+            return ProdutoMapper.paraDomains(repository.findAll());
         } catch (Exception ex) {
             log.error(MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS, ex);
             throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS);

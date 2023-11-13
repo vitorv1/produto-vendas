@@ -34,12 +34,12 @@ public class ClienteDataProvider {
             throw new BancoDeDadosException(MENSAGEM_ERRO_CADASTRO_CLIENTE);
         }
 
-        return ClienteMapper.paraCliente(clienteEntity);
+        return ClienteMapper.paraDomain(clienteEntity);
     }
 
     public List<Cliente> consultarTodos() {
         try {
-            return ClienteMapper.paraClientes(repository.findAll());
+            return ClienteMapper.paraDomains(repository.findAll());
         } catch (Exception ex) {
             log.error(MENSAGEM_ERRO_CONSULTA_TODOS_CLIENTES, ex);
             throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_TODOS_CLIENTES);
@@ -49,7 +49,7 @@ public class ClienteDataProvider {
     public Optional<Cliente> consultarPorCpf(String cpf) {
         try {
             Optional<ClienteEntity> cliente = repository.findByCpf(cpf);
-            return cliente.isPresent() ? Optional.of(ClienteMapper.paraCliente(cliente.get())) : Optional.empty();
+            return cliente.isPresent() ? Optional.of(ClienteMapper.paraDomain(cliente.get())) : Optional.empty();
         } catch (Exception ex) {
             log.error(MENSAGEM_ERRO_CONSULTA_CPF_CLIENTE, ex);
             throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_CPF_CLIENTE);
@@ -67,6 +67,6 @@ public class ClienteDataProvider {
             throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_ID_CLIENTE);
         }
 
-        return clienteEntity.isEmpty() ? Optional.empty() : Optional.of(ClienteMapper.paraCliente(clienteEntity.get()));
+        return clienteEntity.isEmpty() ? Optional.empty() : Optional.of(ClienteMapper.paraDomain(clienteEntity.get()));
     }
 }

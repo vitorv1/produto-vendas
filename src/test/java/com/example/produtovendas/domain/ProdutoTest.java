@@ -1,12 +1,10 @@
 package com.example.produtovendas.domain;
 
 import com.example.produtovendas.builders.Builders;
+import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.validators.Validators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProdutoTest {
 
@@ -16,7 +14,7 @@ class ProdutoTest {
         Produto produtoDto = Builders.builderProdutoDomain().get(1);
         produtoDto.setId(null);
 
-        produto.atualizaDados(produtoDto);
+        produto.atualizaDados((ProdutoDto) MapperManager.getInstance(3).paraDtoDeDomain(produtoDto));
 
         Validators.validaProdutoDomain(produto, 1);
     }

@@ -42,10 +42,10 @@ public class ClienteService {
         }
     }
 
-    public Cliente deletarCliente(Long id) {
+    public void deletarCliente(Long id) {
         Cliente cliente = consultaClienteExistentePorId(id);
         cliente.inativar();
-        return clienteDataProvider.salvar(cliente);
+        clienteDataProvider.salvar(cliente);
     }
 
     public ClienteDto alterarCliente(Long id, ClienteDto clienteAlterado) {

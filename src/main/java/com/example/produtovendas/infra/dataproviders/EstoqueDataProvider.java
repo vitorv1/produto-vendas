@@ -3,6 +3,7 @@ package com.example.produtovendas.infra.dataproviders;
 import com.example.produtovendas.domain.Estoque;
 import com.example.produtovendas.infra.entities.EstoqueEntity;
 import com.example.produtovendas.infra.exceptions.BancoDeDadosException;
+import com.example.produtovendas.infra.mappers.ClienteMapper;
 import com.example.produtovendas.infra.mappers.EstoqueMapper;
 import com.example.produtovendas.infra.repositories.EstoqueRepository;
 import lombok.RequiredArgsConstructor;

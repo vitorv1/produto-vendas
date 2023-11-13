@@ -6,9 +6,9 @@ import com.example.produtovendas.infra.entities.ClienteEntity;
 
 import java.util.List;
 
-public class ClienteMapper {
+public abstract class ClienteMapper {
 
-    public static Cliente paraCliente(ClienteEntity clienteEntity) {
+    public static Cliente paraDomain(ClienteEntity clienteEntity) {
         return Cliente.builder()
                 .id(clienteEntity.getId())
                 .nome(clienteEntity.getNome())
@@ -18,6 +18,7 @@ public class ClienteMapper {
                 .inativo(clienteEntity.isInativo())
                 .build();
     }
+
 
     public static ClienteEntity paraEntity(Cliente cliente) {
         return ClienteEntity.builder()
@@ -30,12 +31,10 @@ public class ClienteMapper {
                 .build();
     }
 
-    public static List<Cliente> paraClientes(List<ClienteEntity> clienteEntities) {
-        return clienteEntities.stream().map(ClienteMapper::paraCliente).toList();
-    }
 
-    public static Cliente paraDomainDeDto(ClienteDto clienteDto){
+    public static Cliente paraDomainDeDto(ClienteDto clienteDto) {
         return Cliente.builder()
+                .id(clienteDto.id())
                 .nome(clienteDto.nome())
                 .cpf(clienteDto.cpf())
                 .email(clienteDto.email())
@@ -43,7 +42,8 @@ public class ClienteMapper {
                 .build();
     }
 
-    public static ClienteDto paraDtoDeDomain(Cliente cliente){
+
+    public static ClienteDto paraDtoDeDomain(Cliente cliente) {
         return ClienteDto.builder()
                 .id(cliente.getId())
                 .nome(cliente.getNome())
@@ -53,7 +53,11 @@ public class ClienteMapper {
                 .build();
     }
 
-    public static List<ClienteDto> paraDtosDeDomains(List<Cliente> clienteList){
+    public static List<ClienteDto> paraDtosDeDomains(List<Cliente> clienteList) {
         return clienteList.stream().map(ClienteMapper::paraDtoDeDomain).toList();
+    }
+
+    public static List<Cliente> paraDomains(List<ClienteEntity> clienteEntities) {
+        return clienteEntities.stream().map(ClienteMapper::paraDomain).toList();
     }
 }

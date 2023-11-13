@@ -28,18 +28,25 @@ public class Venda {
 
     public void atualizaDados(Venda vendaDto) {
         this.inativo = false;
-        this.cliente = vendaDto.getCliente();
-        this.idCliente = vendaDto.getIdCliente();
+        if(vendaDto.getCliente() != null)
+            this.cliente = vendaDto.getCliente();
+        if(vendaDto.getIdCliente() != null)
+            this.idCliente = vendaDto.getIdCliente();
         this.valor = vendaDto.getValor();
-        this.desconto = vendaDto.getDesconto();
-        this.listaProdutos = vendaDto.getListaProdutos();
+
+        if(vendaDto.getDesconto() != null)
+            this.desconto = vendaDto.getDesconto();
+
+        if(vendaDto.getListaProdutos() != null)
+            this.listaProdutos = vendaDto.getListaProdutos();
     }
 
     public void calcularValorVenda() {
         double resultado;
         double valorSomaProdutos = 0;
         for (Produto produto : this.listaProdutos) {
-            valorSomaProdutos += produto.getValor().doubleValue();
+            if(produto != null)
+                valorSomaProdutos += produto.getValor().doubleValue();
         }
 
         if (this.desconto > 0) {

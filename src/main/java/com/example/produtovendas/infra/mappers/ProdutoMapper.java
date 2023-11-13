@@ -1,25 +1,12 @@
 package com.example.produtovendas.infra.mappers;
 
-import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
-import com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
 
 import java.util.List;
 
-public class ProdutoMapper {
-
-    public static Produto paraProduto(ProdutoEntity produtoEntity) {
-        return Produto.builder()
-                .id(produtoEntity.getId())
-                .nome(produtoEntity.getNome())
-                .valor(produtoEntity.getValor())
-                .marca(produtoEntity.getMarca())
-                .inativo(produtoEntity.isInativo())
-                .quantidade(produtoEntity.getQuantidade())
-                .build();
-    }
+public abstract class ProdutoMapper{
 
     public static ProdutoEntity paraEntity(Produto produto) {
         return ProdutoEntity.builder()
@@ -32,15 +19,19 @@ public class ProdutoMapper {
                 .build();
     }
 
-    public static List<Produto> paraProdutos(List<ProdutoEntity> produtoEntities) {
-        return produtoEntities.stream().map(ProdutoMapper::paraProduto).toList();
+
+    public static Produto paraDomain(ProdutoEntity produtoEntity) {
+        return Produto.builder()
+                .id(produtoEntity.getId())
+                .nome(produtoEntity.getNome())
+                .valor(produtoEntity.getValor())
+                .marca(produtoEntity.getMarca())
+                .inativo(produtoEntity.isInativo())
+                .quantidade(produtoEntity.getQuantidade())
+                .build();
     }
 
-    public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList) {
-        return produtoList.stream().map(ProdutoMapper::paraEntity).toList();
-    }
-
-    public static Produto paraDomainDeDto(ProdutoDto produtoDto){
+    public static Produto paraDomainDeDto(ProdutoDto produtoDto) {
         return Produto.builder()
                 .nome(produtoDto.nome())
                 .quantidade(produtoDto.quantidade())
@@ -49,7 +40,7 @@ public class ProdutoMapper {
                 .build();
     }
 
-    public static ProdutoDto paraDtoDeDomain(Produto produto){
+    public static ProdutoDto paraDtoDeDomain(Produto produto) {
         return ProdutoDto.builder()
                 .id(produto.getId())
                 .nome(produto.getNome())
@@ -59,7 +50,15 @@ public class ProdutoMapper {
                 .build();
     }
 
-    public static List<ProdutoDto> paraDtosDeDomains(List<Produto> produtoList){
+    public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList) {
+        return produtoList.stream().map(ProdutoMapper::paraEntity).toList();
+    }
+
+    public static List<Produto> paraDomains(List<ProdutoEntity> produtoEntities){
+        return produtoEntities.stream().map(ProdutoMapper::paraDomain).toList();
+    }
+
+    public static List<ProdutoDto> paraDtosDeDomains(List<Produto> produtoList) {
         return produtoList.stream().map(ProdutoMapper::paraDtoDeDomain).toList();
     }
 }

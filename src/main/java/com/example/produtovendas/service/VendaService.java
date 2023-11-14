@@ -5,7 +5,6 @@ import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
-import com.example.produtovendas.infra.entities.VendaEntity;
 import com.example.produtovendas.infra.mappers.VendaMapper;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,7 +16,8 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class VendaService {
+public class
+VendaService {
 
     public static final String MENSAGEM_VENDA_EXISTE = "Venda não existe";
     public static final String MENSAGEM_PRODUTO_FALTA = "Produto em falta no estoque";
@@ -33,7 +33,6 @@ public class VendaService {
         definirProdutosCadastro(venda);
         venda.calcularValorVenda();
         venda.setDataVenda(LocalDate.now());
-        System.out.println("Venda: " + venda);
         return VendaMapper.paraDtoDeDomain(vendaDataProvider.salvar(venda));
     }
 
@@ -62,9 +61,7 @@ public class VendaService {
         definirClienteAlteracao(vendaAlterada, vendaExistente);
         definirProdutosAlteracao(vendaAlterada, vendaExistente);
         vendaExistente.atualizaDados(vendaAlterada);
-        System.out.println(vendaExistente.getListaProdutos());
-        if(vendaExistente.getListaProdutos() != null)
-            vendaExistente.calcularValorVenda();
+        vendaExistente.calcularValorVenda();
         return VendaMapper.paraDtoDeDomain(vendaDataProvider.salvar(vendaExistente));
     }
 
@@ -74,7 +71,6 @@ public class VendaService {
 
     private void definirClienteCadastro(Venda venda) {
         Cliente cliente = clienteService.consultaClienteExistentePorId(venda.getIdCliente());
-        System.out.println("Cliente: " + cliente.toString());
         if (cliente.isInativo()) {
             throw new RuntimeException("Cliente está inativo, não pode realizar uma venda");
         }
@@ -90,13 +86,17 @@ public class VendaService {
     }
 
     private void definirProdutosAlteracao(Venda vendaDto, Venda venda) {
+        System.out.println("oi PRODUTO M");
         List<Produto> produtoListDto = new ArrayList<>();
-
-        for (int i = 0; i < vendaDto.getListaProdutos().size(); i++) {
-            if (!Objects.equals(venda.getListaProdutos().get(i).getId(), vendaDto.getListaProdutos().get(i).getId())) {
+        if(vendaDto.getListaProdutos() != null){
+            System.out.println("oi PRODUTO IF1");
+            for (int i = 0; i < vendaDto.getListaProdutos().size(); i++) {
                 if(vendaDto.getListaProdutos().get(i).getId() != null){
-                    Produto produto = produtoService.consultarProdutoExistentePorId(vendaDto.getListaProdutos().get(i).getId());
-                    produtoListDto.add(produto);
+                    System.out.println("oi PRODUTO IF2");
+                    if (!Objects.equals(venda.getListaProdutos().get(i).getId(), vendaDto.getListaProdutos().get(i).getId())) {
+                        Produto produto = produtoService.consultarProdutoExistentePorId(vendaDto.getListaProdutos().get(i).getId());
+                        produtoListDto.add(produto);
+                    }
                 }
             }
         }
@@ -106,8 +106,10 @@ public class VendaService {
     }
 
     private void definirClienteAlteracao(Venda vendaDto, Venda venda) {
-        if (!Objects.equals(vendaDto.getIdCliente(), venda.getIdCliente())) {
-            if(vendaDto.getIdCliente() != null){
+        System.out.println("oi CLIENTE M");
+        if(vendaDto.getIdCliente() != null){
+            System.out.println("oi CLIENTE IF");
+            if (!Objects.equals(vendaDto.getIdCliente(), venda.getIdCliente())) {
                 Cliente cliente = clienteService.consultaClienteExistentePorId(vendaDto.getIdCliente());
                 vendaDto.setCliente(cliente);
             }

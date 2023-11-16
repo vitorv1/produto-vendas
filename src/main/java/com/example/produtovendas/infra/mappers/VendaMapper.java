@@ -48,6 +48,7 @@ public abstract class VendaMapper{
         return VendaDto.builder()
                 .id(venda.getId())
                 .idCliente(venda.getIdCliente())
+                .cliente(ClienteMapper.paraDtoDeDomain(venda.getCliente()))
                 .valor(venda.getValor())
                 .inativo(venda.isInativo())
                 .desconto(venda.getDesconto())

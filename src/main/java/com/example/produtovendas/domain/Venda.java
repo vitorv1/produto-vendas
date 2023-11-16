@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
+import static com.example.produtovendas.infra.validacoes.ObjectValidation.validaObjeto;
+
 @Getter
 @AllArgsConstructor
 @ToString
@@ -14,8 +16,8 @@ import java.util.List;
 public class Venda {
 
     private Long id;
-    private Cliente cliente;
     private Long idCliente;
+    private Cliente cliente;
     private BigDecimal valor;
     private boolean inativo;
     private Integer desconto;
@@ -27,12 +29,20 @@ public class Venda {
     }
 
     public void atualizaDados(Venda vendaDto) {
-        this.inativo = false;
-        this.cliente = vendaDto.getCliente();
-        this.idCliente = vendaDto.getIdCliente();
+        /*this.inativo = false;
+        if(validaObjeto(vendaDto.getCliente()))
+            this.cliente = vendaDto.getCliente();
+        if(vendaDto.getIdCliente() != null)
+            this.idCliente = vendaDto.getIdCliente();
         this.valor = vendaDto.getValor();
-        this.desconto = vendaDto.getDesconto();
-        this.listaProdutos = vendaDto.getListaProdutos();
+        if(vendaDto.getDesconto() != null)
+            this.desconto = vendaDto.getDesconto();
+        if(vendaDto.getListaProdutos() != null)
+            this.listaProdutos = vendaDto.getListaProdutos();
+
+        validacao(validaObjeto(vendaDto), vendaDto);
+        this.inativo = false;
+        this.valor = vendaDto.getValor();*/
     }
 
     public void calcularValorVenda() {
@@ -50,5 +60,20 @@ public class Venda {
         }
 
         this.valor = BigDecimal.valueOf(resultado);
+    }
+
+    private void validacao (boolean validacao, Venda vendaDto){
+        if(validacao){
+            this.cliente = vendaDto.getCliente();
+            this.idCliente = vendaDto.getIdCliente();
+            this.desconto = vendaDto.getDesconto();
+            this.listaProdutos = vendaDto.getListaProdutos();
+        }
+    }
+
+    private void validacao2(boolean validacaoVar, Object domain, Object dto){
+        if(validacaoVar){
+
+        }
     }
 }

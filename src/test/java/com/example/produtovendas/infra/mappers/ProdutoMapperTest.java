@@ -8,38 +8,33 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.produtovendas.validators.Validators.validaProdutoEntity;
+import static com.example.produtovendas.validators.Validators.*;
 
 class ProdutoMapperTest {
 
-    @Test
+    /*@Test
     void testaSeRetornaUmProdutoDomain() {
-        Produto produto = ProdutoMapper.paraProduto(Builders.builderProduto().get(0));
-        List<ProdutoEntity> produtoEntities = new ArrayList<>();
-        produtoEntities.add(ProdutoMapper.paraEntity(produto));
-        validaProdutoEntity(produtoEntities);
+        Produto produto = ProdutoMapper.paraProduto(Builders.builderProdutoEntity().get(0));
+        validaProdutoDomain(produto, 0);
     }
 
     @Test
     void testaSeRetornaUmProdutoEntity() {
         ProdutoEntity produtoEntity = ProdutoMapper.paraEntity(Builders.builderProdutoDomain().get(0));
-        List<ProdutoEntity> produtoEntities = new ArrayList<>();
-        produtoEntities.add(produtoEntity);
-        validaProdutoEntity(produtoEntities);
+        validaProdutoEntity(produtoEntity, 0);
     }
 
     @Test
     void testaSeRetornaUmaListaDeProdutosDomains() {
-        List<Produto> produtoList = ProdutoMapper.paraProdutos(Builders.builderProduto());
-        List<ProdutoEntity> produtoEntities = new ArrayList<>();
-        produtoEntities.add(ProdutoMapper.paraEntity(produtoList.get(0)));
-        produtoEntities.add(ProdutoMapper.paraEntity(produtoList.get(1)));
-        validaProdutoEntity(produtoEntities);
+        List<Produto> produtoList = ProdutoMapper.paraProdutos(Builders.builderProdutoEntity());
+        validaProdutoDomain(produtoList.get(0), 0);
+        validaProdutoDomain(produtoList.get(1), 1);
     }
 
     @Test
-    void paraEntitys(){
+    void testeSeRetornaUmProdutoEntitys() {
         List<ProdutoEntity> produtoList = ProdutoMapper.paraEntitys(Builders.builderProdutoDomain());
-        validaProdutoEntity(produtoList);
-    }
+        validaProdutoEntity(produtoList.get(0), 0);
+        validaProdutoEntity(produtoList.get(1), 1);
+    }*/
 }

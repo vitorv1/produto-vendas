@@ -1,41 +1,39 @@
 package com.example.produtovendas.controller;
 
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.service.ProdutoService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/produtos")
+@RequiredArgsConstructor
 public class ProdutoController {
 
-    @Autowired
-    private ProdutoService produtoService;
+    private final ProdutoService produtoService;
 
     @PostMapping
-    public ResponseEntity<Produto> cadastroProduto(@RequestBody @Valid Produto produto, UriComponentsBuilder uriBuilder){
-        Produto produtoBody = produtoService.cadastroProduto(produto);
-        var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoBody.getId()).toUri();
+    public ResponseEntity<ProdutoDto> cadastroProduto(@RequestBody @Valid ProdutoDto produtoDto, UriComponentsBuilder uriBuilder){
+        ProdutoDto produtoBody = produtoService.cadastroProduto(produtoDto);
+        var uri = uriBuilder.path("/produtos/{id}").buildAndExpand(produtoBody.id()).toUri();
         return ResponseEntity.created(uri).body(produtoBody);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Produto> consultarProdutoPorId(@PathVariable("id") Long id){
-        Produto produto = produtoService.consultarProdutoPorId(id);
-        if (produto == null) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(produto);
+    public ResponseEntity<ProdutoDto> consultarProdutoPorId(@PathVariable("id") Long id){
+        ProdutoDto produtoDto = produtoService.consultarProdutoPorId(id);
+        return ResponseEntity.ok().body(produtoDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Produto>> consultarTodosProdutos(){
+    public ResponseEntity<List<ProdutoDto>> consultarTodosProdutos(){
         return ResponseEntity.ok(produtoService.consultaTodosProdutos());
     }
 
@@ -46,9 +44,7 @@ public class ProdutoController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Produto> alterarProduto(@PathVariable("id") Long id, @RequestBody Produto produto){
-        return ResponseEntity.ok(produtoService.alterarProduto(id, produto));
+    public ResponseEntity<ProdutoDto> alterarProduto(@PathVariable("id") Long id, @RequestBody ProdutoDto produtoDto){
+        return ResponseEntity.ok(produtoService.alterarProduto(id, produtoDto));
     }
-
-
 }

@@ -3,89 +3,136 @@ package com.example.produtovendas.service;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
+import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.produtovendas.infra.mappers.VendaMapper;
+import com.example.produtovendas.infra.validacoes.ProdutoValidation;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
-public class VendaService {
-
-
-    private final VendaDataProvider vendaDataProvider;
-
-    private final ProdutoService produtoService;
-
-    private final ClienteService clienteService;
+@RequiredArgsConstructor
+public class
+VendaService {
 
     public static final String MENSAGEM_VENDA_EXISTE = "Venda não existe";
+    public static final String MENSAGEM_PRODUTO_FALTA = "Produto em falta no estoque";
 
-    @Autowired
-    public VendaService(ClienteService clienteService, ProdutoService produtoService, VendaDataProvider vendaDataProvider){
-        this.clienteService = clienteService;
-        this.produtoService = produtoService;
-        this.vendaDataProvider = vendaDataProvider;
-    }
+    private final VendaDataProvider vendaDataProvider;
+    private final ProdutoService produtoService;
+    private final ClienteService clienteService;
+    private final EstoqueService estoqueService;
 
-    public Venda cadastroVenda(Venda venda){
-        List<Produto> produtoList = new ArrayList<>();
-        for(Produto produto : venda.getListaProdutos()){
-            produtoList.add(produtoService.consultarProdutoPorId(produto.getId()));
-        }
-        venda.setListaProdutos(produtoList);
-        venda.setValor(calcularValorVenda(venda.getDesconto(), produtoList));
-        venda.setCliente(clienteService.consultaClientePorId(venda.getIdCliente()));
+    public VendaDto cadastroVenda(VendaDto vendaDto) {
+        Venda venda = VendaMapper.paraDomainDeDto(vendaDto);
+        definirClienteCadastro(venda);
+        definirProdutosCadastro(venda);
+        venda.calcularValorVenda();
         venda.setDataVenda(LocalDate.now());
-        return vendaDataProvider.salvar(venda);
+        return VendaMapper.paraDtoDeDomain(vendaDataProvider.salvar(venda));
     }
 
-    public Venda buscarPorId(Long id){
-        return vendaDataProvider.buscarPorId(id).orElseThrow(()-> new RuntimeException("Venda não existe"));
+    public VendaDto buscarPorId(Long id) {
+        Optional<Venda> venda = vendaDataProvider.buscarPorId(id);
+        if(venda.isPresent()){
+            return VendaMapper.paraDtoDeDomain(venda.get());
+        }else{
+            throw new EntityNotFoundException(MENSAGEM_VENDA_EXISTE);
+        }
     }
 
-    public List<Venda> buscarTodos(){
-        return vendaDataProvider.buscarTodos();
+    public List<VendaDto> buscarTodos() {
+        return VendaMapper.paraDtosDeDomains(vendaDataProvider.buscarTodos());
     }
 
-    public void deletarVenda(Long id){
-        Venda venda = buscarPorId(id);
+    public void deletarVenda(Long id) {
+        Venda venda = buscarExistentePorId(id);
         venda.inativar();
         vendaDataProvider.salvar(venda);
     }
 
-    public Venda alterarVenda(Long id, Venda vendaDto){
-        Venda venda = buscarPorId(id);
-        List<Produto> produtoListDto = new ArrayList<>();
-        if(!Objects.equals(vendaDto.getIdCliente(), venda.getIdCliente())){
-            Cliente cliente = clienteService.consultaClientePorId(vendaDto.getIdCliente());
-            vendaDto.setCliente(cliente);
-        }
-        for (int i = 0; i < vendaDto.getListaProdutos().size(); i++) {
-            if(!Objects.equals(venda.getListaProdutos().get(i).getId(), vendaDto.getListaProdutos().get(i).getId())){
-                Produto produto = produtoService.consultarProdutoPorId(vendaDto.getListaProdutos().get(i).getId());
-                produtoListDto.add(produto);
-            }
-        }
-        vendaDto.setListaProdutos(produtoListDto);
-        vendaDto.setValor(calcularValorVenda(vendaDto.getDesconto(), vendaDto.getListaProdutos()));
-        venda.atualizaDados(vendaDto);
-        return vendaDataProvider.salvar(venda);
+    public VendaDto alterarVenda(Long id, VendaDto vendaDto) {
+        Venda vendaAlterada = VendaMapper.paraDomainDeDto(vendaDto);
+        System.out.println(vendaAlterada.getIdCliente());
+        Venda vendaExistente = buscarExistentePorId(id);
+        definirClienteAlteracao(vendaAlterada, vendaExistente);
+        definirProdutosAlteracao(vendaAlterada, vendaExistente);
+        vendaExistente.atualizaDados(vendaAlterada);
+        vendaExistente.calcularValorVenda();
+        return VendaMapper.paraDtoDeDomain(vendaDataProvider.salvar(vendaExistente));
     }
 
-    private static double calcularValorVenda(Integer desconto, List<Produto> produtoList) {
-        double resultado;
-        double valorSomaProdutos = 0;
-        for (Produto produto : produtoList) {
-            valorSomaProdutos += produto.getValor();
+    public Venda buscarExistentePorId(Long id) {
+        return vendaDataProvider.buscarPorId(id).orElseThrow(() -> new RuntimeException("Venda não existe"));
+    }
+
+    private void definirClienteCadastro(Venda venda) {
+        Cliente cliente = clienteService.consultaClienteExistentePorId(venda.getIdCliente());
+        if (cliente.isInativo()) {
+            throw new RuntimeException("Cliente está inativo, não pode realizar uma venda");
         }
-        if (desconto > 0) {
-            double valorDesconto = (valorSomaProdutos * desconto) / 100;
-            resultado = valorSomaProdutos - valorDesconto;
-        } else {
-            resultado = valorSomaProdutos;
+        venda.setCliente(cliente);
+    }
+
+    private void definirProdutosCadastro(Venda venda) {
+        List<Produto> produtoList = new ArrayList<>();
+        venda.getListaProdutos().forEach((produto -> produtoList.add(produtoService.consultarProdutoExistentePorId(produto.getId()))));
+        ProdutoValidation.validaProdutoInativo(produtoList);
+        validaQuntidadeEstoqueProduto(produtoList);
+        venda.setListaProdutos(estoqueService.definirQuantidadeEstoque(produtoList));
+    }
+
+    private void definirProdutosAlteracao(Venda vendaDto, Venda venda) {
+        System.out.println("oi PRODUTO M");
+        List<Produto> produtoListDto = new ArrayList<>();
+        if(vendaDto.getListaProdutos() != null){
+            System.out.println("oi PRODUTO IF1");
+            for (int i = 0; i < vendaDto.getListaProdutos().size(); i++) {
+                if(vendaDto.getListaProdutos().get(i).getId() != null){
+                    System.out.println("oi PRODUTO IF2");
+                    if (!Objects.equals(venda.getListaProdutos().get(i).getId(), vendaDto.getListaProdutos().get(i).getId())) {
+                        Produto produto = produtoService.consultarProdutoExistentePorId(vendaDto.getListaProdutos().get(i).getId());
+                        produtoListDto.add(produto);
+                    }
+                }
+            }
         }
-        return resultado;
+        if (produtoListDto.size() > 0) {
+            vendaDto.setListaProdutos(produtoListDto);
+        }
+    }
+
+    private void definirClienteAlteracao(Venda vendaDto, Venda venda) {
+        System.out.println("oi CLIENTE M");
+        if(vendaDto.getIdCliente() != null){
+            System.out.println("oi CLIENTE IF");
+            if (!Objects.equals(vendaDto.getIdCliente(), venda.getIdCliente())) {
+                Cliente cliente = clienteService.consultaClienteExistentePorId(vendaDto.getIdCliente());
+                vendaDto.setCliente(cliente);
+            }
+        }
+    }
+
+    private void validaQuntidadeEstoqueProduto(List<Produto> produtoList) {
+        int repitidos = 1;
+        for (int i = 0; i < produtoList.size(); i++) {
+            Long id = produtoList.get(i).getId();
+            for (int j = i + 1; j < produtoList.size(); j++) {
+                if (Objects.equals(produtoList.get(j).getId(), id)){
+                   repitidos ++;
+                }
+            }
+            if(produtoList.get(i).getQuantidade() < repitidos)
+                throw new RuntimeException(MENSAGEM_PRODUTO_FALTA);
+        }
+
+        List<Produto> produtosValidacao = produtoList.stream().filter(produto -> produto.getQuantidade() <= 0).toList();
+
+            if (!produtosValidacao.isEmpty())
+                throw new RuntimeException(MENSAGEM_PRODUTO_FALTA);
     }
 }

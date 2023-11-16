@@ -1,27 +1,24 @@
 package com.example.produtovendas.infra.entities;
 
+
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-
-@Entity(name = "Produto")
-@Table(name = "produtos")
+@Entity(name = "Estoque")
+@Table(name = "estoques")
 @EqualsAndHashCode(of = "id")
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @ToString
 @Setter
 @Builder
-public class ProdutoEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class EstoqueEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String nome;
-    private boolean inativo;
-    private String marca;
-    private BigDecimal valor;
     private Integer quantidade;
+    @OneToOne
+    private ProdutoEntity produtoEntity;
 }

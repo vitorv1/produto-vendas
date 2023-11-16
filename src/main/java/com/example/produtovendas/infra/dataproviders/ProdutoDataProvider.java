@@ -7,53 +7,51 @@ import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.repositories.ProdutoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class ProdutoDataProvider {
-
 
     private final ProdutoRepository repository;
 
-    public ProdutoDataProvider (ProdutoRepository repository){
-        this.repository = repository;
-    }
+    private static final String MENSAGEM_ERRO_SALVAR_PRODUTO = "Erro no cadastro do produto";
+    private static final String MENSAGEM_ERRO_CONSULTA_ID_PRODUTO = "Erro na consalta por id";
+    private static final String MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS = "Erro na consulta por todos";
 
     public Produto salvar(Produto produto) {
         ProdutoEntity produtoEntity = ProdutoMapper.paraEntity(produto);
         try {
             produtoEntity = repository.save(produtoEntity);
-        }catch (Exception ex) {
-            log.info(ex.getMessage());
-            throw new BancoDeDadosException("Erro no cadastro do produto");
+        } catch (Exception ex) {
+            log.error(MENSAGEM_ERRO_SALVAR_PRODUTO, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_SALVAR_PRODUTO);
         }
-        return ProdutoMapper.paraProduto(produtoEntity);
+        return ProdutoMapper.paraDomain(produtoEntity);
     }
 
     public Optional<Produto> consultarPorId(Long id) {
         Optional<ProdutoEntity> produtoEntity;
         try {
-             produtoEntity = repository.findById(id);
-        }catch (Exception ex){
-            log.info(ex.getMessage());
-            throw new BancoDeDadosException("Erro na consalta por id");
+            produtoEntity = repository.findById(id);
+        } catch (Exception ex) {
+            log.error(MENSAGEM_ERRO_CONSULTA_ID_PRODUTO, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_ID_PRODUTO);
         }
 
-        return produtoEntity.isEmpty() ? Optional.empty() : Optional.of(ProdutoMapper.paraProduto(produtoEntity.get()));
+        return produtoEntity.isEmpty() ? Optional.empty() : Optional.of(ProdutoMapper.paraDomain(produtoEntity.get()));
     }
 
-    public List<Produto> consultaTodos() {
-        try{
-            return ProdutoMapper.paraProdutos(repository.findAll());
-        }catch (Exception ex){
-            log.info(ex.getMessage());
-            throw new  BancoDeDadosException("Erro na consulta por todos");
+    public List consultaTodos() {
+        try {
+            return ProdutoMapper.paraDomains(repository.findAll());
+        } catch (Exception ex) {
+            log.error(MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS);
         }
     }
 

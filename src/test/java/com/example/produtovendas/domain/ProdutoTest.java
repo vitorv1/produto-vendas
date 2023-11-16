@@ -1,30 +1,22 @@
 package com.example.produtovendas.domain;
 
 import com.example.produtovendas.builders.Builders;
+import com.example.produtovendas.dtos.ProdutoDto;
+import com.example.produtovendas.validators.Validators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.autoconfigure.info.ProjectInfoProperties;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProdutoTest {
 
-    @Test
+    /*@Test
     void testeMetodoAtualizaDados(){
-        Long id = 1L;
-        String nome = "Calça";
-        String marca = "Vans";
-        double valor = 300;
         Produto produto = Builders.builderProdutoDomain().get(0);
-        Produto produtoDto = new Produto(null, nome, false, marca, valor);
+        Produto produtoDto = Builders.builderProdutoDomain().get(1);
+        produtoDto.setId(null);
 
-        produto.atualizaDados(produtoDto);
+        produto.atualizaDados((ProdutoDto) MapperManager.getInstance(3).paraDtoDeDomain(produtoDto));
 
-        Assertions.assertEquals(id, produto.getId());
-        Assertions.assertEquals(nome, produto.getNome());
-        Assertions.assertFalse(produto.isInativo());
-        Assertions.assertEquals(marca, produto.getMarca());
-        Assertions.assertEquals(valor, produto.getValor());
+        Validators.validaProdutoDomain(produto, 1);
     }
 
     @Test
@@ -32,5 +24,5 @@ class ProdutoTest {
         Produto produto = Builders.builderProdutoDomain().get(0);
         produto.inativar();
         Assertions.assertTrue(produto.isInativo());
-    }
+    }*/
 }

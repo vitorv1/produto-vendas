@@ -1,49 +1,61 @@
 package com.example.produtovendas.service;
 
 import com.example.produtovendas.domain.Produto;
+import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.infra.dataproviders.ProdutoDataProvider;
+import com.example.produtovendas.infra.mappers.ProdutoMapper;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.plaf.PanelUI;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ProdutoService {
 
     public static final String MENSAGEM_PRODUTO_EXISTENTE = "Produto não existe";
-    private ProdutoDataProvider produtoDataProvider;
+    private final ProdutoDataProvider produtoDataProvider;
+    private final EstoqueService estoqueService;
 
-    @Autowired
-    public ProdutoService (ProdutoDataProvider produtoDataProvider){
-        this.produtoDataProvider = produtoDataProvider;
-    }
 
-    public Produto cadastroProduto(Produto produto){
-        List<Produto> produtos;
-        produtos = produtoDataProvider.consultaTodos();
+    public ProdutoDto cadastroProduto(ProdutoDto produtoDto) {
+        Produto produto = ProdutoMapper.paraDomainDeDto(produtoDto);
+        List<Produto> produtos = produtoDataProvider.consultaTodos();
         ProdutoValidation.validaProduto(produtos, produto);
-        return produtoDataProvider.salvar(produto);
+        Produto produtoSalvo = produtoDataProvider.salvar(produto);
+        estoqueService.criarEstoque(produtoSalvo);
+        return ProdutoMapper.paraDtoDeDomain(produtoSalvo);
     }
 
-    public Produto consultarProdutoPorId(Long id){
-        return produtoDataProvider.consultarPorId(id).orElseThrow(()-> new RuntimeException("Produto não existe"));
+    public ProdutoDto consultarProdutoPorId(Long id) {
+        Optional<Produto> produto = produtoDataProvider.consultarPorId(id);
+        if(produto.isPresent()){
+            return ProdutoMapper.paraDtoDeDomain(produto.get());
+        }else{
+            throw new EntityNotFoundException(MENSAGEM_PRODUTO_EXISTENTE);
+        }
     }
 
-    public List<Produto> consultaTodosProdutos() {
-        return produtoDataProvider.consultaTodos();
+    public List<ProdutoDto> consultaTodosProdutos() {
+        return ProdutoMapper.paraDtosDeDomains(produtoDataProvider.consultaTodos());
     }
 
-    public void deletarProduto(Long id){
-        Produto produto = consultarProdutoPorId(id);
+    public void deletarProduto(Long id) {
+        Produto produto = consultarProdutoExistentePorId(id);
         produto.inativar();
         produtoDataProvider.salvar(produto);
     }
 
-    public Produto alterarProduto(Long id, Produto produtoDto){
-       Produto produto = consultarProdutoPorId(id);
-       produto.atualizaDados(produtoDto);
-       return produtoDataProvider.salvar(produto);
+    public ProdutoDto alterarProduto(Long id, ProdutoDto produtoDto) {
+        Produto produto = consultarProdutoExistentePorId(id);
+        produto.atualizaDados(produtoDto);
+        return ProdutoMapper.paraDtoDeDomain(produtoDataProvider.salvar(produto));
+    }
+
+    public Produto consultarProdutoExistentePorId(Long id) {
+        return produtoDataProvider.consultarPorId(id).orElseThrow(() -> new RuntimeException(MENSAGEM_PRODUTO_EXISTENTE));
     }
 }

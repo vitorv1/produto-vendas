@@ -1,10 +1,9 @@
 package com.example.produtovendas.controller;
 
-import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.service.ClienteService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -13,41 +12,37 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/clientes")
+@RequiredArgsConstructor
 public class ClienteController {
 
-    @Autowired
-    private ClienteService clienteService;
+    private final ClienteService clienteService;
 
     @PostMapping
-    public ResponseEntity<Cliente> cadastroCliente(@RequestBody @Valid Cliente cliente, UriComponentsBuilder uriBuilder){
-        System.out.println("controller " + cliente);
-        Cliente clienteBody = clienteService.cadastroCliente(cliente);
-        var uri = uriBuilder.path("/clientes/{id}").buildAndExpand(clienteBody.getId()).toUri();
+    public ResponseEntity<ClienteDto> cadastroCliente(@RequestBody @Valid ClienteDto dto, UriComponentsBuilder uriBuilder) {
+        ClienteDto clienteBody = clienteService.cadastroCliente(dto);
+        var uri = uriBuilder.path("/clientes/{id}").buildAndExpand(clienteBody.id()).toUri();
         return ResponseEntity.created(uri).body(clienteBody);
     }
 
     @GetMapping
-    public ResponseEntity<List<Cliente>> consultarTodosClientes(){
+    public ResponseEntity<List<ClienteDto>> consultarTodosClientes() {
         return ResponseEntity.ok(clienteService.consultaTodosClientes());
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Cliente> consultaClientePorId(@PathVariable("id") Long id){
-        Cliente cliente = clienteService.consultaClientePorId(id);
-        if (cliente == null) {
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(cliente);
+    public ResponseEntity<ClienteDto> consultaClientePorId(@PathVariable("id") Long id) {
+        ClienteDto clienteDto = clienteService.consultaClientePorId(id);
+        return ResponseEntity.ok().body(clienteDto);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> deletarCliente(@PathVariable("id") Long id){
+    public ResponseEntity<Void> deletarCliente(@PathVariable("id") Long id) {
         clienteService.deletarCliente(id);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Cliente> altararCliente(@PathVariable("id") Long id, @RequestBody Cliente cliente){
-        return ResponseEntity.ok(clienteService.alterarCliente(id, cliente));
+    public ResponseEntity<ClienteDto> altararCliente(@PathVariable("id") Long id, @RequestBody ClienteDto clienteDto) {
+        return ResponseEntity.ok(clienteService.alterarCliente(id, clienteDto));
     }
 }

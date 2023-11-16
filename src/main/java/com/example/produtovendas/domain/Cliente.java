@@ -1,10 +1,9 @@
 package com.example.produtovendas.domain;
 
+import com.example.produtovendas.dtos.ClienteDto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
 import lombok.*;
-import org.jetbrains.annotations.NotNull;
 
 @Getter
 @NoArgsConstructor
@@ -19,7 +18,6 @@ public class Cliente {
     private String nome;
     private boolean inativo;
     @NotBlank
-    //@Pattern(regexp = "\\d{12}")
     private String cpf;
     @NotBlank
     @Email
@@ -30,11 +28,11 @@ public class Cliente {
         this.inativo = true;
     }
 
-    public void atualizarDados(@NotNull Cliente clienteAlterado) {
+    public void atualizarDados(ClienteDto clienteAlterado) {
         this.inativo = false;
-        this.nome = clienteAlterado.getNome();
-        this.cpf = clienteAlterado.getCpf();
-        this.email = clienteAlterado.getEmail();
-        this.numeroTelefone = clienteAlterado.getNumeroTelefone();
+        this.nome = clienteAlterado.nome();
+        this.cpf = clienteAlterado.cpf();
+        this.email = clienteAlterado.email();
+        this.numeroTelefone = clienteAlterado.numeroTelefone();
     }
 }

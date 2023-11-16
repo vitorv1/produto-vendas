@@ -4,6 +4,7 @@ package com.example.produtovendas.infra.entities;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class VendaEntity {
 
     @Id
@@ -24,7 +26,7 @@ public class VendaEntity {
     @JoinColumn(name = "id_cliente", nullable = false)
     private ClienteEntity clienteEntity;
     private boolean inativo;
-    private double valor;
+    private BigDecimal valor;
     private Integer desconto;
     @ManyToMany
     private List<ProdutoEntity> listaProdutos;

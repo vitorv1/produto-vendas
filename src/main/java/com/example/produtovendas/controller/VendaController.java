@@ -2,40 +2,39 @@ package com.example.produtovendas.controller;
 
 
 import com.example.produtovendas.domain.Venda;
+import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.service.VendaService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @RequestMapping("/vendas")
+@RequiredArgsConstructor
 public class VendaController {
 
-    @Autowired
-    private VendaService vendaService;
+    private final VendaService vendaService;
 
     @PostMapping
-    public ResponseEntity<Venda> cadastroVenda(@RequestBody Venda venda, UriComponentsBuilder uriBuilder){
-        Venda vendaBody = vendaService.cadastroVenda(venda);
-        var uri = uriBuilder.path("/vendas/{id}").buildAndExpand(vendaBody.getId()).toUri();
+    public ResponseEntity<VendaDto> cadastroVenda(@RequestBody VendaDto vendaDto, UriComponentsBuilder uriBuilder){
+        VendaDto vendaBody = vendaService.cadastroVenda(vendaDto);
+        var uri = uriBuilder.path("/vendas/{id}").buildAndExpand(vendaBody.id()).toUri();
         return ResponseEntity.created(uri).body(vendaBody);
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<Venda> buscarPorId(@PathVariable("id") Long id){
-        Venda venda = vendaService.buscarPorId(id);
-        if(venda == null){
-            return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.ok(venda);
+    public ResponseEntity<VendaDto> buscarPorId(@PathVariable("id") Long id){
+        VendaDto vendaDto = vendaService.buscarPorId(id);
+        return ResponseEntity.ok().body(vendaDto);
     }
 
     @GetMapping
-    public ResponseEntity<List<Venda>> buscarTodos(){
+    public ResponseEntity<List<VendaDto>> buscarTodos(){
         return ResponseEntity.ok(vendaService.buscarTodos());
     }
 
@@ -46,8 +45,7 @@ public class VendaController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<Venda> alterarVenda(@PathVariable("id") Long id, @RequestBody Venda venda){
-        return ResponseEntity.ok(vendaService.alterarVenda(id, venda));
+    public ResponseEntity<VendaDto> alterarVenda(@PathVariable("id") Long id, @RequestBody VendaDto vendaDto){
+        return ResponseEntity.ok(vendaService.alterarVenda(id, vendaDto));
     }
-
 }

@@ -9,5 +9,5 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Builder
-public record VendaDto(Long id, Long idCliente, ClienteDto cliente, BigDecimal valor, boolean inativo , Integer desconto, List<Produto> listaProdutos, LocalDate dataVenda) {
+public record VendaDto(Long id, Long idCliente, ClienteDto cliente, BigDecimal valor, Integer desconto, List<Produto> listaProdutos, LocalDate dataVenda) {
 }

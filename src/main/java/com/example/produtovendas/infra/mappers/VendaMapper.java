@@ -12,7 +12,6 @@ public abstract class VendaMapper{
         return VendaEntity.builder().
                 id(venda.getId()).
                 clienteEntity(ClienteMapper.paraEntity(venda.getCliente())).
-                inativo(venda.isInativo()).
                 valor(venda.getValor()).
                 desconto(venda.getDesconto()).
                 listaProdutos(ProdutoMapper.paraEntitys(venda.getListaProdutos())).
@@ -26,7 +25,6 @@ public abstract class VendaMapper{
                 id(vendaEntity.getId()).
                 cliente(ClienteMapper.paraDomain(vendaEntity.getClienteEntity())).
                 idCliente(vendaEntity.getClienteEntity().getId()).
-                inativo(vendaEntity.isInativo()).
                 valor(vendaEntity.getValor()).
                 desconto(vendaEntity.getDesconto()).
                 listaProdutos(ProdutoMapper.paraDomains(vendaEntity.getListaProdutos())).
@@ -50,7 +48,6 @@ public abstract class VendaMapper{
                 .idCliente(venda.getIdCliente())
                 .cliente(ClienteMapper.paraDtoDeDomain(venda.getCliente()))
                 .valor(venda.getValor())
-                .inativo(venda.isInativo())
                 .desconto(venda.getDesconto())
                 .listaProdutos(venda.getListaProdutos())
                 .dataVenda(venda.getDataVenda())

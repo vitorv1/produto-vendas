@@ -3,9 +3,11 @@ package com.example.produtovendas.service;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
+import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
 import com.example.produtovendas.infra.mappers.VendaMapper;
+import com.example.produtovendas.infra.validacoes.AtributeValidation;
 import com.example.produtovendas.infra.validacoes.ProdutoValidation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +53,7 @@ VendaService {
 
     public void deletarVenda(Long id) {
         Venda venda = buscarExistentePorId(id);
-        venda.inativar();
-        vendaDataProvider.salvar(venda);
+        vendaDataProvider.deletar(venda);
     }
 
     public VendaDto alterarVenda(Long id, VendaDto vendaDto) {
@@ -86,29 +87,24 @@ VendaService {
     }
 
     private void definirProdutosAlteracao(Venda vendaDto, Venda venda) {
-        System.out.println("oi PRODUTO M");
-        List<Produto> produtoListDto = new ArrayList<>();
-        if(vendaDto.getListaProdutos() != null){
-            System.out.println("oi PRODUTO IF1");
+       List<Produto> produtoList = new ArrayList<>();
+        if(AtributeValidation.listValidation(vendaDto.getListaProdutos())){
             for (int i = 0; i < vendaDto.getListaProdutos().size(); i++) {
-                if(vendaDto.getListaProdutos().get(i).getId() != null){
-                    System.out.println("oi PRODUTO IF2");
+                if(AtributeValidation.longValidation(vendaDto.getListaProdutos().get(i).getId())){
                     if (!Objects.equals(venda.getListaProdutos().get(i).getId(), vendaDto.getListaProdutos().get(i).getId())) {
                         Produto produto = produtoService.consultarProdutoExistentePorId(vendaDto.getListaProdutos().get(i).getId());
-                        produtoListDto.add(produto);
+                        produtoList.add(produto);
                     }
                 }
             }
         }
-        if (produtoListDto.size() > 0) {
-            vendaDto.setListaProdutos(produtoListDto);
+        if(produtoList.size() > 0){
+            vendaDto.setListaProdutos(produtoList);
         }
     }
 
     private void definirClienteAlteracao(Venda vendaDto, Venda venda) {
-        System.out.println("oi CLIENTE M");
-        if(vendaDto.getIdCliente() != null){
-            System.out.println("oi CLIENTE IF");
+        if(AtributeValidation.longValidation(vendaDto.getIdCliente())){
             if (!Objects.equals(vendaDto.getIdCliente(), venda.getIdCliente())) {
                 Cliente cliente = clienteService.consultaClienteExistentePorId(vendaDto.getIdCliente());
                 vendaDto.setCliente(cliente);

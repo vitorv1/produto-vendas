@@ -1,6 +1,7 @@
 package com.example.produtovendas.domain;
 
 import com.example.produtovendas.dtos.ClienteDto;
+import com.example.produtovendas.infra.validacoes.AtributeValidation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -28,11 +29,15 @@ public class Cliente {
         this.inativo = true;
     }
 
-    public void atualizarDados(ClienteDto clienteAlterado) {
+    public void atualizarDados(Cliente clienteDto) {
         this.inativo = false;
-        this.nome = clienteAlterado.nome();
-        this.cpf = clienteAlterado.cpf();
-        this.email = clienteAlterado.email();
-        this.numeroTelefone = clienteAlterado.numeroTelefone();
+        if(AtributeValidation.stringValidation(clienteDto.getNome()))
+            this.nome = clienteDto.getNome();
+        if(AtributeValidation.stringValidation(clienteDto.getCpf()))
+            this.cpf = clienteDto.getCpf();
+        if(AtributeValidation.stringValidation(clienteDto.getEmail()))
+            this.email = clienteDto.getEmail();
+        if(AtributeValidation.stringValidation(clienteDto.getNumeroTelefone()))
+            this.numeroTelefone = clienteDto.getNumeroTelefone();
     }
 }

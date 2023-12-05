@@ -22,6 +22,7 @@ public class VendaDataProvider {
     private static final String MENSAGEM_ERRO_SALVAR_VENDA = "Erro ao salvar venda";
     private static final String MENSAGEM_ERRO_BUSCA_ID_VENDA = "Erro ao consultar por id no banco de dados";
     private static final String MENSAGEM_ERRO_BUSCA_TODOS_VENDAS = "Erro ao consultar todos no banco de dados";
+    private static final String MENSAGEM_ERRO_DELETAR_VENDA = "Erro ao deletar venda";
 
     public Venda salvar(Venda venda) {
         VendaEntity vendaEntity = VendaMapper.paraEntity(venda);
@@ -51,6 +52,15 @@ public class VendaDataProvider {
         } catch (Exception ex) {
             log.error(MENSAGEM_ERRO_BUSCA_TODOS_VENDAS, ex);
             throw new BancoDeDadosException(MENSAGEM_ERRO_BUSCA_TODOS_VENDAS);
+        }
+    }
+
+    public void deletar(Venda venda){
+        try {
+            repositoryVenda.delete(VendaMapper.paraEntity(venda));
+        }catch (Exception ex){
+            log.error(MENSAGEM_ERRO_DELETAR_VENDA, ex);
+            throw new BancoDeDadosException(MENSAGEM_ERRO_SALVAR_VENDA);
         }
     }
 }

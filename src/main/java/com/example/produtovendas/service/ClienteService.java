@@ -50,7 +50,7 @@ public class ClienteService {
 
     public ClienteDto alterarCliente(Long id, ClienteDto clienteAlterado) {
         Cliente cliente = consultaClienteExistentePorId(id);
-        cliente.atualizarDados(clienteAlterado);
+        cliente.atualizarDados(ClienteMapper.paraDomainDeDto(clienteAlterado));
         return ClienteMapper.paraDtoDeDomain(clienteDataProvider.salvar(cliente));
     }
 

@@ -1,55 +1,35 @@
 package com.example.produtovendas.domain;
 
+import com.example.produtovendas.dtos.VendaDto;
+import com.example.produtovendas.infra.mappers.ClienteMapper;
+import com.example.produtovendas.infra.validacoes.AtributeValidation;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.example.produtovendas.infra.validacoes.ObjectValidation.validaObjeto;
-
 @Getter
 @AllArgsConstructor
 @ToString
 @Setter
 @Builder
-public class Venda {
+public class Venda  {
 
     private Long id;
     private Long idCliente;
     private Cliente cliente;
     private BigDecimal valor;
-    private boolean inativo;
     private Integer desconto;
     private List<Produto> listaProdutos;
     private LocalDate dataVenda;
-
-    public void inativar() {
-        this.inativo = true;
-    }
-
-    public void atualizaDados(Venda vendaDto) {
-        /*this.inativo = false;
-        if(validaObjeto(vendaDto.getCliente()))
-            this.cliente = vendaDto.getCliente();
-        if(vendaDto.getIdCliente() != null)
-            this.idCliente = vendaDto.getIdCliente();
-        this.valor = vendaDto.getValor();
-        if(vendaDto.getDesconto() != null)
-            this.desconto = vendaDto.getDesconto();
-        if(vendaDto.getListaProdutos() != null)
-            this.listaProdutos = vendaDto.getListaProdutos();
-
-        validacao(validaObjeto(vendaDto), vendaDto);
-        this.inativo = false;
-        this.valor = vendaDto.getValor();*/
-    }
 
     public void calcularValorVenda() {
         double resultado;
         double valorSomaProdutos = 0;
         for (Produto produto : this.listaProdutos) {
-            valorSomaProdutos += produto.getValor().doubleValue();
+            if(AtributeValidation.bigDecimalValidation(produto.getValor()))
+                valorSomaProdutos += produto.getValor().doubleValue();
         }
 
         if (this.desconto > 0) {
@@ -62,18 +42,17 @@ public class Venda {
         this.valor = BigDecimal.valueOf(resultado);
     }
 
-    private void validacao (boolean validacao, Venda vendaDto){
-        if(validacao){
+    public void atualizaDados(Venda vendaDto) {
+        if(AtributeValidation.objectValidation(vendaDto.getCliente()))
             this.cliente = vendaDto.getCliente();
+        if(AtributeValidation.longValidation(vendaDto.getIdCliente()))
             this.idCliente = vendaDto.getIdCliente();
+        if(AtributeValidation.integerValidation(vendaDto.getDesconto()))
             this.desconto = vendaDto.getDesconto();
+       if(AtributeValidation.listValidation(vendaDto.getListaProdutos()))
             this.listaProdutos = vendaDto.getListaProdutos();
-        }
+        if(AtributeValidation.bigDecimalValidation(vendaDto.getValor()))
+            this.valor = vendaDto.getValor();
     }
 
-    private void validacao2(boolean validacaoVar, Object domain, Object dto){
-        if(validacaoVar){
-
-        }
-    }
 }

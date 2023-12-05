@@ -1,6 +1,7 @@
 package com.example.produtovendas.domain;
 
 import com.example.produtovendas.dtos.ProdutoDto;
+import com.example.produtovendas.infra.validacoes.AtributeValidation;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
@@ -25,11 +26,16 @@ public class Produto {
 
     public void atualizaDados(ProdutoDto produtoDto) {
         this.inativo = false;
-        this.nome = produtoDto.nome();
-        this.marca = produtoDto.marca();
-        this.valor = produtoDto.valor();
-        this.quantidade = produtoDto.quantidade();
+        if(AtributeValidation.stringValidation(produtoDto.nome()))
+            this.nome = produtoDto.nome();
+        if(AtributeValidation.stringValidation(produtoDto.marca()))
+            this.marca = produtoDto.marca();
+        if(AtributeValidation.bigDecimalValidation(produtoDto.valor()))
+            this.valor = produtoDto.valor();
+        if(AtributeValidation.integerValidation(produtoDto.quantidade()))
+            this.quantidade = produtoDto.quantidade();
     }
+
     public void inativar() {
         this.inativo = true;
     }

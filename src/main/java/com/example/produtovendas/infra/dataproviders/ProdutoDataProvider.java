@@ -20,7 +20,7 @@ public class ProdutoDataProvider {
     private final ProdutoRepository repository;
 
     private static final String MENSAGEM_ERRO_SALVAR_PRODUTO = "Erro no cadastro do produto";
-    private static final String MENSAGEM_ERRO_CONSULTA_ID_PRODUTO = "Erro na consalta por id";
+    private static final String MENSAGEM_ERRO_CONSULTA_ID_PRODUTO = "Erro na consulta por id";
     private static final String MENSAGEM_ERRO_CONSULTA_TODOS_PRODUTOS = "Erro na consulta por todos";
 
     public Produto salvar(Produto produto) {

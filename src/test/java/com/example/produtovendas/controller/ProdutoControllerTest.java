@@ -19,6 +19,7 @@ import java.util.Collections;
 import static com.example.produtovendas.validators.Validators.validaProdutoController;
 import static com.example.produtovendas.validators.Validators.validaProdutosController;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.same;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -85,6 +86,15 @@ class ProdutoControllerTest {
         ResultActions resultActions = mockMvc.perform(MockMvcRequestBuilders.put("/produtos/{id}", Builders.builderProdutoEntity().get(0).getId()).contentType(MediaType.APPLICATION_JSON).content(json)).
                 andExpect(MockMvcResultMatchers.status().isOk());
         validaProdutoController(resultActions);
+    }
+
+    @Test
+    void testeMetodoAtivarProduto() throws Exception{
+        when(repository.findById(any())).thenReturn(Builders.builderProdutoOptionalEntity().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderProdutoEntity().get(0));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/produtos/ativar/{id}", Builders.builderProdutoEntity().get(0).getId()))
+                .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test

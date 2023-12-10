@@ -16,12 +16,19 @@ class ClienteTest {
     }
 
     @Test
+    void testeMetodoAtivar(){
+        Cliente cliente = Builders.builderClienteDomain().get(0);
+        cliente.ativar();
+        Assertions.assertFalse(cliente.isInativo());
+    }
+
+    @Test
     void testeMetodoAtualizarDados() {
         Cliente cliente = Builders.builderClienteDomain().get(0);
         Cliente clienteDto = Builders.builderClienteDomain().get(1);
         clienteDto.setId(null);
 
-        cliente.atualizarDados((ClienteDto) MapperManager.getInstance(1).paraDtoDeDomain(clienteDto));
+        cliente.atualizarDados(clienteDto);
 
         Validators.validaClienteDomain(cliente, 1);
     }

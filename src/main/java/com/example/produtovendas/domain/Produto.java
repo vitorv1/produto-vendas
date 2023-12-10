@@ -24,19 +24,22 @@ public class Produto {
     private BigDecimal valor;
     private Integer quantidade;
 
-    public void atualizaDados(ProdutoDto produtoDto) {
-        this.inativo = false;
-        if(AtributeValidation.stringValidation(produtoDto.nome()))
-            this.nome = produtoDto.nome();
-        if(AtributeValidation.stringValidation(produtoDto.marca()))
-            this.marca = produtoDto.marca();
-        if(AtributeValidation.bigDecimalValidation(produtoDto.valor()))
-            this.valor = produtoDto.valor();
-        if(AtributeValidation.integerValidation(produtoDto.quantidade()))
-            this.quantidade = produtoDto.quantidade();
+    public void atualizaDados(Produto produtoDto) {
+        if(AtributeValidation.stringValidation(produtoDto.getNome()))
+            this.nome = produtoDto.getNome();
+        if(AtributeValidation.stringValidation(produtoDto.getMarca()))
+            this.marca = produtoDto.getMarca();
+        if(AtributeValidation.bigDecimalValidation(produtoDto.getValor()))
+            this.valor = produtoDto.getValor();
+        if(AtributeValidation.integerValidation(produtoDto.getQuantidade()))
+            this.quantidade = produtoDto.getQuantidade();
     }
 
     public void inativar() {
         this.inativo = true;
+    }
+
+    public void ativar() {
+        this.inativo = false;
     }
 }

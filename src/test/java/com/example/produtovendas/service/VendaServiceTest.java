@@ -1,8 +1,10 @@
 package com.example.produtovendas.service;
 
+import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
+import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,6 +20,7 @@ import java.util.Optional;
 import static com.example.produtovendas.builders.Builders.*;
 import static com.example.produtovendas.service.VendaService.MENSAGEM_VENDA_EXISTE;
 import static com.example.produtovendas.validators.Validators.validaVendaDomain;
+import static com.example.produtovendas.validators.Validators.validaVendaDto;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -39,14 +42,15 @@ class VendaServiceTest {
 
 
     @Captor
-    private ArgumentCaptor<Venda> captor;
+    private ArgumentCaptor<Venda> captorVenda;
 
     @InjectMocks
     private  VendaService vendaService;
 
     @Test
     void testeMetodoCadastroVenda() {
-        Venda venda = builderVendaDomainDto(0);
+        Venda venda = builderVendaDomain().get(0);
+        VendaDto vendaDto = builderVendaDto().get(0);
 
         Mockito.when(produtoService.consultarProdutoExistentePorId(any()))
                 .thenReturn(builderProdutoDomain().get(0))
@@ -59,15 +63,15 @@ class VendaServiceTest {
                     }
                 });
         Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(builderClienteDomain().get(0));
-        Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(venda);
+        Mockito.when(vendaDataProvider.salvar(captorVenda.capture())).thenReturn(venda);
         List<Produto> produtoList = builderProdutoDomain();
         produtoList.forEach(produto -> produto.setQuantidade(produto.getQuantidade() - 1));
         Mockito.when(estoqueService.definirQuantidadeEstoque(any())).thenReturn(produtoList);
 
 
-        vendaService.cadastroVenda(venda);
+        vendaService.cadastroVenda(vendaDto);
 
-        Venda vendaTeste = captor.getValue();
+        Venda vendaTeste = captorVenda.getValue();
 
         validaVendaDomain(vendaTeste, 0);
     }
@@ -80,9 +84,9 @@ class VendaServiceTest {
 
         Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
 
-        Venda vendaTeste = assertDoesNotThrow(() -> vendaService.buscarPorId(idVenda)).get();
+        VendaDto vendaTeste = assertDoesNotThrow(() -> vendaService.buscarPorId(idVenda));
 
-        validaVendaDomain(vendaTeste, 0);
+        validaVendaDto(vendaTeste, 0);
 
         Mockito.verify(vendaDataProvider, Mockito.times(1)).buscarPorId(idVenda);
     }
@@ -106,56 +110,46 @@ class VendaServiceTest {
 
         Mockito.when(vendaDataProvider.buscarTodos()).thenReturn(vendaList);
 
-        List<Venda> vendasTeste = assertDoesNotThrow(()-> vendaService.buscarTodos());
+        List<VendaDto> vendasTeste = assertDoesNotThrow(()-> vendaService.buscarTodos());
 
-        validaVendaDomain(vendasTeste.get(0), 0);
-        validaVendaDomain(vendasTeste.get(1), 1);
+        validaVendaDto(vendasTeste.get(0), 0);
+        validaVendaDto(vendasTeste.get(1), 1);
 
         Mockito.verify(vendaDataProvider, Mockito.times(1)).buscarTodos();
     }
 
     @Test
     void testeMetodoDeletarVenda() {
-        Long idVenda = 2L;
-
-        Optional<Venda> vendaOptional = Optional.of(builderVendaDomain().get(0));
-
-        Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
-        Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(any());
-
-        vendaService.deletarVenda(idVenda);
-
-        Venda vendaTeste = captor.getValue();
-
-        Assertions.assertTrue(vendaTeste.isInativo());
+        Mockito.doNothing().when(vendaDataProvider).deletar(any());
+        vendaService.deletarVenda(1L);
+        Mockito.verify(vendaDataProvider, Mockito.times(1)).deletar(any());
     }
 
     @Test
     void testeMetodoAlterarVenda(){
         Long idVenda = 2L;
-        Venda vendaDto = builderVendaDomainDto(1);
+        VendaDto vendaDto = builderVendaDto().get(0);
 
-        Optional<Venda> vendaOptional = Optional.of(builderVendaDomain().get(0));
+        Optional<Venda> vendaOptional = Optional.of(builderVendaDomain().get(1));
 
         Mockito.when(vendaDataProvider.buscarPorId(any())).thenReturn(vendaOptional);
-        Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(builderClienteDomain().get(1));
-        Mockito.when(vendaDataProvider.salvar(captor.capture())).thenReturn(any());
+        Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(builderClienteDomain().get(0));
+        Mockito.when(vendaDataProvider.salvar(captorVenda.capture())).thenReturn(Builders.builderVendaDomain().get(0));
 
         vendaService.alterarVenda(idVenda, vendaDto);
 
-        Venda vendaTeste = captor.getValue();
+        Venda vendaTeste = captorVenda.getValue();
 
-        validaVendaDomain(vendaTeste, 1);
+        validaVendaDomain(vendaTeste, 0);
     }
 
     @Test
     void testeMetodoCadastroEstaLancandoExceptionDeClienteInativo(){
-        Venda venda = builderVendaDomainDto(0);
+        VendaDto vendaDto = builderVendaDto().get(0);
         Cliente cliente = builderClienteDomain().get(0);
         cliente.setInativo(true);
-        Optional<Venda> vendaOptional = Optional.of(builderVendaDomain().get(0));
         Mockito.when(clienteService.consultaClienteExistentePorId(any())).thenReturn(cliente);
 
-        Assertions.assertThrows(RuntimeException.class, () -> vendaService.cadastroVenda(venda));
+        Assertions.assertThrows(RuntimeException.class, () -> vendaService.cadastroVenda(vendaDto));
     }
 }

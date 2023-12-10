@@ -4,7 +4,10 @@ import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.entities.VendaEntity;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 public abstract class VendaMapper{
 
@@ -37,7 +40,7 @@ public abstract class VendaMapper{
         return Venda.builder()
                 .idCliente(vendaDto.idCliente())
                 .desconto(vendaDto.desconto())
-                .listaProdutos(vendaDto.listaProdutos())
+                .listaProdutos(ProdutoMapper.paraDomainsDeDtos(vendaDto.listaProdutos()))
                 .build();
     }
 
@@ -49,8 +52,8 @@ public abstract class VendaMapper{
                 .cliente(ClienteMapper.paraDtoDeDomain(venda.getCliente()))
                 .valor(venda.getValor())
                 .desconto(venda.getDesconto())
-                .listaProdutos(venda.getListaProdutos())
-                .dataVenda(venda.getDataVenda())
+                .listaProdutos(ProdutoMapper.paraDtosDeDomains(venda.getListaProdutos()))
+                .dataVenda(formataData(venda.getDataVenda()))
                 .build();
     }
 
@@ -60,5 +63,10 @@ public abstract class VendaMapper{
 
     public static List<Venda> paraDomains(List<VendaEntity> vendaEntities) {
         return vendaEntities.stream().map(VendaMapper::paraDomain).toList();
+    }
+
+    private static String formataData(LocalDate data){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy", new Locale("pt", "BR"));
+        return data.format(formatter);
     }
 }

@@ -55,9 +55,9 @@ public class VendaDataProvider {
         }
     }
 
-    public void deletar(Venda venda){
+    public void deletar(Long id){
         try {
-            repositoryVenda.delete(VendaMapper.paraEntity(venda));
+            repositoryVenda.deleteById(id);
         }catch (Exception ex){
             log.error(MENSAGEM_ERRO_DELETAR_VENDA, ex);
             throw new BancoDeDadosException(MENSAGEM_ERRO_SALVAR_VENDA);

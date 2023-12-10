@@ -13,7 +13,7 @@ class ProdutoValidationTest {
     @Test
     void testaSeValidacaoEstaLancandoException() {
         List<Produto> produtos = builderProdutoDomain();
-        Assertions.assertThrows(RuntimeException.class, () -> ProdutoValidation.validaProduto(produtos, builderProdutoDomain().get(0)));
+        Assertions.assertThrows(RuntimeException.class, () -> ProdutoValidation.validaProdutoExistente(produtos, builderProdutoDomain().get(0)));
     }
 
     @Test

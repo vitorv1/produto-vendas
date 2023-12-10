@@ -11,13 +11,13 @@ import static com.example.produtovendas.builders.Builders.builderEstoqueEntity;
 class EstoqueMapperTest {
 
     @Test
-    void testeSeRetornaUmEstoqueDomain() {
+    void testaSeRetornaUmEstoqueDomain() {
         Estoque estoque = EstoqueMapper.paraDomain(builderEstoqueEntity());
         Validators.validaEstoqueDomain(estoque);
     }
 
     @Test
-    void paraEntity() {
+    void testaSeRetornaUmEsttoqueEntity() {
         EstoqueEntity estoqueEntity = EstoqueMapper.paraEntity(builderEstoqueDomain());
         Validators.validaEstoqueEntity(estoqueEntity);
     }

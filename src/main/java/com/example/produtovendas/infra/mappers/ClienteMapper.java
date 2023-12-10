@@ -38,6 +38,7 @@ public abstract class ClienteMapper {
                 .nome(clienteDto.nome())
                 .cpf(clienteDto.cpf())
                 .email(clienteDto.email())
+                .inativo(clienteDto.inativo())
                 .numeroTelefone(clienteDto.numeroTelefone())
                 .build();
     }
@@ -49,6 +50,7 @@ public abstract class ClienteMapper {
                 .nome(cliente.getNome())
                 .cpf(cliente.getCpf())
                 .email(cliente.getEmail())
+                .inativo(cliente.isInativo())
                 .numeroTelefone(cliente.getNumeroTelefone())
                 .build();
     }

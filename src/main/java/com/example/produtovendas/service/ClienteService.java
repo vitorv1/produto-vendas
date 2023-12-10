@@ -8,6 +8,7 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -56,5 +57,11 @@ public class ClienteService {
 
     public Cliente consultaClienteExistentePorId(Long id) {
         return ClienteMapper.paraDomainDeDto(consultaClientePorId(id));
+    }
+
+    public void ativarCliente(Long id) {
+        Cliente cliente = consultaClienteExistentePorId(id);
+        cliente.ativar();
+        clienteDataProvider.salvar(cliente);
     }
 }

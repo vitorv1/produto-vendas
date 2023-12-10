@@ -3,7 +3,6 @@ package com.example.produtovendas.service;
 import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
-import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.dataproviders.VendaDataProvider;
 import com.example.produtovendas.infra.mappers.VendaMapper;
@@ -18,8 +17,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class
-VendaService {
+public class VendaService {
 
     public static final String MENSAGEM_VENDA_EXISTE = "Venda não existe";
     public static final String MENSAGEM_PRODUTO_FALTA = "Produto em falta no estoque";
@@ -52,8 +50,7 @@ VendaService {
     }
 
     public void deletarVenda(Long id) {
-        Venda venda = buscarExistentePorId(id);
-        vendaDataProvider.deletar(venda);
+        vendaDataProvider.deletar(id);
     }
 
     public VendaDto alterarVenda(Long id, VendaDto vendaDto) {

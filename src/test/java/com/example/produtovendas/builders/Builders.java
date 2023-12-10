@@ -4,6 +4,10 @@ import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Estoque;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
+import com.example.produtovendas.dtos.ClienteDto;
+import com.example.produtovendas.dtos.ProdutoDto;
+import com.example.produtovendas.dtos.VendaDto;
+import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
 import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.EstoqueEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
@@ -60,29 +64,21 @@ public abstract class Builders {
 
     public static List<VendaEntity> builderVendaEntity(){
         List<VendaEntity> vendaEntities = new ArrayList<>();
-        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), false, new BigDecimal("648.0"), 10, builderProdutoEntity(), LocalDate.now()));
-        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), false, new BigDecimal("720.0"), 0, builderProdutoEntity(), LocalDate.now()));
+        vendaEntities.add(new VendaEntity(2L, Builders.builderClienteEntity().get(0), new BigDecimal("648.0"), 10, builderProdutoEntity(), LocalDate.now()));
+        vendaEntities.add(new VendaEntity(7L, Builders.builderClienteEntity().get(1), new BigDecimal("720.0"), 0, builderProdutoEntity(), LocalDate.now()));
         return vendaEntities;
     }
 
     public static List<Cliente> builderClienteDomain(){
-        return MapperManager.getInstance(1).paraDomains(builderClienteEntity());
+        return ClienteMapper.paraDomains(builderClienteEntity());
     }
 
     public static List<Produto> builderProdutoDomain(){
-        return MapperManager.getInstance(3).paraDomains(builderProdutoEntity());
+        return ProdutoMapper.paraDomains(builderProdutoEntity());
     }
 
     public static List<Venda> builderVendaDomain() {
-        return MapperManager.getInstance(4).paraDomains(builderVendaEntity());
-    }
-
-    public static Venda builderVendaDomainDto(int index){
-        Venda venda = builderVendaDomain().get(index);
-        venda.setId(null);
-        venda.setCliente(null);
-        venda.setDataVenda(null);
-        return venda;
+        return VendaMapper.paraDomains(builderVendaEntity());
     }
 
     public static EstoqueEntity builderEstoqueEntity(){
@@ -91,7 +87,28 @@ public abstract class Builders {
     }
 
     public static Estoque builderEstoqueDomain(){
-        return (Estoque) MapperManager.getInstance(2).paraDomain(builderEstoqueEntity());
+        return EstoqueMapper.paraDomain(builderEstoqueEntity());
+    }
+
+    public static List<ClienteDto> builderClienteDto(){
+        List<ClienteDto> clienteDtos = new ArrayList<>();
+        clienteDtos.add(ClienteMapper.paraDtoDeDomain(builderClienteDomain().get(0)));
+        clienteDtos.add(ClienteMapper.paraDtoDeDomain(builderClienteDomain().get(1)));
+        return clienteDtos;
+    }
+
+    public static List<ProdutoDto> builderProdutoDto(){
+        List<ProdutoDto> produtoDtos = new ArrayList<>();
+        produtoDtos.add(ProdutoMapper.paraDtoDeDomain(builderProdutoDomain().get(0)));
+        produtoDtos.add(ProdutoMapper.paraDtoDeDomain(builderProdutoDomain().get(1)));
+        return produtoDtos;
+    }
+
+    public static List<VendaDto> builderVendaDto(){
+        List<VendaDto> vendaDtos = new ArrayList<>();
+        vendaDtos.add(VendaMapper.paraDtoDeDomain(builderVendaDomain().get(0)));
+        vendaDtos.add(VendaMapper.paraDtoDeDomain(builderVendaDomain().get(1)));
+        return vendaDtos;
     }
 
     public static String builderJsonVenda(){

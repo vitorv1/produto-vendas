@@ -1,6 +1,5 @@
 package com.example.produtovendas.controller;
 
-import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.dtos.ProdutoDto;
 import com.example.produtovendas.service.ProdutoService;
 import jakarta.validation.Valid;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/produtos")
@@ -46,5 +44,11 @@ public class ProdutoController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ProdutoDto> alterarProduto(@PathVariable("id") Long id, @RequestBody ProdutoDto produtoDto){
         return ResponseEntity.ok(produtoService.alterarProduto(id, produtoDto));
+    }
+
+    @PutMapping("/ativar/{id}")
+    public  ResponseEntity<Void> ativarProduto(@PathVariable("id") Long id){
+        produtoService.ativarProduto(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -5,6 +5,9 @@ import com.example.produtovendas.domain.Cliente;
 import com.example.produtovendas.domain.Estoque;
 import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.domain.Venda;
+import com.example.produtovendas.dtos.ClienteDto;
+import com.example.produtovendas.dtos.ProdutoDto;
+import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.infra.entities.ClienteEntity;
 import com.example.produtovendas.infra.entities.EstoqueEntity;
 import com.example.produtovendas.infra.entities.ProdutoEntity;
@@ -16,8 +19,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.produtovendas.builders.Builders.builderEstoqueDomain;
-import static com.example.produtovendas.builders.Builders.builderEstoqueEntity;
+import static com.example.produtovendas.builders.Builders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 public abstract class Validators {
@@ -52,7 +54,6 @@ public abstract class Validators {
     public static void validaVendaEntity(VendaEntity venda, int index){
             Assertions.assertEquals(Builders.builderVendaEntity().get(index).getId(), venda.getId());
             Assertions.assertEquals(Builders.builderVendaEntity().get(index).getClienteEntity(), venda.getClienteEntity());
-            Assertions.assertFalse(venda.isInativo());
             Assertions.assertEquals(Builders.builderVendaEntity().get(index).getValor(), venda.getValor());
             Assertions.assertEquals(Builders.builderVendaEntity().get(index).getDesconto(), venda.getDesconto());
             Assertions.assertEquals(Builders.builderVendaEntity().get(index).getListaProdutos(), venda.getListaProdutos());
@@ -102,18 +103,15 @@ public abstract class Validators {
             }
             validaClienteDomain(venda.getCliente(), index);
             Assertions.assertEquals(Builders.builderVendaDomain().get(index).getValor(), venda.getValor());
-            Assertions.assertFalse(venda.isInativo());
             Assertions.assertEquals(Builders.builderVendaDomain().get(index).getDesconto(), venda.getDesconto());
             validaProdutoDomain(venda.getListaProdutos().get(0), 0);
             validaProdutoDomain(venda.getListaProdutos().get(1), 1);
             Assertions.assertEquals(Builders.builderVendaDomain().get(index).getDataVenda(), venda.getDataVenda());
-
     }
 
     public static void validaVendaController(ResultActions resultActions) throws Exception{
         resultActions.andExpect(MockMvcResultMatchers.jsonPath("$.id").value(Builders.builderVendaEntity().get(0).getId())).
                 andExpect(MockMvcResultMatchers.jsonPath("$.cliente").value(Builders.builderVendaEntity().get(0).getClienteEntity())).
-                andExpect(MockMvcResultMatchers.jsonPath("$.inativo").value(Builders.builderVendaEntity().get(0).isInativo())).
                 andExpect(MockMvcResultMatchers.jsonPath("$.valor").value(Builders.builderVendaEntity().get(0).getValor())).
                 andExpect(MockMvcResultMatchers.jsonPath("$.desconto").value(Builders.builderVendaEntity().get(0).getDesconto()));
         //andExpect(MockMvcResultMatchers.jsonPath("$.listaProdutos").value(Builders.builderVenda().get(0).getListaProdutos()));
@@ -123,7 +121,6 @@ public abstract class Validators {
         String index = "$[".concat(indexListVenda).concat("].");
         resultActions.andExpect(jsonPath(index.concat("id")).value(vendaEntity.getId())).
                 andExpect(jsonPath(index.concat("cliente")).value(vendaEntity.getClienteEntity())).
-                andExpect(jsonPath(index.concat("inativo")).value(vendaEntity.isInativo())).
                 andExpect(jsonPath(index.concat("valor")).value(vendaEntity.getValor())).
                 andExpect(jsonPath(index.concat("desconto")).value(vendaEntity.getDesconto()));
         //andExpect(jsonPath(index.concat("listaProdutos")).value(vendaEntity.getListaProdutos())).
@@ -178,5 +175,38 @@ public abstract class Validators {
         Assertions.assertEquals(builderEstoqueEntity().getId(), estoqueEntity.getId());
         validaProdutoEntity(estoqueEntity.getProdutoEntity(), 0);
         Assertions.assertEquals(builderEstoqueEntity().getQuantidade(), estoqueEntity.getQuantidade());
+    }
+
+    public static void validaClienteDto(ClienteDto clienteDto, int index){
+        Assertions.assertEquals(clienteDto.id(), builderClienteDto().get(index).id());
+        Assertions.assertEquals(clienteDto.nome(), builderClienteDto().get(index).nome());
+        Assertions.assertEquals(clienteDto.cpf(), builderClienteDto().get(index).cpf());
+        Assertions.assertEquals(clienteDto.email(), builderClienteDto().get(index).email());
+        Assertions.assertEquals(clienteDto.numeroTelefone(), builderClienteDto().get(index).numeroTelefone());
+        Assertions.assertEquals(clienteDto.inativo(), builderClienteDto().get(index).inativo());
+    }
+
+    public static void validaVendaDto(VendaDto vendaDto, int index){
+        Assertions.assertEquals(vendaDto.id(), builderVendaDto().get(index).id());
+        Assertions.assertEquals(vendaDto.idCliente(), builderVendaDto().get(index).idCliente());
+        validaClienteDto(vendaDto.cliente(), index);
+        Assertions.assertEquals(vendaDto.desconto(), builderVendaDto().get(index).desconto());
+        Assertions.assertEquals(vendaDto.dataVenda(), builderVendaDto().get(index).dataVenda());
+        Assertions.assertEquals(vendaDto.valor(), builderVendaDto().get(index).valor());
+        validaProdutoDto(vendaDto.listaProdutos().get(0), 0);
+        validaProdutoDto(vendaDto.listaProdutos().get(1), 1);
+
+
+        /*Assertions.assertEquals(vendaDto.listaProdutos().get(0), builderVendaDto().get(index).listaProdutos().get(0));
+        Assertions.assertEquals(vendaDto.listaProdutos().get(1), builderVendaDto().get(index).listaProdutos().get(1));*/
+    }
+
+    public static void validaProdutoDto(ProdutoDto produtoDto, int index){
+        Assertions.assertEquals(produtoDto.id(), builderProdutoDto().get(index).id());
+        Assertions.assertEquals(produtoDto.nome(), builderProdutoDto().get(index).nome());
+        Assertions.assertEquals(produtoDto.marca(), builderProdutoDto().get(index).marca());
+        Assertions.assertEquals(produtoDto.valor(), builderProdutoDto().get(index).valor());
+        Assertions.assertEquals(produtoDto.inativo(), builderProdutoDto().get(index).inativo());
+        Assertions.assertEquals(produtoDto.quantidade(), builderProdutoDto().get(index).quantidade());
     }
 }

@@ -2,6 +2,7 @@ package com.example.produtovendas.infra.entities;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import java.math.BigDecimal;
 

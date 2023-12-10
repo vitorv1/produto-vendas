@@ -33,9 +33,11 @@ public abstract class ProdutoMapper{
 
     public static Produto paraDomainDeDto(ProdutoDto produtoDto) {
         return Produto.builder()
+                .id(produtoDto.id())
                 .nome(produtoDto.nome())
                 .quantidade(produtoDto.quantidade())
                 .marca(produtoDto.marca())
+                .inativo(produtoDto.inativo())
                 .valor(produtoDto.valor())
                 .build();
     }
@@ -45,9 +47,14 @@ public abstract class ProdutoMapper{
                 .id(produto.getId())
                 .nome(produto.getNome())
                 .marca(produto.getMarca())
+                .inativo(produto.isInativo())
                 .quantidade(produto.getQuantidade())
                 .valor(produto.getValor())
                 .build();
+    }
+
+    public static List<Produto> paraDomainsDeDtos(List<ProdutoDto> produtoDtos) {
+        return produtoDtos.stream().map(ProdutoMapper::paraDomainDeDto).toList();
     }
 
     public static List<ProdutoEntity> paraEntitys(List<Produto> produtoList) {

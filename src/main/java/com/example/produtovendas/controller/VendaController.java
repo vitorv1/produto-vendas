@@ -1,7 +1,5 @@
 package com.example.produtovendas.controller;
 
-
-import com.example.produtovendas.domain.Venda;
 import com.example.produtovendas.dtos.VendaDto;
 import com.example.produtovendas.service.VendaService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/vendas")

@@ -1,6 +1,5 @@
 package com.example.produtovendas.dtos;
 
-import com.example.produtovendas.domain.Cliente;
 import lombok.Builder;
 
 @Builder

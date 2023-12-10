@@ -4,7 +4,6 @@ import com.example.produtovendas.domain.Produto;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Objects;
 
 public abstract class AtributeValidation {
     public static boolean longValidation(Long atribute){

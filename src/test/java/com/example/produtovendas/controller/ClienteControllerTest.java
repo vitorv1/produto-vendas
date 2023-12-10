@@ -93,6 +93,16 @@ class ClienteControllerTest {
     }
 
     @Test
+    void testeMetodoAtivarCliente() throws Exception {
+
+        when(repository.findById(any())).thenReturn(Builders.builderClienteOptional().get(0));
+        when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/clientes/ativar/{id}", Builders.builderClienteEntity().get(0).getId()))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void testeMetodoCadastroClienteEstaLancandoException() throws Exception {
         when(repository.findByCpf(any())).thenReturn(Builders.builderClienteOptional().get(0));
         when(repository.save(any())).thenReturn(Builders.builderClienteEntity().get(0));

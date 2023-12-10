@@ -42,7 +42,13 @@ public class ClienteController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ClienteDto> altararCliente(@PathVariable("id") Long id, @RequestBody ClienteDto clienteDto) {
+    public ResponseEntity<ClienteDto> alterarCliente(@PathVariable("id") Long id, @RequestBody ClienteDto clienteDto) {
         return ResponseEntity.ok(clienteService.alterarCliente(id, clienteDto));
+    }
+
+    @PutMapping("/ativar/{id}")
+    public ResponseEntity<Void> ativarCliente(@PathVariable("id") Long id){
+        clienteService.ativarCliente(id);
+        return ResponseEntity.ok().build();
     }
 }

@@ -61,6 +61,15 @@ class ClienteDataProviderTest {
     }
 
     @Test
+    void testeMetodoConsultarPorCpf(){
+        Mockito.when(repository.findByCpf(any())).thenReturn(Builders.builderClienteOptional().get(0));
+
+        Optional<Cliente> clienteTeste = clienteDataProvider.consultarPorCpf("456357159-17");
+
+        clienteTeste.ifPresent(cliente -> Validators.validaClienteDomain(clienteTeste.get(), 0));
+    }
+
+    @Test
     void testaSeMetodoSalvarEstaLancandoExecption(){
         Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
 
@@ -83,5 +92,13 @@ class ClienteDataProviderTest {
 
         BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, ()-> clienteDataProvider.consultarPorId(1L));
         Assertions.assertEquals("Erro ao consultar Cliente por Id.", exceptionTeste.getMessage());
+    }
+
+    @Test
+    void testaSeMetodoConsultarPorCpfEstaLancandoExecption(){
+        Mockito.when(repository.findByCpf(any())).thenThrow(RuntimeException.class);
+
+        BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> clienteDataProvider.consultarPorCpf("456357159-17"));
+        Assertions.assertEquals("Erro ao buscar cliente por Cpf", exceptionTeste.getMessage());
     }
 }

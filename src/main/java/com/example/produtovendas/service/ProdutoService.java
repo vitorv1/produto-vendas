@@ -24,7 +24,7 @@ public class ProdutoService {
     public ProdutoDto cadastroProduto(ProdutoDto produtoDto) {
         Produto produto = ProdutoMapper.paraDomainDeDto(produtoDto);
         List<Produto> produtos = produtoDataProvider.consultaTodos();
-        ProdutoValidation.validaProduto(produtos, produto);
+        ProdutoValidation.validaProdutoExistente(produtos, produto);
         Produto produtoSalvo = produtoDataProvider.salvar(produto);
         estoqueService.criarEstoque(produtoSalvo);
         return ProdutoMapper.paraDtoDeDomain(produtoSalvo);
@@ -51,11 +51,17 @@ public class ProdutoService {
 
     public ProdutoDto alterarProduto(Long id, ProdutoDto produtoDto) {
         Produto produto = consultarProdutoExistentePorId(id);
-        produto.atualizaDados(produtoDto);
+        produto.atualizaDados(ProdutoMapper.paraDomainDeDto(produtoDto));
         return ProdutoMapper.paraDtoDeDomain(produtoDataProvider.salvar(produto));
     }
 
     public Produto consultarProdutoExistentePorId(Long id) {
         return produtoDataProvider.consultarPorId(id).orElseThrow(() -> new RuntimeException(MENSAGEM_PRODUTO_EXISTENTE));
+    }
+
+    public void ativarProduto(Long id) {
+        Produto produto = consultarProdutoExistentePorId(id);
+        produto.ativar();
+        produtoDataProvider.salvar(produto);
     }
 }

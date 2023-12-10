@@ -2,7 +2,9 @@ package com.example.produtovendas.service;
 
 import com.example.produtovendas.builders.Builders;
 import com.example.produtovendas.domain.Cliente;
+import com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.infra.dataproviders.ClienteDataProvider;
+import com.example.produtovendas.infra.mappers.ClienteMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,7 +39,7 @@ class ClienteServiceTest {
         when(clienteDataProvider.consultarPorCpf(cliente.getCpf())).thenReturn(Optional.empty());
         when(clienteDataProvider.salvar(captor.capture())).thenReturn(cliente);
 
-        clienteService.cadastroCliente(cliente);
+        clienteService.cadastroCliente(ClienteMapper.paraDtoDeDomain(cliente));
 
         Cliente clienteTeste = captor.getValue();
 
@@ -48,10 +50,10 @@ class ClienteServiceTest {
     void testeMetodoConsultaTodosClientes(){
         Mockito.when(clienteDataProvider.consultarTodos()).thenReturn(Builders.builderClienteDomain());
 
-        List<Cliente> clienteListTeste = assertDoesNotThrow(() -> clienteService.consultaTodosClientes());
+        List<ClienteDto> clienteListTeste = assertDoesNotThrow(() -> clienteService.consultaTodosClientes());
 
-        validaClienteDomain(clienteListTeste.get(0), 0);
-        validaClienteDomain(clienteListTeste.get(1), 1);
+        validaClienteDto(clienteListTeste.get(0), 0);
+        validaClienteDto(clienteListTeste.get(1), 1);
 
         Mockito.verify(clienteDataProvider, Mockito.times(1)).consultarTodos();
     }
@@ -102,17 +104,26 @@ class ClienteServiceTest {
     void testeMetodoAlterarCliente(){
         Long id = 1L;
 
-        Cliente clienteDto = Builders.builderClienteDomain().get(1);
-        clienteDto.setId(null);
+        ClienteDto clienteDto = Builders.builderClienteDto().get(1);
 
-        Optional<Cliente> clienteOptional = Optional.of(Builders.builderClienteDomain().get(0));
+        Cliente cliente = Builders.builderClienteDomain().get(0);
+
+        Optional<Cliente> clienteOptional = Optional.of(cliente);
         when(clienteDataProvider.consultarPorId(any())).thenReturn(clienteOptional);
-        when(clienteDataProvider.salvar(captor.capture())).thenReturn(any());
+        when(clienteDataProvider.salvar(captor.capture())).thenReturn(cliente);
 
         clienteService.alterarCliente(id, clienteDto);
 
         Cliente clienteTeste = captor.getValue();
 
         validaClienteDomain(clienteTeste, 1);
+    }
+
+    @Test
+    void testeMetodoAtivarCliente(){
+        Cliente clienteTeste = Builders.builderClienteDomain().get(0);
+        clienteTeste.setInativo(true);
+        clienteTeste.ativar();
+        Assertions.assertFalse(clienteTeste.isInativo());
     }
 }

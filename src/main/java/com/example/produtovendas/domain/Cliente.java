@@ -1,6 +1,5 @@
 package com.example.produtovendas.domain;
 
-import com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.infra.validacoes.AtributeValidation;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -29,8 +28,11 @@ public class Cliente {
         this.inativo = true;
     }
 
-    public void atualizarDados(Cliente clienteDto) {
+    public void ativar(){
         this.inativo = false;
+    }
+
+    public void atualizarDados(Cliente clienteDto) {
         if(AtributeValidation.stringValidation(clienteDto.getNome()))
             this.nome = clienteDto.getNome();
         if(AtributeValidation.stringValidation(clienteDto.getCpf()))

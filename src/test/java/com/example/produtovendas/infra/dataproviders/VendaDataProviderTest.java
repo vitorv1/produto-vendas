@@ -67,12 +67,19 @@ class VendaDataProviderTest {
     }
 
     @Test
+    void testeMetodoDeletar(){
+        Mockito.doNothing().when(repository).deleteById(any());
+        repository.deleteById(2L);
+        Mockito.verify(repository, Mockito.times(1)).deleteById(any());
+    }
+
+    @Test
     void testaSeMetodoSalvarEstaLancandoExecption(){
         Mockito.when(repository.save(any())).thenThrow(RuntimeException.class);
         List<Produto> produtoList = new ArrayList<>();
         BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> vendaDataProvider.salvar(
-                new Venda(1L, new Cliente(2L, "Vitor", false, "123456789-77", "vivi@gmail.com", "124578-9856"),
-                        2L, new BigDecimal(0), false, 0, produtoList, LocalDate.now())));
+                new Venda(1L, 2L, new Cliente(2L, "Vitor", false, "123456789-77", "vivi@gmail.com", "124578-9856"),
+                        new BigDecimal(0), 0, produtoList, LocalDate.now())));
         Assertions.assertEquals("Erro ao salvar venda", exceptionTeste.getMessage());
     }
 

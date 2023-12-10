@@ -21,12 +21,11 @@ public class ClienteDataProvider {
 
     private static final String MENSAGEM_ERRO_CADASTRO_CLIENTE = "Erro ao salvar Cliente";
     private static final String MENSAGEM_ERRO_CONSULTA_TODOS_CLIENTES = "Erro ao buscar todos os Clientes";
-    private static final String MENSAGEM_ERRO_CONSULTA_CPF_CLIENTE = "Erro ao buscar todos os Clientes";
-    private static final String MENSAGEM_ERRO_CONSULTA_ID_CLIENTE = "Erro ao consultar Cliente por Id";
+    private static final String MENSAGEM_ERRO_CONSULTA_CPF_CLIENTE = "Erro ao buscar cliente por Cpf";
+    private static final String MENSAGEM_ERRO_CONSULTA_ID_CLIENTE = "Erro ao consultar Cliente por Id.";
 
     public Cliente salvar(Cliente cliente) {
         ClienteEntity clienteEntity = ClienteMapper.paraEntity(cliente);
-
         try {
             clienteEntity = repository.save(clienteEntity);
         } catch (Exception ex) {

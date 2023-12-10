@@ -1,9 +1,7 @@
 package com.example.produtovendas.infra.mappers;
 
 import com.example.produtovendas.domain.Estoque;
-import com.example.produtovendas.domain.Produto;
 import com.example.produtovendas.infra.entities.EstoqueEntity;
-import com.example.produtovendas.infra.entities.ProdutoEntity;
 
 public abstract class EstoqueMapper {
 

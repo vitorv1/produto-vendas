@@ -49,7 +49,7 @@ public class Venda  {
             this.idCliente = vendaDto.getIdCliente();
         if(AtributeValidation.integerValidation(vendaDto.getDesconto()))
             this.desconto = vendaDto.getDesconto();
-       if(AtributeValidation.listValidation(vendaDto.getListaProdutos()))
+        if(AtributeValidation.listValidation(vendaDto.getListaProdutos()))
             this.listaProdutos = vendaDto.getListaProdutos();
         if(AtributeValidation.bigDecimalValidation(vendaDto.getValor()))
             this.valor = vendaDto.getValor();

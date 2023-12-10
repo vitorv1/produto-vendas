@@ -25,7 +25,6 @@ public class VendaEntity {
     @ManyToOne
     @JoinColumn(name = "id_cliente", nullable = false)
     private ClienteEntity clienteEntity;
-    private boolean inativo;
     private BigDecimal valor;
     private Integer desconto;
     @ManyToMany

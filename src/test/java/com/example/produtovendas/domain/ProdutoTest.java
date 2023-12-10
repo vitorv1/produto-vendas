@@ -14,7 +14,7 @@ class ProdutoTest {
         Produto produtoDto = Builders.builderProdutoDomain().get(1);
         produtoDto.setId(null);
 
-        produto.atualizaDados((ProdutoDto) MapperManager.getInstance(3).paraDtoDeDomain(produtoDto));
+        produto.atualizaDados(produtoDto);
 
         Validators.validaProdutoDomain(produto, 1);
     }
@@ -24,5 +24,14 @@ class ProdutoTest {
         Produto produto = Builders.builderProdutoDomain().get(0);
         produto.inativar();
         Assertions.assertTrue(produto.isInativo());
+    }
+
+    @Test
+    void testeMetodoAtivar(){
+        Produto produto = Builders.builderProdutoDomain().get(0);
+        produto.setInativo(true);
+        produto.ativar();
+
+        Assertions.assertFalse(produto.isInativo());
     }
 }

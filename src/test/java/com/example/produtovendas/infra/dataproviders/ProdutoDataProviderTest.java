@@ -72,7 +72,7 @@ class ProdutoDataProviderTest {
     void testaSeMetodoConsultaPorIdEstaLancandoException(){
         Mockito.when(repository.findById(any())).thenThrow(RuntimeException.class);
         BancoDeDadosException exceptionTeste = Assertions.assertThrows(BancoDeDadosException.class, () -> produtoDataProvider.consultarPorId(3L));
-        Assertions.assertEquals( "Erro na consalta por id",exceptionTeste.getMessage());
+        Assertions.assertEquals( "Erro na consulta por id",exceptionTeste.getMessage());
     }
 
     @Test

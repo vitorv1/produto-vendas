@@ -14,7 +14,9 @@ As tecnologias utilizadas no projeto são: linguagem Java juntamente com o frame
 
 - Spring Boot 3.1.2
 
-- MySql 8 
+- MySql 8
+
+- Maven
 
 ## 🔵 COMO UTILIZAR
 

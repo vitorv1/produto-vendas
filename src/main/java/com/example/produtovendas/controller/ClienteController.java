@@ -1,6 +1,6 @@
 package com.example.produtovendas.controller;
 
-import com.example.produtovendas.dtos.ClienteDto;
+import  com.example.produtovendas.dtos.ClienteDto;
 import com.example.produtovendas.service.ClienteService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

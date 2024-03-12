@@ -110,8 +110,9 @@ public class VendaService {
     }
 
     private void validaQuntidadeEstoqueProduto(List<Produto> produtoList) {
-        int repitidos = 1;
+        int repitidos;
         for (int i = 0; i < produtoList.size(); i++) {
+            repitidos = 1;
             Long id = produtoList.get(i).getId();
             for (int j = i + 1; j < produtoList.size(); j++) {
                 if (Objects.equals(produtoList.get(j).getId(), id)){
@@ -124,7 +125,7 @@ public class VendaService {
 
         List<Produto> produtosValidacao = produtoList.stream().filter(produto -> produto.getQuantidade() <= 0).toList();
 
-            if (!produtosValidacao.isEmpty())
-                throw new RuntimeException(MENSAGEM_PRODUTO_FALTA);
+        if (!produtosValidacao.isEmpty())
+            throw new RuntimeException(MENSAGEM_PRODUTO_FALTA);
     }
 }

@@ -123,7 +123,6 @@ public abstract class Validators {
                 andExpect(jsonPath(index.concat("cliente")).value(vendaEntity.getClienteEntity())).
                 andExpect(jsonPath(index.concat("valor")).value(vendaEntity.getValor())).
                 andExpect(jsonPath(index.concat("desconto")).value(vendaEntity.getDesconto()));
-        //andExpect(jsonPath(index.concat("listaProdutos")).value(vendaEntity.getListaProdutos())).
     }
 
     public static void validaProdutoController(ResultActions resultActions) throws Exception {
@@ -195,10 +194,6 @@ public abstract class Validators {
         Assertions.assertEquals(vendaDto.valor(), builderVendaDto().get(index).valor());
         validaProdutoDto(vendaDto.listaProdutos().get(0), 0);
         validaProdutoDto(vendaDto.listaProdutos().get(1), 1);
-
-
-        /*Assertions.assertEquals(vendaDto.listaProdutos().get(0), builderVendaDto().get(index).listaProdutos().get(0));
-        Assertions.assertEquals(vendaDto.listaProdutos().get(1), builderVendaDto().get(index).listaProdutos().get(1));*/
     }
 
     public static void validaProdutoDto(ProdutoDto produtoDto, int index){
